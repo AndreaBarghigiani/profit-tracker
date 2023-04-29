@@ -9,10 +9,10 @@ import {
 import { TransactionValuesSchema } from "@/pages/transaction/new";
 
 const mapFrequency: Record<string, number> = {
-  daily: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
-  weekly: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
-  monthly: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
-  yearly: 365 * 24 * 60 * 60 * 1000, // 365 days in milliseconds
+  DAILY: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+  WEEKLY: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+  MONTHLY: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
+  YEARLY: 365 * 24 * 60 * 60 * 1000, // 365 days in milliseconds
 };
 
 export const transactionRouter = createTRPCRouter({
