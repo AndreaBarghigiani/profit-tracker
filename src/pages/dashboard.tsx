@@ -3,7 +3,7 @@ import { api } from "@/utils/api";
 import { useSession } from "next-auth/react";
 
 // Types
-import type { NextPage } from "next";
+import type { NextPageWithLayout } from "./_app";
 import type { Project } from "@prisma/client";
 
 // Components
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
+import LayoutDashboard from "@/components/layoutDashboard";
 
 const ProjectCard = ({ project }: { project: Project }) => {
   return (
@@ -33,7 +34,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
   );
 };
 
-const Dashboard: NextPage = () => {
+const Dashboard: NextPageWithLayout = () => {
   const {
     data: projects,
     isLoading: isProjectsLoading,
@@ -65,6 +66,10 @@ const Dashboard: NextPage = () => {
       )}
     </div>
   );
+};
+
+Dashboard.getLayout = function getLayout(page: React.ReactElement) {
+  return <LayoutDashboard>{page}</LayoutDashboard>;
 };
 
 export default Dashboard;

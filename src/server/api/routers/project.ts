@@ -6,7 +6,7 @@ import {
   protectedProcedure,
 } from "@/server/api/trpc";
 
-import { ProjectValuesSchema } from "@/pages/add-project";
+import { ProjectValuesSchema } from "@/pages/project/add";
 
 export const projectRouter = createTRPCRouter({
   list: publicProcedure.query(({ ctx }) => {
