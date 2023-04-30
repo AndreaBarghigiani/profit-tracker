@@ -6,6 +6,7 @@ import {
   protectedProcedure,
 } from "@/server/api/trpc";
 
+import { TransactionType } from "@prisma/client";
 import { ProjectValuesSchema } from "@/pages/project/add";
 
 export const projectRouter = createTRPCRouter({
@@ -27,12 +28,13 @@ export const projectRouter = createTRPCRouter({
       await ctx.prisma.project.create({
         data: {
           ...input,
+          currentHolding: input.initial,
           user: {
             connect: { id: ctx.session.user.id },
           },
           transaction: {
             create: {
-              type: "DEPOSIT",
+              type: TransactionType.DEPOSIT,
               amount: input.initial,
             },
           },

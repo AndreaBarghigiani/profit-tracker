@@ -28,7 +28,6 @@ import {
 export const ProjectValuesSchema = z.object({
   name: z.string(),
   description: z.string(),
-  currentHolding: z.number(),
   initial: z.number(),
   increaseFrequency: z.nativeEnum(Frequency),
   increaseAmount: z.number(),
@@ -38,19 +37,20 @@ export const ProjectValuesSchema = z.object({
 type ProjectValues = z.infer<typeof ProjectValuesSchema>;
 
 const AddProject: NextPage = () => {
-  const { register, handleSubmit, control } = useForm<ProjectValues>({
-    resolver: zodResolver(ProjectValuesSchema),
-    defaultValues: {
-      increaseFrequency: Frequency.DAILY,
-      compound: false,
-    },
-  });
+  const { register, handleSubmit, control, formState } = useForm<ProjectValues>(
+    {
+      resolver: zodResolver(ProjectValuesSchema),
+      defaultValues: {
+        increaseFrequency: Frequency.DAILY,
+        compound: false,
+      },
+    }
+  );
 
   const { mutate } = api.project.create.useMutation();
 
   const onSubmit: SubmitHandler<ProjectValues> = (data) => {
     data.increaseFrequency = Frequency[data.increaseFrequency] as Frequency;
-    data.currentHolding = data.initial;
     mutate(data);
   };
 
