@@ -10,9 +10,11 @@ import { uppercaseFirst } from "@/utils/string";
 
 // Types
 import type { SubmitHandler } from "react-hook-form";
-import type { NextPage } from "next";
+import type { NextPageWithLayout } from "../_app";
 
 // Components
+import LayoutDashboard from "@/components/layoutDashboard";
+import Heading from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,7 +34,7 @@ export const TransactionValuesSchema = z.object({
 
 type TransactionValues = z.infer<typeof TransactionValuesSchema>;
 
-const AddTransaction: NextPage = () => {
+const AddTransaction: NextPageWithLayout = () => {
   const { register, handleSubmit, control } = useForm<TransactionValues>({
     resolver: zodResolver(TransactionValuesSchema),
     defaultValues: {
@@ -61,7 +63,7 @@ const AddTransaction: NextPage = () => {
 
   return (
     <div>
-      <h1>Add Transaction</h1>
+      <Heading>Add Transaction</Heading>
 
       <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
         <div>
@@ -100,6 +102,10 @@ const AddTransaction: NextPage = () => {
       </form>
     </div>
   );
+};
+
+AddTransaction.getLayout = function getLayout(page: React.ReactElement) {
+  return <LayoutDashboard>{page}</LayoutDashboard>;
 };
 
 export default AddTransaction;

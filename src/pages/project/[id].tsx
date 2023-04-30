@@ -4,9 +4,11 @@ import { useRouter } from "next/router";
 import { uppercaseFirst } from "@/utils/string";
 
 // Types
-import type { NextPage } from "next";
+import type { NextPageWithLayout } from "../_app";
 
 // Components
+import LayoutDashboard from "@/components/layoutDashboard";
+import Heading from "@/components/ui/heading";
 import { ArrowBigLeft } from "lucide-react";
 import Link from "next/link";
 import {
@@ -18,9 +20,12 @@ import {
 } from "@/components/ui/card";
 import { Button, buttonVariants } from "@/components/ui/button";
 
-const ProjectPage: NextPage = () => {
+const ProjectPage: NextPageWithLayout = () => {
   const router = useRouter();
-
+  const formatDate = Intl.DateTimeFormat("en", {
+    dateStyle: "long",
+    timeStyle: "short",
+  });
   const { data: project, isLoading } = api.project.get.useQuery(
     { projectId: router.query.id as string },
     { enabled: !!router.query.id }
@@ -39,16 +44,21 @@ const ProjectPage: NextPage = () => {
   if (!project) return <div>Project not found</div>;
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col space-y-4">
+    <div className="flex max-w-3xl flex-col space-y-4">
       <header>
         <Link className={`mb-4 ${buttonVariants()}`} href={`/dashboard`}>
           <ArrowBigLeft className="mr-2 h-4 w-4" /> Back to Dashboard
         </Link>
-        <h1 className="text-3xl font-semibold">{project.name}</h1>
+        <Heading>{project.name}</Heading>
         <p>{project.description}</p>
       </header>
       <article className="space-y-3">
-        <h2 className="text-xl font-semibold">Project Details</h2>
+        <header className="flex items-center">
+          <Heading as="h2" size="h2">
+            Project Details
+          </Heading>
+          <p className="ml-auto">{formatDate.format(project.createdAt)}</p>
+        </header>
         <div className="flex justify-between gap-3 pb-8">
           {project.currentHolding ? (
             <Card>
@@ -120,6 +130,10 @@ const ProjectPage: NextPage = () => {
       </article>
     </div>
   );
+};
+
+ProjectPage.getLayout = function getLayout(page: React.ReactElement) {
+  return <LayoutDashboard>{page}</LayoutDashboard>;
 };
 
 export default ProjectPage;

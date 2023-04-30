@@ -8,10 +8,12 @@ import { uppercaseFirst } from "@/utils/string";
 import { Frequency } from "@prisma/client";
 
 // Types
-import type { NextPage } from "next";
+import type { NextPageWithLayout } from "../_app";
 import type { SubmitHandler } from "react-hook-form";
 
 // Components
+import LayoutDashboard from "@/components/layoutDashboard";
+import Heading from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -36,16 +38,14 @@ export const ProjectValuesSchema = z.object({
 
 type ProjectValues = z.infer<typeof ProjectValuesSchema>;
 
-const AddProject: NextPage = () => {
-  const { register, handleSubmit, control, formState } = useForm<ProjectValues>(
-    {
-      resolver: zodResolver(ProjectValuesSchema),
-      defaultValues: {
-        increaseFrequency: Frequency.DAILY,
-        compound: false,
-      },
-    }
-  );
+const AddProject: NextPageWithLayout = () => {
+  const { register, handleSubmit, control } = useForm<ProjectValues>({
+    resolver: zodResolver(ProjectValuesSchema),
+    defaultValues: {
+      increaseFrequency: Frequency.DAILY,
+      compound: false,
+    },
+  });
 
   const { mutate } = api.project.create.useMutation();
 
@@ -57,7 +57,7 @@ const AddProject: NextPage = () => {
   return (
     <>
       <main className="container mx-auto">
-        <h1 className="text-3xl font-semibold">Add Project</h1>
+        <Heading>Add Project</Heading>
 
         <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
           <div>
@@ -148,6 +148,10 @@ const AddProject: NextPage = () => {
       </main>
     </>
   );
+};
+
+AddProject.getLayout = function getLayout(page: React.ReactElement) {
+  return <LayoutDashboard>{page}</LayoutDashboard>;
 };
 
 export default AddProject;

@@ -6,6 +6,7 @@ import type { NextPageWithLayout } from "./_app";
 import type { Project } from "@prisma/client";
 
 // Components
+import LayoutDashboard from "@/components/layoutDashboard";
 import {
   Card,
   CardContent,
@@ -15,7 +16,6 @@ import {
 } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
-import LayoutDashboard from "@/components/layoutDashboard";
 
 const ProjectCard = ({ project }: { project: Project }) => {
   return (
