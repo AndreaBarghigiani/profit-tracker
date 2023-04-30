@@ -6,7 +6,7 @@ import {
   protectedProcedure,
 } from "@/server/api/trpc";
 
-import { TransactionValuesSchema } from "@/pages/transaction/new";
+import { TransactionValuesSchema } from "@/pages/transaction/add";
 
 const mapFrequency: Record<string, number> = {
   DAILY: 24 * 60 * 60 * 1000, // 24 hours in milliseconds

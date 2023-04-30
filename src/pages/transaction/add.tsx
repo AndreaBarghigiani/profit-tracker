@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
 import { TransactionType } from "@prisma/client";
+import { uppercaseFirst } from "@/utils/string";
 
 // Types
 import type { SubmitHandler } from "react-hook-form";
@@ -58,8 +59,6 @@ const AddTransaction: NextPage = () => {
     mutate(transaction);
   };
 
-  const txType = ["deposit", "withdraw", "interest"];
-
   return (
     <div>
       <h1>Add Transaction</h1>
@@ -86,9 +85,9 @@ const AddTransaction: NextPage = () => {
                   <SelectValue placeholder="Type of tx..." />
                 </SelectTrigger>
                 <SelectContent>
-                  {txType.map((t) => (
+                  {Object.values(TransactionType).map((t) => (
                     <SelectItem key={t} value={t}>
-                      {t.charAt(0).toUpperCase() + t.slice(1)}
+                      {uppercaseFirst(t)}
                     </SelectItem>
                   ))}
                 </SelectContent>
