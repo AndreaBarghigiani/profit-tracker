@@ -27,7 +27,6 @@ export const projectRouter = createTRPCRouter({
       await ctx.prisma.project.create({
         data: {
           ...input,
-          currentHolding: input.initial,
           user: {
             connect: { id: ctx.session.user.id },
           },

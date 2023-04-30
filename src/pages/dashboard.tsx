@@ -1,6 +1,5 @@
 //Utils
 import { api } from "@/utils/api";
-import { useSession } from "next-auth/react";
 
 // Types
 import type { NextPageWithLayout } from "./_app";
@@ -35,11 +34,8 @@ const ProjectCard = ({ project }: { project: Project }) => {
 };
 
 const Dashboard: NextPageWithLayout = () => {
-  const {
-    data: projects,
-    isLoading: isProjectsLoading,
-    isSuccess: isProjectsSuccess,
-  } = api.project.list.useQuery();
+  const { data: projects, isSuccess: isProjectsSuccess } =
+    api.project.list.useQuery();
   const wallet = api.wallet.get.useQuery();
 
   return (

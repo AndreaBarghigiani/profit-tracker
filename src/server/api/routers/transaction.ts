@@ -48,7 +48,9 @@ export const transactionRouter = createTRPCRouter({
         },
       });
 
-      const projectFrequencyHours = mapFrequency[project.increaseFrequency];
+      const projectFrequencyHours = mapFrequency[
+        project.increaseFrequency
+      ] as number;
       const currentTime = new Date().getTime();
       let timeToAddInterest = false;
 
@@ -60,12 +62,14 @@ export const transactionRouter = createTRPCRouter({
         const firstDeposit = await ctx.prisma.transaction.findFirst({
           where: {
             projectId: input.projectId,
-            type: "deposit",
+            type: "DEPOSIT",
           },
           orderBy: {
             createdAt: "asc",
           },
         });
+
+        if (!firstDeposit) return;
 
         const timeDiff =
           currentTime - new Date(firstDeposit?.createdAt).getTime();
@@ -116,7 +120,15 @@ export const transactionRouter = createTRPCRouter({
   create: protectedProcedure
     .input(TransactionValuesSchema)
     .mutation(async ({ ctx, input }) => {
-      await ctx.prisma.transaction.create({ data: input });
+      await ctx.prisma.transaction.create({
+        data: {
+          amount: input.amount,
+          type: input.type,
+          project: {
+            connect: { id: input.projectId },
+          },
+        },
+      });
 
       await ctx.prisma.project.update({
         where: {

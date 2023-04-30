@@ -26,8 +26,7 @@ const ProjectPage: NextPage = () => {
     { enabled: !!router.query.id }
   );
 
-  const { mutate: testInterest, error } =
-    api.transaction.addInterest.useMutation();
+  const { mutate: testInterest } = api.transaction.addInterest.useMutation();
 
   const { data: transactions, isLoading: isLoadingTransactions } =
     api.transaction.list.useQuery(

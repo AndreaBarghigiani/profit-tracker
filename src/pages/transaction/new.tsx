@@ -5,9 +5,9 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
+import { TransactionType } from "@prisma/client";
 
 // Types
-import type { ZodType } from "zod";
 import type { SubmitHandler } from "react-hook-form";
 import type { NextPage } from "next";
 
@@ -23,23 +23,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-type TransactionValues = {
-  amount: number;
-  type: string;
-  projectId?: string;
-};
-
-export const TransactionValuesSchema: ZodType<TransactionValues> = z.object({
+export const TransactionValuesSchema = z.object({
   amount: z.number(),
-  type: z.string(),
-  projectId: z.string().optional(),
+  type: z.nativeEnum(TransactionType),
+  projectId: z.string(),
 });
+
+type TransactionValues = z.infer<typeof TransactionValuesSchema>;
 
 const AddTransaction: NextPage = () => {
   const { register, handleSubmit, control } = useForm<TransactionValues>({
     resolver: zodResolver(TransactionValuesSchema),
     defaultValues: {
-      type: "deposit",
+      type: "DEPOSIT",
     },
   });
 
@@ -56,6 +52,7 @@ const AddTransaction: NextPage = () => {
   const onSubmit: SubmitHandler<TransactionValues> = (data) => {
     const transaction = {
       ...data,
+      type: data.type as TransactionType,
       projectId,
     };
     mutate(transaction);

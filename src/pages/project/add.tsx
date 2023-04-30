@@ -5,9 +5,9 @@ import { useForm, Controller } from "react-hook-form";
 import { api } from "@/utils/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { uppercaseFirst } from "@/utils/string";
+import { Frequency } from "@prisma/client";
 
 // Types
-import type { ZodType } from "zod";
 import type { NextPage } from "next";
 import type { SubmitHandler } from "react-hook-form";
 
@@ -25,33 +25,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-type ProjectValues = {
-  name: string;
-  description: string;
-  currentHolding?: number;
-  initial: number;
-  increaseFrequency: string;
-  increaseAmount: number;
-  compound: boolean;
-  userId?: string;
-};
-
-export const ProjectValuesSchema: ZodType<ProjectValues> = z.object({
+export const ProjectValuesSchema = z.object({
   name: z.string(),
   description: z.string(),
-  currentHolding: z.number().optional(),
+  currentHolding: z.number(),
   initial: z.number(),
-  increaseFrequency: z.string(),
+  increaseFrequency: z.nativeEnum(Frequency),
   increaseAmount: z.number(),
   compound: z.boolean(),
-  userId: z.string().optional(),
 });
+
+type ProjectValues = z.infer<typeof ProjectValuesSchema>;
 
 const AddProject: NextPage = () => {
   const { register, handleSubmit, control } = useForm<ProjectValues>({
     resolver: zodResolver(ProjectValuesSchema),
     defaultValues: {
-      increaseFrequency: "daily",
+      increaseFrequency: Frequency.DAILY,
       compound: false,
     },
   });
@@ -59,10 +49,10 @@ const AddProject: NextPage = () => {
   const { mutate } = api.project.create.useMutation();
 
   const onSubmit: SubmitHandler<ProjectValues> = (data) => {
+    data.increaseFrequency = Frequency[data.increaseFrequency] as Frequency;
+    data.currentHolding = data.initial;
     mutate(data);
   };
-
-  const frequency = ["daily", "weekly", "monthly", "yearly"];
 
   return (
     <>
@@ -111,7 +101,7 @@ const AddProject: NextPage = () => {
                       <SelectValue placeholder="Frequency..." />
                     </SelectTrigger>
                     <SelectContent>
-                      {frequency.map((f) => (
+                      {Object.values(Frequency).map((f: Frequency) => (
                         <SelectItem
                           className="cursor-pointer"
                           key={f}

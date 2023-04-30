@@ -4,7 +4,7 @@
 const Footer = () => {
   return (
     <footer className="container mx-auto mb-6 flex items-center">
-      That's all
+      That&apos;s all
     </footer>
   );
 };

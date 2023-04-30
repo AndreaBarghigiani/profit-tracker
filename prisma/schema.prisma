@@ -63,10 +63,11 @@ model VerificationToken {
 model Project {
   id                String        @id @default(cuid())
   createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+  updatedAt         DateTime      @default(now()) @updatedAt
   name              String
   description       String
-  currentHolding    Float?
+  currentHolding    Float
+  initial           Float
   increaseFrequency Frequency     @default(DAILY)
   increaseAmount    Float
   compound          Boolean
