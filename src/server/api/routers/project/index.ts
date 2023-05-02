@@ -22,6 +22,22 @@ export const projectRouter = createTRPCRouter({
         },
       });
     }),
+  getByUserId: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.project.findMany({
+        where: {
+          userId: input.userId,
+        },
+      });
+    }),
+  getByCurrentUser: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.project.findMany({
+      where: {
+        userId: ctx.session.user.id,
+      },
+    });
+  }),
   create: protectedProcedure
     .input(ProjectValuesSchema)
     .mutation(async ({ ctx, input }) => {
