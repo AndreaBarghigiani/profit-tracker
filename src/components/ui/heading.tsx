@@ -29,11 +29,12 @@ const headingVariants = cva("font-semibold mb-4", {
 const Heading = <C extends React.ElementType = "h1">({
   as,
   children,
+  size,
   className,
 }: HeadingProps<C>) => {
   const Component = as || "h1";
   return (
-    <Component className={cn(headingVariants({ className }))}>
+    <Component className={cn(headingVariants({ size, className }))}>
       {children}
     </Component>
   );
