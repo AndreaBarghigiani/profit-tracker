@@ -9,7 +9,7 @@ const Header = () => {
       <nav className="ml-auto flex gap-4">
         <Link href="/">Home</Link>
         <Link href="/dashboard">Dashboard</Link>
-        <Link href="project/add">Add Project</Link>
+        <Link href="/project/add">Add Project</Link>
       </nav>
     </header>
   );
