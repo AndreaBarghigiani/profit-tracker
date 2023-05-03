@@ -15,7 +15,7 @@ export const addInterest = async (projectId: string, prisma: PrismaClient) => {
     },
   });
 
-  if (!project) return;
+  if (!project) throw new Error("Project not found");
 
   const projectFrequencyHours = mapFrequency[
     project.increaseFrequency
@@ -23,8 +23,6 @@ export const addInterest = async (projectId: string, prisma: PrismaClient) => {
   const currentTime = new Date().getTime();
 
   const lastTransaction = await lastInterestByProjectId(project.id, prisma);
-
-  if (!lastTransaction) return;
 
   const timeDiff = currentTime - new Date(lastTransaction.createdAt).getTime();
 

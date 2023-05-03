@@ -17,5 +17,7 @@ export const lastInterestByProjectId = async (
     },
   });
 
+  if (!lastTransaction) throw new Error("No transaction found");
+
   return lastTransaction;
 };
