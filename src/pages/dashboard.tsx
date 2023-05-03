@@ -35,7 +35,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
 
 const Dashboard: NextPageWithLayout = () => {
   const { data: projects, isSuccess: isProjectsSuccess } =
-    api.project.list.useQuery();
+    api.project.getByCurrentUser.useQuery();
   const wallet = api.wallet.get.useQuery();
 
   return (

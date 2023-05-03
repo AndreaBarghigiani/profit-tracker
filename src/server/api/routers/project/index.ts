@@ -31,13 +31,26 @@ export const projectRouter = createTRPCRouter({
         },
       });
     }),
-  getByCurrentUser: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.project.findMany({
-      where: {
-        userId: ctx.session.user.id,
-      },
-    });
-  }),
+  getByCurrentUser: protectedProcedure
+    .input(
+      z
+        .object({ orderBy: z.union([z.literal("asc"), z.literal("desc")]) })
+        .optional()
+    )
+    .query(({ ctx, input }) => {
+      const orderBy = input?.orderBy ? input.orderBy : "asc";
+
+      return ctx.prisma.project.findMany({
+        where: {
+          userId: ctx.session.user.id,
+        },
+        orderBy: [
+          {
+            name: orderBy,
+          },
+        ],
+      });
+    }),
   create: protectedProcedure
     .input(ProjectValuesSchema)
     .mutation(async ({ ctx, input }) => {
