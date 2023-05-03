@@ -31,6 +31,12 @@ const ProjectPage: NextPageWithLayout = () => {
     { enabled: !!router.query.id }
   );
 
+  const { data: lastTx, isSuccess: isSuccessLastTransaction } =
+    api.transaction.lastTransaction.useQuery(
+      { projectId: router.query.id as string },
+      { enabled: !!router.query.id }
+    );
+
   const { mutate: testInterest } = api.transaction.addInterest.useMutation();
 
   const { data: transactions, isLoading: isLoadingTransactions } =
@@ -57,49 +63,80 @@ const ProjectPage: NextPageWithLayout = () => {
           <Heading as="h2" size="h2">
             Project Details
           </Heading>
-          <p className="ml-auto">{formatDate.format(project.createdAt)}</p>
+          <div className="ml-auto text-right text-sm">
+            <p>Created at: {formatDate.format(project.createdAt)}</p>
+          </div>
         </header>
-        <div className="flex justify-between gap-3 pb-8">
+
+        <div className="flex flex-wrap justify-between gap-3 pb-8">
           {project.currentHolding ? (
             <Card>
               <CardHeader>
                 <CardTitle>Current Holding</CardTitle>
-              </CardHeader>
-              <CardContent>
                 <CardDescription>
                   ${project.currentHolding.toFixed(2)}
                 </CardDescription>
-              </CardContent>
+              </CardHeader>
             </Card>
           ) : null}
 
           <Card>
             <CardHeader>
               <CardTitle>Increase Frequency</CardTitle>
-            </CardHeader>
-            <CardContent>
               <CardDescription>
                 {uppercaseFirst(project.increaseFrequency)}
               </CardDescription>
-            </CardContent>
+            </CardHeader>
           </Card>
 
           <Card>
             <CardHeader>
               <CardTitle>Increase Amount</CardTitle>
-            </CardHeader>
-            <CardContent>
               <CardDescription>{project.increaseAmount}%</CardDescription>
-            </CardContent>
+            </CardHeader>
           </Card>
+
+          {isSuccessLastTransaction ? (
+            <Card className="w-full">
+              <CardHeader>
+                <CardTitle>
+                  <div className="flex justify-between">
+                    Last Transaction
+                    <time
+                      className="text-xs"
+                      dateTime={lastTx?.createdAt.toString()}
+                    >
+                      {formatDate.format(lastTx?.createdAt)}
+                    </time>
+                  </div>
+                </CardTitle>
+                <CardDescription>
+                  <div className="flex justify-between">
+                    Type: {lastTx ? uppercaseFirst(lastTx?.type) : "unknown"}
+                    <time
+                      className="text-xs"
+                      dateTime={formatDate.format(new Date())}
+                    >
+                      Current: {formatDate.format(new Date())}
+                    </time>
+                  </div>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                Amount: <strong>${lastTx?.amount}</strong>
+              </CardContent>
+            </Card>
+          ) : null}
         </div>
 
         <div className="flex">
-          <h3 className="text-lg font-semibold">Project transactions</h3>
+          <Heading as="h3" size="h3">
+            Project transactions
+          </Heading>
           <div className="ml-auto flex gap-2">
             <Link
               className={buttonVariants({ variant: "secondary" })}
-              href={`/transaction/new?projectId=${project.id}`}
+              href={`/transaction/add?projectId=${project.id}`}
             >
               Add Transaction
             </Link>
