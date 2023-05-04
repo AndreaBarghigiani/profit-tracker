@@ -1,0 +1,8 @@
+{
+  "cronos": [
+    {
+      "path": "/api/trpc/transaction.addInterestToAllProjects",
+      "schedule": "0 5 * * *"
+    }
+  ]
+}
