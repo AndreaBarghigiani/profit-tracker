@@ -9,7 +9,7 @@ import {
 import { TransactionValuesSchema } from "@/pages/transaction/add";
 import { TransactionType as TxType } from "@prisma/client";
 import { addInterest } from "./addInterest";
-import { getAllProjectsIds } from "../project/getAllProjects";
+import { getAllProjectsIds } from "../project/getAllProjectsIds";
 import { lastInterestByProjectId } from "./lastInterestByProjectId";
 
 export const transactionRouter = createTRPCRouter({
