@@ -9,13 +9,11 @@ const mapFrequency: Record<string, number> = {
 };
 
 export const addInterest = async (projectId: string, prisma: PrismaClient) => {
-  const project = await prisma.project.findUnique({
+  const project = await prisma.project.findUniqueOrThrow({
     where: {
       id: projectId,
     },
   });
-
-  if (!project) throw new Error("Project not found");
 
   const projectFrequencyHours = mapFrequency[
     project.increaseFrequency
@@ -24,7 +22,7 @@ export const addInterest = async (projectId: string, prisma: PrismaClient) => {
 
   const lastTransaction = await lastInterestByProjectId(project.id, prisma);
 
-  const timeDiff = currentTime - new Date(lastTransaction.createdAt).getTime();
+  const timeDiff = currentTime - lastTransaction.createdAt.getTime();
 
   if (!(timeDiff > projectFrequencyHours)) return;
 
@@ -64,5 +62,10 @@ export const addInterest = async (projectId: string, prisma: PrismaClient) => {
         increment: amount,
       },
     },
-  });
+	});
+	
+	return {
+		projectId: project.id,
+		amount
+	}
 };
