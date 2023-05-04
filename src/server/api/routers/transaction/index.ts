@@ -9,6 +9,7 @@ import {
 import { TransactionValuesSchema } from "@/pages/transaction/add";
 import { TransactionType as TxType } from "@prisma/client";
 import { addInterest } from "./addInterest";
+import { getAllProjectsIds } from "../project/getAllProjects";
 import { lastInterestByProjectId } from "./lastInterestByProjectId";
 
 export const transactionRouter = createTRPCRouter({
@@ -23,7 +24,7 @@ export const transactionRouter = createTRPCRouter({
     }),
   // This runs via cron
   addInterestToAllProjects: publicProcedure.mutation(async ({ ctx }) => {
-    const projects = await ctx.prisma.project.findMany();
+		const projects = await getAllProjectsIds({ prisma: ctx.prisma });
 
     for (const project of projects) {
       await addInterest(project.id, ctx.prisma);
