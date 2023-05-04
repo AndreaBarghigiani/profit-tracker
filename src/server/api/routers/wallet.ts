@@ -8,4 +8,14 @@ export const walletRouter = createTRPCRouter({
       },
     });
   }),
+  lastTransaction: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.wallet.findFirstOrThrow({
+      cursor: {
+        id: ctx.session.user.id,
+      },
+      select: {
+        lastInterestAccrued: true,
+      },
+    });
+  }),
 });

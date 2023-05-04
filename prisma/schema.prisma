@@ -87,15 +87,16 @@ model Transaction {
 }
 
 model Wallet {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  dailyProfit   Float    @default(0)
-  total         Float    @default(0)
-  totalDeposit  Float    @default(0)
-  totalWithdraw Float    @default(0)
-  user          User     @relation(fields: [userId], references: [id])
-  userId        String   @unique
+  id                  String   @id @default(cuid())
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  lastInterestAccrued DateTime @default(now())
+  dailyProfit         Float    @default(0)
+  total               Float    @default(0)
+  totalDeposit        Float    @default(0)
+  totalWithdraw       Float    @default(0)
+  user                User     @relation(fields: [userId], references: [id])
+  userId              String   @unique
 }
 
 enum Role {
