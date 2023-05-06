@@ -49,8 +49,7 @@ const Transaction: NextPageWithLayout = () => {
             >
               <p className="p-3">{`$${transaction.amount.toFixed(2)}`}</p>
               <p className="flex items-center p-3">
-                {transaction.type === "DEPOSIT" ||
-                transaction.type === "INTEREST" ? (
+                {transaction.type === "DEPOSIT" ? (
                   <ArrowBigDownDash className="mr-2 h-4 w-4" />
                 ) : (
                   <ArrowBigUpDash className="mr-2 h-4 w-4" />
