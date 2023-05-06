@@ -9,6 +9,7 @@ import {
 import { TransactionValuesSchema } from "@/pages/transaction/add";
 import { TransactionType as TxType } from "@prisma/client";
 import { addInterest } from "./addInterest";
+// import { listAllProjectsIdsByCurrentUser } from "../project/listProjectsIdsByCurrentUser";
 import { getAllProjectsIds } from "../project/getAllProjectsIds";
 import { lastInterestByProjectId } from "./lastInterestByProjectId";
 
@@ -22,9 +23,32 @@ export const transactionRouter = createTRPCRouter({
         },
       });
     }),
+  listByCurrentUser: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.transaction.findMany({
+      where: {
+        project: {
+          userId: ctx.session.user.id,
+        },
+      },
+      select: {
+        id: true,
+        amount: true,
+        type: true,
+        createdAt: true,
+        project: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  }),
   // This runs via cron
   addInterestToAllProjects: publicProcedure.mutation(async ({ ctx }) => {
-		const projects = await getAllProjectsIds({ prisma: ctx.prisma });
+    const projects = await getAllProjectsIds({ prisma: ctx.prisma });
 
     for (const project of projects) {
       await addInterest(project.id, ctx.prisma);
