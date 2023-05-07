@@ -4,10 +4,9 @@ import { useRouter } from "next/router";
 import { uppercaseFirst } from "@/utils/string";
 
 // Types
-import type { NextPageWithLayout } from "../_app";
+import { NextPage } from "next";
 
 // Components
-import LayoutDashboard from "@/components/layoutDashboard";
 import Heading from "@/components/ui/heading";
 import { ArrowBigLeft } from "lucide-react";
 import Link from "next/link";
@@ -20,7 +19,7 @@ import {
 } from "@/components/ui/card";
 import { Button, buttonVariants } from "@/components/ui/button";
 
-const ProjectPage: NextPageWithLayout = () => {
+const ProjectPage: NextPage = () => {
   const router = useRouter();
   const formatDate = Intl.DateTimeFormat("en", {
     dateStyle: "long",
@@ -167,10 +166,6 @@ const ProjectPage: NextPageWithLayout = () => {
       </article>
     </div>
   );
-};
-
-ProjectPage.getLayout = function getLayout(page: React.ReactElement) {
-  return <LayoutDashboard>{page}</LayoutDashboard>;
 };
 
 export default ProjectPage;

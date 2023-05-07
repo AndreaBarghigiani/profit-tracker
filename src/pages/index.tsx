@@ -1,9 +1,14 @@
+// Types
 import { type NextPage } from "next";
+import type { NextPageWithLayout } from "./_app";
+
+// Components
+import LayoutMarketing from "@/components/layoutMarketing";
 import Head from "next/head";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
-const Home: NextPage = () => {
+const Home: NextPageWithLayout = () => {
   return (
     <>
       <Head>
@@ -45,6 +50,10 @@ const Home: NextPage = () => {
       </main>
     </>
   );
+};
+
+Home.getLayout = function getLayout(page: React.ReactElement) {
+  return <LayoutMarketing>{page}</LayoutMarketing>;
 };
 
 export default Home;

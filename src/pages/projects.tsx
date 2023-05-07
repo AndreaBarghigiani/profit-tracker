@@ -32,20 +32,11 @@ const ProjectCard = ({ project }: { project: Project }) => {
   );
 };
 
-const Dashboard: NextPage = () => {
+const Projects: NextPage = () => {
   const { data: projects, isSuccess: isProjectsSuccess } =
     api.project.getByCurrentUser.useQuery();
-  const wallet = api.wallet.get.useQuery();
-
   return (
     <div>
-      <h2 className="text-xl font-semibold">These are your Holding</h2>
-      <Card>
-        <CardHeader>
-          <CardDescription>Current Holding</CardDescription>
-          <CardTitle>${wallet.data?.total.toFixed(2)}</CardTitle>
-        </CardHeader>
-      </Card>
       {isProjectsSuccess ? (
         <>
           <h2 className="text-xl font-semibold">These are your projects</h2>
@@ -63,4 +54,4 @@ const Dashboard: NextPage = () => {
   );
 };
 
-export default Dashboard;
+export default Projects;

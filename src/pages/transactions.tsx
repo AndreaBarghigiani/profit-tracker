@@ -3,7 +3,6 @@ import { api } from "@/utils/api";
 import { uppercaseFirst } from "@/utils/string";
 
 // Components
-import LayoutDashboard from "@/components/layoutDashboard";
 import Heading from "@/components/ui/heading";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
@@ -15,9 +14,8 @@ import {
 } from "lucide-react";
 
 // Types
-import type { NextPageWithLayout } from "../_app";
-
-const Transaction: NextPageWithLayout = () => {
+import type { NextPage } from "next";
+const Transaction: NextPage = () => {
   const {
     data: transactions,
     isLoading: isLoadingTransactions,
@@ -73,10 +71,6 @@ const Transaction: NextPageWithLayout = () => {
       )}
     </>
   );
-};
-
-Transaction.getLayout = function getLayout(page: React.ReactElement) {
-  return <LayoutDashboard>{page}</LayoutDashboard>;
 };
 
 export default Transaction;

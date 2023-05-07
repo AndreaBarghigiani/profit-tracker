@@ -8,11 +8,10 @@ import { uppercaseFirst } from "@/utils/string";
 import { Frequency } from "@prisma/client";
 
 // Types
-import type { NextPageWithLayout } from "../_app";
+import type { NextPage } from "next";
 import type { SubmitHandler } from "react-hook-form";
 
 // Components
-import LayoutDashboard from "@/components/layoutDashboard";
 import Heading from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,7 +37,7 @@ export const ProjectValuesSchema = z.object({
 
 type ProjectValues = z.infer<typeof ProjectValuesSchema>;
 
-const AddProject: NextPageWithLayout = () => {
+const AddProject: NextPage = () => {
   const { register, handleSubmit, control } = useForm<ProjectValues>({
     resolver: zodResolver(ProjectValuesSchema),
     defaultValues: {
@@ -148,10 +147,6 @@ const AddProject: NextPageWithLayout = () => {
       </main>
     </>
   );
-};
-
-AddProject.getLayout = function getLayout(page: React.ReactElement) {
-  return <LayoutDashboard>{page}</LayoutDashboard>;
 };
 
 export default AddProject;
