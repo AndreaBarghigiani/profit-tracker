@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { uppercaseFirst } from "@/utils/string";
 
 // Types
-import { NextPage } from "next";
+import type { NextPage } from "next";
 
 // Components
 import Heading from "@/components/ui/heading";

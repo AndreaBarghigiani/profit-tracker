@@ -1,5 +1,4 @@
 // Types
-import { type NextPage } from "next";
 import type { NextPageWithLayout } from "./_app";
 
 // Components

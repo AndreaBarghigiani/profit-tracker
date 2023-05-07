@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 
 // Components
 import Link from "next/link";
-import { Gauge, ArrowUpDown, Boxes, User } from "lucide-react";
+import { Gauge, ArrowUpDown, Boxes } from "lucide-react";
 import Heading from "@/components/ui/heading";
 import UserCard from "@/components/userCard";
 const Sidebar = () => {
