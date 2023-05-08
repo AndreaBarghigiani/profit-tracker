@@ -10,7 +10,6 @@ import {
   ArrowBigRightDash,
   ArrowBigDownDash,
   ArrowBigUpDash,
-  Coins,
 } from "lucide-react";
 
 // Types
@@ -25,7 +24,9 @@ const Transaction: NextPage = () => {
 
   return (
     <>
-      <Heading>Transactions</Heading>
+      <Heading size="page" gradient="gold">
+        Transactions
+      </Heading>
       <p>
         This is the list of all your transactions that happen in your portfolio.
       </p>
@@ -54,11 +55,18 @@ const Transaction: NextPage = () => {
                 )}
                 {uppercaseFirst(transaction.type)}
               </p>
-              <p className="p-3">
-                {transaction.createdAt.toLocaleString("en-US", {
-                  dateStyle: "medium",
-                })}
-              </p>
+              <time className="p-3 text-sm">
+                <p>
+                  {transaction.createdAt.toLocaleString("en-US", {
+                    dateStyle: "medium",
+                  })}
+                </p>
+                <p className="text-xs text-foreground/50">
+                  {transaction.createdAt.toLocaleString("en-US", {
+                    timeStyle: "short",
+                  })}
+                </p>
+              </time>
               <p className="p-3">{transaction.project.name}</p>
 
               <Link href="/" className={buttonVariants({ variant: "link" })}>

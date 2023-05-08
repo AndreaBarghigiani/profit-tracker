@@ -6,6 +6,7 @@ import type { NextPage } from "next";
 import type { Project } from "@prisma/client";
 
 // Components
+import Heading from "@/components/ui/heading";
 import {
   Card,
   CardContent,
@@ -35,17 +36,13 @@ const ProjectCard = ({ project }: { project: Project }) => {
 const Dashboard: NextPage = () => {
   const { data: projects, isSuccess: isProjectsSuccess } =
     api.project.getByCurrentUser.useQuery();
-  const wallet = api.wallet.get.useQuery();
 
   return (
     <div>
-      <h2 className="text-xl font-semibold">These are your Holding</h2>
-      <Card>
-        <CardHeader>
-          <CardDescription>Current Holding</CardDescription>
-          <CardTitle>${wallet.data?.total.toFixed(2)}</CardTitle>
-        </CardHeader>
-      </Card>
+      <Heading size="page" gradient="gold">
+        Dashboard
+      </Heading>
+
       {isProjectsSuccess ? (
         <>
           <h2 className="text-xl font-semibold">These are your projects</h2>

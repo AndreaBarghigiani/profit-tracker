@@ -6,6 +6,7 @@ import type { NextPage } from "next";
 import type { Project } from "@prisma/client";
 
 // Components
+import Heading from "@/components/ui/heading";
 import {
   Card,
   CardContent,
@@ -39,7 +40,10 @@ const Projects: NextPage = () => {
     <div>
       {isProjectsSuccess ? (
         <>
-          <h2 className="text-xl font-semibold">These are your projects</h2>
+          <Heading size="page" gradient="gold">
+            Projects
+          </Heading>
+          <p>These are your projects</p>
 
           <div className="grid grid-cols-3 gap-4">
             {projects.map((project: Project) => (
