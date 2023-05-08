@@ -13,6 +13,18 @@ import { addInterest } from "./addInterest";
 import { getAllProjectsIds } from "../project/getAllProjectsIds";
 import { lastInterestByProjectId } from "./lastInterestByProjectId";
 
+type SumTxItem = {
+  type: TxType;
+  _sum: {
+    amount: number | null;
+  };
+};
+
+export type MassagedSumTxItem = {
+  type: TxType;
+  amount: number | null;
+};
+
 export const transactionRouter = createTRPCRouter({
   list: publicProcedure
     .input(z.object({ projectId: z.string() }))
@@ -65,6 +77,49 @@ export const transactionRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       return await lastInterestByProjectId(input.projectId, ctx.prisma);
     }),
+  sumTransactions: protectedProcedure.query(async ({ ctx }) => {
+    const sumTx = await ctx.prisma.transaction.groupBy({
+      by: ["type"],
+      _sum: {
+        amount: true,
+      },
+    });
+
+    function ensureAllTransactionTypes(sumTx: SumTxItem[]): SumTxItem[] {
+      const allTypes: TxType[] = ["DEPOSIT", "WITHDRAW", "INTEREST"];
+      const result: SumTxItem[] = allTypes.reduce(
+        (acc: SumTxItem[], type: TxType) => {
+          const existingItem = sumTx.find((item) => item.type === type);
+          if (existingItem) {
+            acc.push(existingItem);
+          } else {
+            acc.push({
+              type,
+              _sum: {
+                amount: 0,
+              },
+            });
+          }
+          return acc;
+        },
+        []
+      );
+      return result;
+    }
+    const sortList = ["WITHDRAW", "DEPOSIT", "INTEREST"];
+    const ordered = ensureAllTransactionTypes(sumTx).sort(
+      (a, b) => sortList.indexOf(a.type) - sortList.indexOf(b.type)
+    );
+
+    const massaged: MassagedSumTxItem[] = ordered.map((item) => {
+      return {
+        type: item.type,
+        amount: item._sum.amount,
+      };
+    });
+
+    return massaged;
+  }),
   // Only for manual deposits or withdraws
   create: protectedProcedure
     .input(TransactionValuesSchema)

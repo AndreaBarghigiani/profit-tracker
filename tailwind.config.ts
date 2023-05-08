@@ -46,6 +46,21 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        redish: {
+          DEFAULT: "hsl(var(--redish))",
+          end: "hsl(var(--redish-end))",
+          border: "hsl(var(--redish-border))",
+        },
+        blueish: {
+          DEFAULT: "hsl(var(--blueish))",
+          end: "hsl(var(--blueish-end))",
+          border: "hsl(var(--blueish-border))",
+        },
+        redpurple: {
+          DEFAULT: "hsl(var(--redpurple))",
+          end: "hsl(var(--redpurple-end))",
+          border: "hsl(var(--redpurple-border))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -25,7 +25,7 @@
     --secondary: 0 0% 4%;
     --secondary-foreground: 0 0% 93%;
 
-    --accent: 0 0% 93%;
+    --accent: 49 100% 50%;
     --accent-foreground: 0 0% 4%;
 
     --destructive: 0 100% 50%;
@@ -34,6 +34,19 @@
     --ring: 215 20.2% 65.1%;
 
     --radius: 0.5rem;
+
+    /* Custom */
+    --redish: 348 90% 60%;
+    --redish-end: 350 85% 55%;
+    --redish-border: 350 85% 70%;
+
+    --redpurple: 356 89% 59%;
+    --redpurple-end: 247 44% 40%;
+    --redpurple-border: 247 44% 60%;
+
+    --blueish: 246 98% 39%;
+    --blueish-end: 329 63% 54%;
+    --blueish-border: 247 44% 60%;
   }
 
   .dark {
