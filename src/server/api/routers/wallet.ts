@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const walletRouter = createTRPCRouter({
@@ -8,14 +9,16 @@ export const walletRouter = createTRPCRouter({
       },
     });
   }),
-  lastTransaction: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.wallet.findFirstOrThrow({
-      cursor: {
-        id: ctx.session.user.id,
-      },
-      select: {
-        lastInterestAccrued: true,
-      },
-    });
-  }),
+  updateDaily: protectedProcedure
+    .input(z.object({ dailyProfit: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.wallet.update({
+        where: {
+          userId: ctx.session.user.id,
+        },
+        data: {
+          dailyProfit: input.dailyProfit,
+        },
+      });
+    }),
 });
