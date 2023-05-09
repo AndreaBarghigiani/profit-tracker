@@ -1,6 +1,5 @@
 //Utils
 import { api } from "@/utils/api";
-import { uppercaseFirst } from "@/utils/string";
 
 // Types
 import type { NextPage } from "next";
@@ -59,7 +58,7 @@ const Dashboard: NextPage = () => {
 
   return (
     <div>
-      <Heading size="page" gradient="gold">
+      <Heading size="page" gradient="gold" spacing="massive">
         Dashboard
       </Heading>
 
@@ -71,7 +70,9 @@ const Dashboard: NextPage = () => {
 
       {isProjectsSuccess ? (
         <>
-          <h2 className="text-xl font-semibold">These are your projects</h2>
+          <Heading size="h2" spacing="large">
+            These are your projects
+          </Heading>
 
           <div className="grid grid-cols-3 gap-4">
             {projects.map((project: Project) => (
