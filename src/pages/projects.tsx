@@ -37,10 +37,10 @@ const Projects: NextPage = () => {
   const { data: projects, isSuccess: isProjectsSuccess } =
     api.project.getByCurrentUser.useQuery();
   return (
-    <div>
+    <>
       {isProjectsSuccess ? (
-        <>
-          <Heading size="page" gradient="gold">
+        <div className="space-y-4">
+          <Heading size="page" gradient="gold" spacing={"massive"}>
             Projects
           </Heading>
           <p>These are your projects</p>
@@ -50,11 +50,11 @@ const Projects: NextPage = () => {
               <ProjectCard key={project.id} project={project} />
             ))}
           </div>
-        </>
+        </div>
       ) : (
         <p>Loading...</p>
       )}
-    </div>
+    </>
   );
 };
 

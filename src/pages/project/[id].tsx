@@ -49,12 +49,11 @@ const ProjectPage: NextPage = () => {
   if (!project) return <div>Project not found</div>;
 
   return (
-    <div className="flex max-w-3xl flex-col space-y-4">
+    <div className="mx-auto max-w-3xl space-y-4">
       <header>
-        <Link className={`mb-4 ${buttonVariants()}`} href={`/dashboard`}>
-          <ArrowBigLeft className="mr-2 h-4 w-4" /> Back to Dashboard
-        </Link>
-        <Heading>{project.name}</Heading>
+        <Heading size={"page"} gradient="gold" spacing={"massive"}>
+          {project.name}
+        </Heading>
         <p>{project.description}</p>
       </header>
       <article className="space-y-3">
@@ -98,27 +97,23 @@ const ProjectPage: NextPage = () => {
           {isSuccessLastTransaction ? (
             <Card className="w-full">
               <CardHeader>
-                <CardTitle>
-                  <div className="flex justify-between">
-                    Last Transaction
-                    <time
-                      className="text-xs"
-                      dateTime={lastTx?.createdAt.toString()}
-                    >
-                      {formatDate.format(lastTx?.createdAt)}
-                    </time>
-                  </div>
+                <CardTitle className="flex justify-between">
+                  Last Transaction
+                  <time
+                    className="text-xs"
+                    dateTime={lastTx?.createdAt.toString()}
+                  >
+                    {formatDate.format(lastTx?.createdAt)}
+                  </time>
                 </CardTitle>
-                <CardDescription>
-                  <div className="flex justify-between">
-                    Type: {lastTx ? uppercaseFirst(lastTx?.type) : "unknown"}
-                    <time
-                      className="text-xs"
-                      dateTime={formatDate.format(new Date())}
-                    >
-                      Current: {formatDate.format(new Date())}
-                    </time>
-                  </div>
+                <CardDescription className="flex justify-between">
+                  Type: {lastTx ? uppercaseFirst(lastTx?.type) : "unknown"}
+                  <time
+                    className="text-xs"
+                    dateTime={formatDate.format(new Date())}
+                  >
+                    Current: {formatDate.format(new Date())}
+                  </time>
                 </CardDescription>
               </CardHeader>
               <CardContent>

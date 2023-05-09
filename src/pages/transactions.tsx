@@ -20,11 +20,10 @@ const Transaction: NextPage = () => {
     isLoading: isLoadingTransactions,
     isSuccess: isSuccessTransactions,
   } = api.transaction.listByCurrentUser.useQuery();
-  console.log("isSuccessTransactions:", isSuccessTransactions);
 
   return (
-    <>
-      <Heading size="page" gradient="gold">
+    <div className="space-y-4">
+      <Heading size="page" gradient="gold" spacing={"massive"}>
         Transactions
       </Heading>
       <p>
@@ -77,7 +76,7 @@ const Transaction: NextPage = () => {
           ))}
         </div>
       )}
-    </>
+    </div>
   );
 };
 
