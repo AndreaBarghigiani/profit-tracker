@@ -8,7 +8,7 @@ import type { NextPage } from "next";
 
 // Components
 import Heading from "@/components/ui/heading";
-import { ArrowBigLeft } from "lucide-react";
+import { ArrowBigDownDash, ArrowBigUpDash } from "lucide-react";
 import Link from "next/link";
 import {
   Card,
@@ -17,7 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 
 const ProjectPage: NextPage = () => {
   const router = useRouter();
@@ -36,11 +36,12 @@ const ProjectPage: NextPage = () => {
       { enabled: !!router.query.id }
     );
 
-  const { mutate: testInterest } = api.transaction.addInterest.useMutation();
-
   const { data: transactions, isLoading: isLoadingTransactions } =
     api.transaction.list.useQuery(
-      { projectId: router.query.id as string },
+      {
+        projectId: router.query.id as string,
+        orderBy: "desc",
+      },
       { enabled: !!router.query.id }
     );
 
@@ -137,24 +138,43 @@ const ProjectPage: NextPage = () => {
           </div>
         </div>
 
-        <table className="min-w-full">
-          <thead className="text-left">
-            <tr>
-              <th>Amount</th>
-              <th>Type</th>
-            </tr>
-          </thead>
-          <tbody>
-            {isLoadingTransactions
-              ? "Loading..."
-              : transactions?.map((transaction) => (
-                  <tr key={transaction.id} className="border-b-2 p-1">
-                    <td>${transaction.amount}</td>
-                    <td>{uppercaseFirst(transaction.type)}</td>
-                  </tr>
-                ))}
-          </tbody>
-        </table>
+        <div className="space-y-4">
+          <div className="grid grid-cols-3 gap-4 rounded-md bg-foreground/30">
+            <p className="p-3">Amount</p>
+            <p className="p-3">Type</p>
+            <p className="p-3">Date</p>
+          </div>
+          {isLoadingTransactions
+            ? "Loading..."
+            : transactions?.map((transaction) => (
+                <div
+                  key={transaction.id}
+                  className="grid grid-cols-3 items-center gap-4 rounded-md bg-foreground/10"
+                >
+                  <p className="p-3">{`$${transaction.amount.toFixed(2)}`}</p>
+                  <p className="flex items-center p-3">
+                    {transaction.type === "DEPOSIT" ? (
+                      <ArrowBigDownDash className="mr-2 h-4 w-4" />
+                    ) : (
+                      <ArrowBigUpDash className="mr-2 h-4 w-4" />
+                    )}
+                    {uppercaseFirst(transaction.type)}
+                  </p>
+                  <time className="p-3 text-sm">
+                    <p>
+                      {transaction.createdAt.toLocaleString("en-US", {
+                        dateStyle: "medium",
+                      })}
+                    </p>
+                    <p className="text-xs text-foreground/50">
+                      {transaction.createdAt.toLocaleString("en-US", {
+                        timeStyle: "short",
+                      })}
+                    </p>
+                  </time>
+                </div>
+              ))}
+        </div>
       </article>
     </div>
   );

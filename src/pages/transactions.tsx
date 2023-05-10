@@ -38,7 +38,7 @@ const Transaction: NextPage = () => {
             <p className="p-3">Type</p>
             <p className="p-3">Date</p>
             <p className="p-3">Project</p>
-            <p className="ml-auto p-3">Action</p>
+            <p className="p-3 text-center">Action</p>
           </div>
           {transactions.map((transaction) => (
             <div
@@ -68,8 +68,11 @@ const Transaction: NextPage = () => {
               </time>
               <p className="p-3">{transaction.project.name}</p>
 
-              <Link href="/" className={buttonVariants({ variant: "link" })}>
-                Check out
+              <Link
+                href={`/project/${transaction.project.id}`}
+                className={buttonVariants({ variant: "link" })}
+              >
+                Check out project
                 <ArrowBigRightDash className="ml-2 h-4 w-4" />
               </Link>
             </div>

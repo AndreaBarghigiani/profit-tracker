@@ -9,19 +9,28 @@ import {
 import { TransactionValuesSchema } from "@/pages/transaction/add";
 import { TransactionType as TxType } from "@prisma/client";
 import { addInterest } from "./addInterest";
-// import { listAllProjectsIdsByCurrentUser } from "../project/listProjectsIdsByCurrentUser";
 import { getAllProjectsIds } from "../project/getAllProjectsIds";
 import { lastInterestByProjectId } from "./lastInterestByProjectId";
-import { sumTransactions, type MassagedSumTxItem } from "./sumTransactions";
+import { sumTransactions } from "./sumTransactions";
 
 export const transactionRouter = createTRPCRouter({
   list: publicProcedure
-    .input(z.object({ projectId: z.string() }))
+    .input(
+      z.object({
+        projectId: z.string(),
+        orderBy: z.union([z.literal("asc"), z.literal("desc")]).default("asc"),
+      })
+    )
     .query(({ ctx, input }) => {
       return ctx.prisma.transaction.findMany({
         where: {
           projectId: input.projectId,
         },
+        orderBy: [
+          {
+            createdAt: input.orderBy,
+          },
+        ],
       });
     }),
   listByCurrentUser: protectedProcedure.query(({ ctx }) => {
@@ -39,6 +48,7 @@ export const transactionRouter = createTRPCRouter({
         project: {
           select: {
             name: true,
+            id: true,
           },
         },
       },
