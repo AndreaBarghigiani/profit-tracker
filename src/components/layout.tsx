@@ -13,7 +13,12 @@ const Sidebar = () => {
       <ul>
         <li>
           <Link
-            className={buttonVariants({ variant: "ghost" })}
+            className={buttonVariants({
+              variant: "ghost",
+              size: "nav",
+              corners: "square",
+              align: "left",
+            })}
             href={`/dashboard`}
           >
             <Gauge className="mr-2 h-4 w-4" /> Dashboard
@@ -21,7 +26,12 @@ const Sidebar = () => {
         </li>
         <li>
           <Link
-            className={buttonVariants({ variant: "ghost" })}
+            className={buttonVariants({
+              variant: "ghost",
+              size: "nav",
+              corners: "square",
+              align: "left",
+            })}
             href={`/projects`}
           >
             <Boxes className="mr-2 h-4 w-4" /> Projects
@@ -29,7 +39,12 @@ const Sidebar = () => {
         </li>
         <li>
           <Link
-            className={buttonVariants({ variant: "ghost" })}
+            className={buttonVariants({
+              variant: "ghost",
+              size: "nav",
+              corners: "square",
+              align: "left",
+            })}
             href={`/transactions`}
           >
             <ArrowUpDown className="mr-2 h-4 w-4" /> Transactions

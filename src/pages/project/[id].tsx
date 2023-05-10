@@ -129,14 +129,11 @@ const ProjectPage: NextPage = () => {
           </Heading>
           <div className="ml-auto flex gap-2">
             <Link
-              className={buttonVariants({ variant: "secondary" })}
+              className={buttonVariants()}
               href={`/transaction/add?projectId=${project.id}`}
             >
               Add Transaction
             </Link>
-            <Button onClick={() => testInterest({ projectId: project.id })}>
-              Test Interest
-            </Button>
           </div>
         </div>
 
