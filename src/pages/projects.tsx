@@ -43,6 +43,7 @@ const Projects: NextPage = () => {
           <Heading size="page" gradient="gold" spacing={"massive"}>
             Projects
           </Heading>
+
           <p>These are your projects</p>
 
           <div className="grid grid-cols-3 gap-4">

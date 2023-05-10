@@ -34,13 +34,6 @@ export const TransactionValuesSchema = z.object({
 type TransactionValues = z.infer<typeof TransactionValuesSchema>;
 
 const AddTransaction: NextPage = () => {
-  const { register, handleSubmit, control } = useForm<TransactionValues>({
-    resolver: zodResolver(TransactionValuesSchema),
-    defaultValues: {
-      type: "DEPOSIT",
-    },
-  });
-
   const router = useRouter();
 
   const projectId = router.query.projectId as string;
@@ -51,20 +44,26 @@ const AddTransaction: NextPage = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<TransactionValues> = (data) => {
-    const transaction = {
-      ...data,
-      type: data.type as TransactionType,
+  const { register, handleSubmit, control } = useForm<TransactionValues>({
+    resolver: zodResolver(TransactionValuesSchema),
+    defaultValues: {
+      type: "DEPOSIT",
       projectId,
-    };
-    mutate(transaction);
+    },
+  });
+
+  const onSubmit: SubmitHandler<TransactionValues> = (data) => {
+    mutate(data);
   };
 
   return (
     <div>
       <Heading>Add Transaction</Heading>
 
-      <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className="flex items-end space-x-3"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <div>
           <Label htmlFor="amount">Transaction Amount</Label>
           <Input
@@ -87,7 +86,7 @@ const AddTransaction: NextPage = () => {
                 </SelectTrigger>
                 <SelectContent>
                   {Object.values(TransactionType).map((t) => (
-                    <SelectItem key={t} value={t}>
+                    <SelectItem className="cursor-pointer" key={t} value={t}>
                       {uppercaseFirst(t)}
                     </SelectItem>
                   ))}

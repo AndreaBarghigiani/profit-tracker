@@ -113,16 +113,16 @@ export const transactionRouter = createTRPCRouter({
               increment: input.amount,
             }),
           },
-          totalDeposit: {
-            ...(input.type === TxType.DEPOSIT && {
+          ...(input.type === TxType.DEPOSIT && {
+            totalDeposit: {
               increment: input.amount,
-            }),
-          },
-          totalWithdraw: {
-            ...(input.type === TxType.WITHDRAW && {
+            },
+          }),
+          ...(input.type === TxType.WITHDRAW && {
+            totalWithdraw: {
               increment: input.amount,
-            }),
-          },
+            },
+          }),
         },
       });
     }),
