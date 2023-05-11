@@ -20,7 +20,11 @@ export const addInterest = async (projectId: string, prisma: PrismaClient) => {
   ] as number;
   const currentTime = new Date().getTime();
 
-  const lastTransaction = await lastInterestByProjectId(project, prisma);
+  const lastTransaction = await lastInterestByProjectId(
+    project.id,
+    project.accruing,
+    prisma
+  );
 
   const timeDiff = currentTime - lastTransaction.createdAt.getTime();
 

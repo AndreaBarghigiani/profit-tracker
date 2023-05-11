@@ -16,7 +16,7 @@ export const projectRouter = createTRPCRouter({
   get: publicProcedure
     .input(z.object({ projectId: z.string() }))
     .query(({ ctx, input }) => {
-      return ctx.prisma.project.findUnique({
+      return ctx.prisma.project.findUniqueOrThrow({
         where: {
           id: input.projectId,
         },

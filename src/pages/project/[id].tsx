@@ -30,10 +30,12 @@ const ProjectPage: NextPage = () => {
     { enabled: !!router.query.id }
   );
 
+  if (!project) return <div>Project not found</div>;
+
   const { data: lastTx, isSuccess: isSuccessLastTransaction } =
     api.transaction.lastTransaction.useQuery(
-      { projectId: router.query.id as string },
-      { enabled: !!router.query.id }
+      { projectId: project.id, projectAccruing: project.accruing },
+      { enabled: !!project }
     );
 
   const { data: transactions, isLoading: isLoadingTransactions } =
@@ -46,8 +48,6 @@ const ProjectPage: NextPage = () => {
     );
 
   if (isLoading) return <div>Loading...</div>;
-
-  if (!project) return <div>Project not found</div>;
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">

@@ -76,9 +76,13 @@ export const transactionRouter = createTRPCRouter({
       await addInterest(input.projectId, ctx.prisma);
     }),
   lastTransaction: protectedProcedure
-    .input(z.object({ projectId: z.string() }))
+    .input(z.object({ projectId: z.string(), projectAccruing: z.boolean() }))
     .query(async ({ ctx, input }) => {
-      return await lastInterestByProjectId(input.projectId, ctx.prisma);
+      return await lastInterestByProjectId(
+        input.projectId,
+        input.projectAccruing,
+        ctx.prisma
+      );
     }),
   sumTransactions: protectedProcedure.query(async ({ ctx }) => {
     return await sumTransactions(ctx.prisma);

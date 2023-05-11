@@ -42,8 +42,7 @@ const Dashboard: NextPage = () => {
   const { data: projects, isSuccess: isProjectsSuccess } =
     api.project.getByCurrentUser.useQuery();
 
-  const { data: result, isSuccess: isWalletSuccess } =
-    api.wallet.getDailyPassiveResult.useQuery();
+  const { data: result } = api.wallet.getDailyPassiveResult.useQuery();
 
   const { data: sumTransactions, isSuccess: isSumTransactionsSuccess } =
     api.transaction.sumTransactions.useQuery();
