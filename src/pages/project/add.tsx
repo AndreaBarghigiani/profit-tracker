@@ -56,7 +56,9 @@ const AddProject: NextPage = () => {
   return (
     <>
       <main className="container mx-auto">
-        <Heading>Add Project</Heading>
+        <Heading size="page" gradient="gold" spacing="massive">
+          Add Project
+        </Heading>
 
         <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
           <div>

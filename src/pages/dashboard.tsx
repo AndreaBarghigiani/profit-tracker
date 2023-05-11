@@ -42,6 +42,9 @@ const Dashboard: NextPage = () => {
   const { data: projects, isSuccess: isProjectsSuccess } =
     api.project.getByCurrentUser.useQuery();
 
+  const { data: result, isSuccess: isWalletSuccess } =
+    api.wallet.getDailyPassiveResult.useQuery();
+
   const { data: sumTransactions, isSuccess: isSumTransactionsSuccess } =
     api.transaction.sumTransactions.useQuery();
 
@@ -63,18 +66,30 @@ const Dashboard: NextPage = () => {
       </Heading>
 
       {isSumTransactionsSuccess && (
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-4 gap-4">
+          <Card>
+            <CardHeader>
+              <CardDescription>Target</CardDescription>
+              <CardTitle>{result}</CardTitle>
+            </CardHeader>
+          </Card>
           {sumTransactionsCards?.map((card) => card)}
         </div>
       )}
 
       {isProjectsSuccess ? (
         <>
-          <Heading size="h2" spacing="large">
+          <Heading size="h2" spacing="large" className="flex justify-center">
             These are your projects
+            <Link
+              className={buttonVariants({ className: "ml-auto" })}
+              href="/project/add"
+            >
+              Add project
+            </Link>
           </Heading>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             {projects.map((project: Project) => (
               <ProjectCard key={project.id} project={project} />
             ))}

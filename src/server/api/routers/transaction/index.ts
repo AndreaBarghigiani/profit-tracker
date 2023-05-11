@@ -12,6 +12,7 @@ import { addInterest } from "./addInterest";
 import { getAllProjectsIds } from "../project/getAllProjectsIds";
 import { lastInterestByProjectId } from "./lastInterestByProjectId";
 import { sumTransactions } from "./sumTransactions";
+import { weeklyWithdraws } from "./weeklyWithdraws";
 
 export const transactionRouter = createTRPCRouter({
   list: publicProcedure
@@ -56,6 +57,9 @@ export const transactionRouter = createTRPCRouter({
         createdAt: "desc",
       },
     });
+  }),
+  lastWeekWithdraws: protectedProcedure.query(async ({ ctx }) => {
+    return weeklyWithdraws(ctx.prisma);
   }),
   // This runs via cron
   addInterestToAllProjects: publicProcedure.mutation(async ({ ctx }) => {

@@ -2,7 +2,7 @@
 import { uppercaseFirst } from "@/utils/string";
 
 // Types
-import type { MassagedSumTxItem } from "@/server/api/routers/transaction";
+import type { MassagedSumTxItem } from "@/server/api/routers/transaction/sumTransactions";
 
 // Components
 import {
