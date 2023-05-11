@@ -1,23 +1,24 @@
-import { type PrismaClient, TransactionType } from "@prisma/client";
+import {
+  type PrismaClient,
+  type Project,
+  TransactionType,
+} from "@prisma/client";
 
 export const lastInterestByProjectId = async (
-  projectId: string,
+  project: Project,
   prisma: PrismaClient
 ) => {
-  const lastTransaction = await prisma.transaction.findFirst({
+  const lastTransaction = await prisma.transaction.findFirstOrThrow({
     where: {
-      OR: [
-        { type: TransactionType.INTEREST },
-        { type: TransactionType.DEPOSIT },
-      ],
-      AND: { projectId },
+      ...(project.accruing
+        ? { type: TransactionType.INTEREST }
+        : { type: TransactionType.DEPOSIT }),
+      projectId: project.id,
     },
     orderBy: {
-      createdAt: TransactionType.INTEREST ? "desc" : "asc",
+      createdAt: "desc",
     },
   });
-
-  if (!lastTransaction) throw new Error("No transaction found");
-
+  console.log("calculating last");
   return lastTransaction;
 };

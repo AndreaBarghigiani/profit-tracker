@@ -71,6 +71,7 @@ model Project {
   increaseFrequency Frequency     @default(DAILY)
   increaseAmount    Float
   compound          Boolean
+  accruing          Boolean       @default(false)
   user              User          @relation(fields: [userId], references: [id])
   userId            String
   transaction       Transaction[]
