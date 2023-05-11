@@ -7,7 +7,6 @@ import type { MassagedSumTxItem } from "@/server/api/routers/transaction/sumTran
 // Components
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
