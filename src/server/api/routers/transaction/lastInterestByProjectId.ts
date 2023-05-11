@@ -16,5 +16,6 @@ export const lastInterestByProjectId = async (
       createdAt: "desc",
     },
   });
+
   return lastTransaction;
 };
