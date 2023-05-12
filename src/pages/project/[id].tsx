@@ -1,7 +1,7 @@
 // Utils
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
-import { uppercaseFirst } from "@/utils/string";
+import { uppercaseFirst, formatDate } from "@/utils/string";
 
 // Types
 import type { NextPage } from "next";
@@ -12,31 +12,20 @@ import { ArrowBigDownDash, ArrowBigUpDash } from "lucide-react";
 import Link from "next/link";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
+import LastProjectTransaction from "@/components/ui/custom/LastProjectTransaction";
 
 const ProjectPage: NextPage = () => {
   const router = useRouter();
-  const formatDate = Intl.DateTimeFormat("en", {
-    dateStyle: "long",
-    timeStyle: "short",
-  });
+
   const { data: project, isLoading } = api.project.get.useQuery(
     { projectId: router.query.id as string },
     { enabled: !!router.query.id }
   );
-
-  if (!project) return <div>Project not found</div>;
-
-  const { data: lastTx, isSuccess: isSuccessLastTransaction } =
-    api.transaction.lastTransaction.useQuery(
-      { projectId: project.id, projectAccruing: project.accruing },
-      { enabled: !!project }
-    );
 
   const { data: transactions, isLoading: isLoadingTransactions } =
     api.transaction.list.useQuery(
@@ -48,6 +37,8 @@ const ProjectPage: NextPage = () => {
     );
 
   if (isLoading) return <div>Loading...</div>;
+
+  if (!project) return <div>Project not found</div>;
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">
@@ -95,33 +86,7 @@ const ProjectPage: NextPage = () => {
             </CardHeader>
           </Card>
 
-          {isSuccessLastTransaction ? (
-            <Card className="w-full">
-              <CardHeader>
-                <CardTitle className="flex justify-between">
-                  Last Transaction
-                  <time
-                    className="text-xs"
-                    dateTime={lastTx?.createdAt.toString()}
-                  >
-                    {formatDate.format(lastTx?.createdAt)}
-                  </time>
-                </CardTitle>
-                <CardDescription className="flex justify-between">
-                  Type: {lastTx ? uppercaseFirst(lastTx?.type) : "unknown"}
-                  <time
-                    className="text-xs"
-                    dateTime={formatDate.format(new Date())}
-                  >
-                    Current: {formatDate.format(new Date())}
-                  </time>
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                Amount: <strong>${lastTx?.amount}</strong>
-              </CardContent>
-            </Card>
-          ) : null}
+          <LastProjectTransaction project={project} />
         </div>
 
         <div className="flex">
