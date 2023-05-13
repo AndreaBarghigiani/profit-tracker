@@ -58,6 +58,54 @@ export const transactionRouter = createTRPCRouter({
       },
     });
   }),
+  listPaginatedByCurrentUser: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).nullish(),
+        cursor: z.string().nullish(),
+        type: z.string().nullish(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit ?? 10;
+      const type = input.type ?? {};
+      const { cursor } = input;
+      const items = await ctx.prisma.transaction.findMany({
+        take: limit + 1, // +1 for the cursor
+        where: {
+          type: (type ? type : TransactionValuesSchema.parse(type)) as TxType,
+          project: {
+            userId: ctx.session.user.id,
+          },
+        },
+        select: {
+          id: true,
+          amount: true,
+          type: true,
+          createdAt: true,
+          project: {
+            select: {
+              name: true,
+              id: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        cursor: cursor ? { id: cursor } : undefined,
+      });
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop();
+        nextCursor = nextItem?.id;
+      }
+
+      return {
+        items,
+        nextCursor,
+      };
+    }),
   lastWeekWithdraws: protectedProcedure.query(async ({ ctx }) => {
     return weeklyWithdraws(ctx.prisma);
   }),
