@@ -47,7 +47,7 @@ const Transaction: NextPage = () => {
     setCurrentPage((prev) => prev + 1);
   };
 
-  const handleFetchPrevious = async () => {
+  const handleFetchPrevious = () => {
     setCurrentPage((prev) => prev - 1);
   };
 
