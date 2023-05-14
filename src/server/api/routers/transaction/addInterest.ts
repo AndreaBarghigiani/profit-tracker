@@ -1,5 +1,7 @@
-import { type PrismaClient, TransactionType } from "@prisma/client";
+// Utils
 import { lastInterestByProjectId } from "./lastInterestByProjectId";
+import { type PrismaClient, TransactionType } from "@prisma/client";
+import { getProject } from "../project";
 
 const mapFrequency: Record<string, number> = {
   DAILY: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
@@ -9,11 +11,7 @@ const mapFrequency: Record<string, number> = {
 };
 
 export const addInterest = async (projectId: string, prisma: PrismaClient) => {
-  const project = await prisma.project.findUniqueOrThrow({
-    where: {
-      id: projectId,
-    },
-  });
+  const project = await getProject({ projectId, prisma });
 
   const projectFrequencyHours = mapFrequency[
     project.increaseFrequency
@@ -26,7 +24,7 @@ export const addInterest = async (projectId: string, prisma: PrismaClient) => {
     prisma
   );
 
-  const timeDiff = currentTime - lastTransaction.createdAt.getTime();
+  const timeDiff = currentTime - lastTransaction.createdAt.getTime() - 1;
 
   if (!(timeDiff > projectFrequencyHours)) return;
 

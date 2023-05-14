@@ -7,7 +7,25 @@ import {
 } from "@/server/api/trpc";
 
 import { TransactionType } from "@prisma/client";
-import { ProjectValuesSchema } from "@/pages/project/add";
+import { EditProjectValuesSchema, ProjectValuesSchema } from "@/server/types";
+
+import type { PrismaClient } from "@prisma/client";
+
+export const getProject = async ({
+  projectId,
+  prisma,
+}: {
+  projectId: string;
+  prisma: PrismaClient;
+}) => {
+  const project = await prisma.project.findUniqueOrThrow({
+    where: {
+      id: projectId,
+    },
+  });
+
+  return project;
+};
 
 export const projectRouter = createTRPCRouter({
   list: publicProcedure.query(({ ctx }) => {
@@ -16,11 +34,7 @@ export const projectRouter = createTRPCRouter({
   get: publicProcedure
     .input(z.object({ projectId: z.string() }))
     .query(({ ctx, input }) => {
-      return ctx.prisma.project.findUniqueOrThrow({
-        where: {
-          id: input.projectId,
-        },
-      });
+      return getProject({ projectId: input.projectId, prisma: ctx.prisma });
     }),
   getByUserId: protectedProcedure
     .input(z.object({ userId: z.string() }))
@@ -49,6 +63,18 @@ export const projectRouter = createTRPCRouter({
             name: orderBy,
           },
         ],
+      });
+    }),
+  update: protectedProcedure
+    .input(EditProjectValuesSchema)
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.project.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          ...input,
+        },
       });
     }),
   create: protectedProcedure
