@@ -21,6 +21,7 @@ import {
   InterestDashboardCard,
   WithdrawDashboardCard,
 } from "@/components/ui/custom/DashboardCards";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ProjectCard = ({ project }: { project: Project }) => {
   return (
@@ -44,8 +45,11 @@ const Dashboard: NextPage = () => {
 
   const { data: result } = api.wallet.getDailyPassiveResult.useQuery();
 
-  const { data: sumTransactions, isSuccess: isSumTransactionsSuccess } =
-    api.transaction.sumTransactions.useQuery();
+  const {
+    data: sumTransactions,
+    isSuccess: isSumTransactionsSuccess,
+    isLoading: isSumTransactionsLoading,
+  } = api.transaction.sumTransactions.useQuery();
 
   const mappingCards = {
     DEPOSIT: DepositDashboardCard,
@@ -64,7 +68,34 @@ const Dashboard: NextPage = () => {
         Dashboard
       </Heading>
 
-      {isSumTransactionsSuccess && (
+      {isSumTransactionsLoading ? (
+        <div className="grid grid-cols-4 gap-4">
+          <Card>
+            <CardHeader>
+              <Skeleton as="p" className="h-4 w-24 bg-foreground/70" />
+              <Skeleton as="h3" className="h-5 w-32 bg-foreground/50" />
+            </CardHeader>
+          </Card>
+          <Card>
+            <CardHeader>
+              <Skeleton as="p" className="h-4 w-24 bg-foreground/70" />
+              <Skeleton as="h3" className="h-5 w-32 bg-foreground/50" />
+            </CardHeader>
+          </Card>
+          <Card>
+            <CardHeader>
+              <Skeleton as="p" className="h-4 w-24 bg-foreground/70" />
+              <Skeleton as="h3" className="h-5 w-32 bg-foreground/50" />
+            </CardHeader>
+          </Card>
+          <Card>
+            <CardHeader>
+              <Skeleton as="p" className="h-4 w-24 bg-foreground/70" />
+              <Skeleton as="h3" className="h-5 w-32 bg-foreground/50" />
+            </CardHeader>
+          </Card>
+        </div>
+      ) : (
         <div className="grid grid-cols-4 gap-4">
           <Card>
             <CardHeader>
@@ -75,6 +106,18 @@ const Dashboard: NextPage = () => {
           {sumTransactionsCards?.map((card) => card)}
         </div>
       )}
+
+      {/* {isSumTransactionsSuccess && (
+        <div className="grid grid-cols-4 gap-4">
+          <Card>
+            <CardHeader>
+              <CardDescription>Target</CardDescription>
+              <CardTitle>{result}</CardTitle>
+            </CardHeader>
+          </Card>
+          {sumTransactionsCards?.map((card) => card)}
+        </div>
+      )} */}
 
       {isProjectsSuccess ? (
         <>
