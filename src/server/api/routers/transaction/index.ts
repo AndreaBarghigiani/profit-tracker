@@ -133,7 +133,7 @@ export const transactionRouter = createTRPCRouter({
       );
     }),
   sumTransactions: protectedProcedure.query(async ({ ctx }) => {
-    return await sumTransactions(ctx.prisma);
+    return await sumTransactions(ctx.prisma, ctx.session.user.id);
   }),
   // Only for manual deposits or withdraws
   create: protectedProcedure
