@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
 // Utils
-import { z } from "zod";
 import { useForm, Controller } from "react-hook-form";
 import { api } from "@/utils/api";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,6 +8,7 @@ import { Frequency } from "@prisma/client";
 // Types
 import type { NextPage } from "next";
 import type { SubmitHandler } from "react-hook-form";
+import { ProjectValuesSchema, type ProjectValues } from "@/server/types";
 
 // Components
 import Heading from "@/components/ui/heading";
@@ -25,17 +24,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-export const ProjectValuesSchema = z.object({
-  name: z.string(),
-  description: z.string(),
-  initial: z.number(),
-  increaseFrequency: z.nativeEnum(Frequency),
-  increaseAmount: z.number(),
-  compound: z.boolean(),
-});
-
-type ProjectValues = z.infer<typeof ProjectValuesSchema>;
 
 const AddProject: NextPage = () => {
   const { register, handleSubmit, control } = useForm<ProjectValues>({
