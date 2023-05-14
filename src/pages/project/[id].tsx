@@ -8,7 +8,7 @@ import type { NextPage } from "next";
 
 // Components
 import Heading from "@/components/ui/heading";
-import { ArrowBigDownDash, ArrowBigUpDash } from "lucide-react";
+import { ArrowBigDownDash, ArrowBigUpDash, Check, X } from "lucide-react";
 import Link from "next/link";
 import {
   Card,
@@ -83,6 +83,19 @@ const ProjectPage: NextPage = () => {
             <CardHeader>
               <CardTitle>Increase Amount</CardTitle>
               <CardDescription>{project.increaseAmount}%</CardDescription>
+            </CardHeader>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Compounds?</CardTitle>
+              <CardDescription>
+                {project.compound ? (
+                  <Check className="text-green-600" />
+                ) : (
+                  <X className="text-red-500" />
+                )}
+              </CardDescription>
             </CardHeader>
           </Card>
 
