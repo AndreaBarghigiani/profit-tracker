@@ -11,9 +11,14 @@ export type MassagedSumTxItem = {
   type: TransactionType;
   amount: number | null;
 };
-export const sumTransactions = async (prisma: PrismaClient) => {
+export const sumTransactions = async (prisma: PrismaClient, userId: string) => {
   const sumTx = await prisma.transaction.groupBy({
     by: ["type"],
+    where: {
+      project: {
+        userId,
+      },
+    },
     _sum: {
       amount: true,
     },
