@@ -10,6 +10,7 @@ import type { NextPage } from "next";
 import Heading from "@/components/ui/heading";
 import { ArrowBigDownDash, ArrowBigUpDash, Check, X } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardDescription,
@@ -35,6 +36,12 @@ const ProjectPage: NextPage = () => {
       },
       { enabled: !!router.query.id }
     );
+
+  const { mutate: deleteProject } = api.project.delete.useMutation({
+    onSuccess: async () => {
+      await router.push(`/dashboard/`);
+    },
+  });
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -113,6 +120,9 @@ const ProjectPage: NextPage = () => {
             >
               Add Transaction
             </Link>
+            <Button variant="link" onClick={() => deleteProject(project.id)}>
+              Delete
+            </Button>
           </div>
         </div>
 

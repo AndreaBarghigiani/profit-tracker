@@ -5,9 +5,12 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
+import { ensureAllTransactionTypes } from "../transaction/sumTransactions";
 
+// Types
 import { TransactionType } from "@prisma/client";
 import { EditProjectValuesSchema, ProjectValuesSchema } from "@/server/types";
+import type { SumTxItem } from "@/server/types";
 
 import type { PrismaClient } from "@prisma/client";
 
@@ -111,6 +114,56 @@ export const projectRouter = createTRPCRouter({
           totalDeposit: {
             increment: input.initial,
           },
+        },
+      });
+    }),
+  delete: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input }) => {
+      const allProjectTx = await ctx.prisma.transaction.groupBy({
+        by: ["type"],
+        where: {
+          project: {
+            id: input,
+          },
+        },
+        _sum: {
+          amount: true,
+        },
+      });
+
+      const sortList = ["WITHDRAW", "DEPOSIT", "INTEREST"];
+
+      const ordered = ensureAllTransactionTypes(allProjectTx).sort(
+        (a, b) => sortList.indexOf(a.type) - sortList.indexOf(b.type)
+      );
+
+      const removeFromWallet = ordered.reduce(
+        (acc, cur) =>
+          cur.type === "WITHDRAW"
+            ? acc - cur._sum.amount
+            : acc + cur._sum.amount,
+        0
+      );
+      console.log("to be removed", removeFromWallet);
+
+      await ctx.prisma.wallet.update({
+        where: {
+          userId: ctx.session.user.id,
+        },
+        data: {
+          total: {
+            decrement: removeFromWallet,
+          },
+          totalDeposit: {
+            decrement: removeFromWallet,
+          },
+        },
+      });
+
+      await ctx.prisma.project.delete({
+        where: {
+          id: input,
         },
       });
     }),
