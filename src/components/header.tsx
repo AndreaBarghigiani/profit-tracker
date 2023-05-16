@@ -1,15 +1,22 @@
+import { signIn, signOut, useSession } from "next-auth/react";
+
 // Components
-import Link from "next/link";
+import { Button } from "./ui/button";
 
 const Header = () => {
+  const { data: sessionData } = useSession();
+
   return (
-    <header className="container mx-auto mb-6 flex items-center py-4">
+    <header className="mx-auto mb-6 flex items-center py-4">
       <h1 className="text-xl font-extrabold tracking-tight">Profit Tracker</h1>
 
       <nav className="ml-auto flex gap-4">
-        <Link href="/">Home</Link>
-        <Link href="/dashboard">Dashboard</Link>
-        <Link href="/project/add">Add Project</Link>
+        <Button
+          variant={"active"}
+          onClick={sessionData ? () => void signOut() : () => void signIn()}
+        >
+          {sessionData ? "Sign out" : "Sign in"}
+        </Button>
       </nav>
     </header>
   );
