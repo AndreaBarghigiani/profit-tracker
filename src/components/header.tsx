@@ -8,7 +8,9 @@ const Header = () => {
 
   return (
     <header className="mx-auto mb-6 flex items-center py-4">
-      <h1 className="text-xl font-extrabold tracking-tight">Profit Tracker</h1>
+      <h1 className="text-xl font-extrabold tracking-tight">
+        Underdog Tracker
+      </h1>
 
       <nav className="ml-auto flex gap-4">
         <Button
