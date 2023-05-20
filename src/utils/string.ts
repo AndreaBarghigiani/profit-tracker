@@ -6,3 +6,10 @@ export const formatDate = Intl.DateTimeFormat("en", {
   dateStyle: "long",
   timeStyle: "short",
 });
+
+export const currencyConverter = (amount: string) => {
+  return new Intl.NumberFormat("en-EN", {
+    style: "currency",
+    currency: "USD",
+  }).format(parseFloat(amount));
+};
