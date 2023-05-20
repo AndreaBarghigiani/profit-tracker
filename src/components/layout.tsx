@@ -1,13 +1,18 @@
 // Utils & Hooks
+import { api } from "@/utils/api";
 import { buttonVariants } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
+import { Role } from "@prisma/client";
 
+// Types
 // Components
 import Link from "next/link";
-import { Gauge, ArrowUpDown, Boxes } from "lucide-react";
+import { Gauge, ArrowUpDown, Boxes, Coins, PiggyBank } from "lucide-react";
 import Heading from "@/components/ui/heading";
 import UserCard from "@/components/userCard";
 const Sidebar = () => {
+  const { data: userRole } = api.user.getRole.useQuery();
+
   return (
     <nav>
       <ul>
@@ -50,6 +55,34 @@ const Sidebar = () => {
             <ArrowUpDown className="mr-2 h-4 w-4" /> Transactions
           </Link>
         </li>
+        <li>
+          <Link
+            className={buttonVariants({
+              variant: "ghost",
+              size: "nav",
+              corners: "square",
+              align: "left",
+            })}
+            href={`/new-investment`}
+          >
+            <PiggyBank className="mr-2 h-4 w-4" /> New Investment
+          </Link>
+        </li>
+        {!!userRole?.role && userRole.role === Role.ADMIN && (
+          <li>
+            <Link
+              className={buttonVariants({
+                variant: "ghost",
+                size: "nav",
+                corners: "square",
+                align: "left",
+              })}
+              href={`/token/add`}
+            >
+              <Coins className="mr-2 h-4 w-4" /> Add New Token
+            </Link>
+          </li>
+        )}
       </ul>
     </nav>
   );
@@ -57,6 +90,7 @@ const Sidebar = () => {
 
 const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
   const { status } = useSession();
+
   return (
     <div className="min-h-screen">
       {status === "authenticated" ? (
