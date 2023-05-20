@@ -1,16 +1,42 @@
 import type { PrismaClient, TransactionType } from "@prisma/client";
 
-type SumTxItem = {
-  type: TransactionType;
-  _sum: {
-    amount: number | null;
-  };
-};
+import type {
+  SumTxItem,
+  MassagedSumTxItem,
+  SumTxItemValued,
+} from "@/server/types";
 
-export type MassagedSumTxItem = {
-  type: TransactionType;
-  amount: number | null;
-};
+export function ensureAllTransactionTypes(
+  sumTx: SumTxItem[]
+): SumTxItemValued[] {
+  const allTypes: TransactionType[] = ["DEPOSIT", "WITHDRAW", "INTEREST"];
+
+  const result: SumTxItemValued[] = allTypes.reduce(
+    (acc: SumTxItemValued[], type: TransactionType) => {
+      const existingItem = sumTx.find((item) => item.type === type);
+      if (existingItem) {
+        const amount = existingItem._sum.amount ? existingItem._sum.amount : 0;
+        acc.push({
+          type: existingItem.type,
+          _sum: {
+            amount,
+          },
+        });
+      } else {
+        acc.push({
+          type,
+          _sum: {
+            amount: 0,
+          },
+        });
+      }
+      return acc;
+    },
+    []
+  );
+  return result;
+}
+
 export const sumTransactions = async (prisma: PrismaClient, userId: string) => {
   const sumTx = await prisma.transaction.groupBy({
     by: ["type"],
@@ -24,27 +50,6 @@ export const sumTransactions = async (prisma: PrismaClient, userId: string) => {
     },
   });
 
-  function ensureAllTransactionTypes(sumTx: SumTxItem[]): SumTxItem[] {
-    const allTypes: TransactionType[] = ["DEPOSIT", "WITHDRAW", "INTEREST"];
-    const result: SumTxItem[] = allTypes.reduce(
-      (acc: SumTxItem[], type: TransactionType) => {
-        const existingItem = sumTx.find((item) => item.type === type);
-        if (existingItem) {
-          acc.push(existingItem);
-        } else {
-          acc.push({
-            type,
-            _sum: {
-              amount: 0,
-            },
-          });
-        }
-        return acc;
-      },
-      []
-    );
-    return result;
-  }
   const sortList = ["WITHDRAW", "DEPOSIT", "INTEREST"];
   const ordered = ensureAllTransactionTypes(sumTx).sort(
     (a, b) => sortList.indexOf(a.type) - sortList.indexOf(b.type)
