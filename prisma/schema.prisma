@@ -117,7 +117,8 @@ model Token {
 }
 
 model TokenHistory {
-  createdAt DateTime @unique @default(now())
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
   token     Token    @relation(fields: [tokenId], references: [coinranking_uuid])
   tokenId   String
   price     String
