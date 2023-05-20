@@ -45,11 +45,8 @@ const Dashboard: NextPage = () => {
 
   const { data: result } = api.wallet.getDailyPassiveResult.useQuery();
 
-  const {
-    data: sumTransactions,
-    isSuccess: isSumTransactionsSuccess,
-    isLoading: isSumTransactionsLoading,
-  } = api.transaction.sumTransactions.useQuery();
+  const { data: sumTransactions, isLoading: isSumTransactionsLoading } =
+    api.transaction.sumTransactions.useQuery();
 
   const mappingCards = {
     DEPOSIT: DepositDashboardCard,
@@ -106,18 +103,6 @@ const Dashboard: NextPage = () => {
           {sumTransactionsCards?.map((card) => card)}
         </div>
       )}
-
-      {/* {isSumTransactionsSuccess && (
-        <div className="grid grid-cols-4 gap-4">
-          <Card>
-            <CardHeader>
-              <CardDescription>Target</CardDescription>
-              <CardTitle>{result}</CardTitle>
-            </CardHeader>
-          </Card>
-          {sumTransactionsCards?.map((card) => card)}
-        </div>
-      )} */}
 
       {isProjectsSuccess ? (
         <>
