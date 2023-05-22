@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 // Utils
-import { z } from "zod";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
 import { TransactionType } from "@prisma/client";
 import { uppercaseFirst } from "@/utils/string";
+import { TransactionValuesSchema } from "@/server/types";
 
 // Types
 import type { SubmitHandler } from "react-hook-form";
 import type { NextPage } from "next";
+import type { TransactionValues } from "@/server/types";
 
 // Components
 import Heading from "@/components/ui/heading";
@@ -24,14 +25,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-export const TransactionValuesSchema = z.object({
-  amount: z.number(),
-  type: z.nativeEnum(TransactionType),
-  projectId: z.string(),
-});
-
-type TransactionValues = z.infer<typeof TransactionValuesSchema>;
 
 const AddTransaction: NextPage = () => {
   const router = useRouter();
