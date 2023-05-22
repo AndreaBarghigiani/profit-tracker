@@ -6,6 +6,15 @@ import {
 } from "@/server/api/trpc";
 
 export const tokenRouter = createTRPCRouter({
+  get: protectedProcedure
+    .input(z.object({ tokenId: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.token.findUniqueOrThrow({
+        where: {
+          coinranking_uuid: input.tokenId,
+        },
+      });
+    }),
   sample: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.token.findMany({
       take: 12,
