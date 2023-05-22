@@ -3,8 +3,9 @@ import { z } from "zod";
 import { Frequency } from "@prisma/client";
 
 // Types
-import type { TransactionType } from "@prisma/client";
+import { TransactionType } from "@prisma/client";
 
+// Projects types
 export const ProjectValuesSchema = z.object({
   name: z.string(),
   description: z.string(),
@@ -28,6 +29,15 @@ export const EditProjectValuesSchema = z.object({
 
 export type EditProjectValues = z.infer<typeof EditProjectValuesSchema>;
 
+// Transactions types
+export const TransactionValuesSchema = z.object({
+  amount: z.number(),
+  type: z.nativeEnum(TransactionType),
+  projectId: z.string(),
+});
+
+export type TransactionValues = z.infer<typeof TransactionValuesSchema>;
+
 export type SumTxItem = {
   type: TransactionType;
   _sum: {
@@ -46,3 +56,13 @@ export type MassagedSumTxItem = {
   type: TransactionType;
   amount: number;
 };
+
+// Hodl types
+export const HodlValuesSchema = z.object({
+  currentAmount: z.number(),
+  currentEvaluation: z.number(),
+  totalInvested: z.number(),
+  tokenId: z.string(),
+});
+
+export type HodlValues = z.infer<typeof HodlValuesSchema>;
