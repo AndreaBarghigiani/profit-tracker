@@ -6,7 +6,7 @@ import {
   protectedProcedure,
 } from "@/server/api/trpc";
 
-import { TransactionValuesSchema } from "@/pages/transaction/add";
+import { TransactionValuesSchema } from "@/server/types";
 import { TransactionType as TxType } from "@prisma/client";
 import { addInterest } from "./addInterest";
 import { getAllProjectsIds } from "../project/getAllProjectsIds";
@@ -74,9 +74,18 @@ export const transactionRouter = createTRPCRouter({
         take: limit + 1, // +1 for the cursor
         where: {
           type: (type ? type : TransactionValuesSchema.parse(type)) as TxType,
-          project: {
-            userId: ctx.session.user.id,
-          },
+          OR: [
+            {
+              project: {
+                userId: ctx.session.user.id,
+              },
+            },
+            {
+              hodl: {
+                userId: ctx.session.user.id,
+              },
+            },
+          ],
         },
         select: {
           id: true,
@@ -87,6 +96,15 @@ export const transactionRouter = createTRPCRouter({
             select: {
               name: true,
               id: true,
+            },
+          },
+          hodl: {
+            select: {
+              token: {
+                select: {
+                  name: true,
+                },
+              },
             },
           },
         },

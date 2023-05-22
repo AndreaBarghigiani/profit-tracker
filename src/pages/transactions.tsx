@@ -45,6 +45,7 @@ const Transaction: NextPage = () => {
   };
 
   const toShow = paginatedTransactions?.pages[currentPage]?.items;
+  console.log("toShow:", toShow);
   const nextCursor = paginatedTransactions?.pages[currentPage]?.nextCursor;
 
   return (
@@ -82,7 +83,7 @@ const Transaction: NextPage = () => {
           <p className="p-3">Amount</p>
           <p className="p-3">Type</p>
           <p className="p-3">Date</p>
-          <p className="p-3">Project</p>
+          <p className="p-3">Source</p>
           <p className="p-3 text-center">Action</p>
         </div>
         {isPaginatedLoading
@@ -115,7 +116,8 @@ const Transaction: NextPage = () => {
               >
                 <p className="p-3">{`$${transaction.amount.toFixed(2)}`}</p>
                 <p className="flex items-center p-3">
-                  {transaction.type === "DEPOSIT" ? (
+                  {transaction.type === "DEPOSIT" ||
+                  transaction.type === "BUY" ? (
                     <ArrowBigDownDash className="mr-2 h-4 w-4" />
                   ) : (
                     <ArrowBigUpDash className="mr-2 h-4 w-4" />
@@ -134,15 +136,39 @@ const Transaction: NextPage = () => {
                     })}
                   </p>
                 </time>
-                <p className="p-3">{transaction.project.name}</p>
+                {transaction.project && (
+                  <>
+                    <div className="p-3">
+                      <p>{transaction.project.name}</p>
+                      <p className="text-xs text-foreground/50">Project</p>
+                    </div>
 
-                <Link
-                  href={`/project/${transaction.project.id}`}
-                  className={buttonVariants({ variant: "link" })}
-                >
-                  Check out project
-                  <ArrowBigRightDash className="ml-2 h-4 w-4" />
-                </Link>
+                    <Link
+                      href={`/project/${transaction.project.id}`}
+                      className={buttonVariants({ variant: "link" })}
+                    >
+                      Check out investment
+                      <ArrowBigRightDash className="ml-2 h-4 w-4" />
+                    </Link>
+                  </>
+                )}
+
+                {transaction.hodl && (
+                  <>
+                    <div className="p-3">
+                      <p>{transaction.hodl.token.name}</p>
+                      <p className="text-xs text-foreground/50">HODL</p>
+                    </div>
+
+                    <Link
+                      href={`/projects/`}
+                      className={buttonVariants({ variant: "link" })}
+                    >
+                      Check out investment
+                      <ArrowBigRightDash className="ml-2 h-4 w-4" />
+                    </Link>
+                  </>
+                )}
               </div>
             ))}
       </div>

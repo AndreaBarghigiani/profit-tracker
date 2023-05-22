@@ -10,7 +10,6 @@ import { ensureAllTransactionTypes } from "../transaction/sumTransactions";
 // Types
 import { TransactionType } from "@prisma/client";
 import { EditProjectValuesSchema, ProjectValuesSchema } from "@/server/types";
-import type { SumTxItem } from "@/server/types";
 
 import type { PrismaClient } from "@prisma/client";
 
