@@ -7,9 +7,10 @@ export const formatDate = Intl.DateTimeFormat("en", {
   timeStyle: "short",
 });
 
-export const currencyConverter = (amount: string) => {
+export const currencyConverter = (amount: string | number) => {
+  const numeric = typeof amount === "string" ? parseFloat(amount) : amount;
   return new Intl.NumberFormat("en-EN", {
     style: "currency",
     currency: "USD",
-  }).format(parseFloat(amount));
+  }).format(numeric);
 };

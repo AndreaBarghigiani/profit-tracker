@@ -1,8 +1,8 @@
 // Utils
-import { uppercaseFirst } from "@/utils/string";
+import { uppercaseFirst, currencyConverter } from "@/utils/string";
 
 // Types
-import type { MassagedSumTxItem } from "@/server/api/routers/transaction/sumTransactions";
+import type { MassagedSumTxItem } from "@/server/types";
 
 // Components
 import {
@@ -21,7 +21,7 @@ const DepositDashboardCard = ({
     <Card>
       <CardHeader>
         <CardDescription>{uppercaseFirst(transaction.type)}</CardDescription>
-        <CardTitle>${transaction.amount}</CardTitle>
+        <CardTitle>{currencyConverter(transaction.amount)}</CardTitle>
       </CardHeader>
     </Card>
   );
@@ -36,7 +36,7 @@ const InterestDashboardCard = ({
     <Card>
       <CardHeader>
         <CardDescription>{uppercaseFirst(transaction.type)}</CardDescription>
-        <CardTitle>${transaction.amount}</CardTitle>
+        <CardTitle>{currencyConverter(transaction.amount)}</CardTitle>
       </CardHeader>
     </Card>
   );
@@ -51,7 +51,7 @@ const WithdrawDashboardCard = ({
     <Card>
       <CardHeader>
         <CardDescription>{uppercaseFirst(transaction.type)}</CardDescription>
-        <CardTitle>${transaction.amount}</CardTitle>
+        <CardTitle>{currencyConverter(transaction.amount)}</CardTitle>
       </CardHeader>
     </Card>
   );
