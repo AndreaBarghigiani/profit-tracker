@@ -16,11 +16,7 @@ import {
 } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
-import {
-  DepositDashboardCard,
-  InterestDashboardCard,
-  WithdrawDashboardCard,
-} from "@/components/ui/custom/DashboardCards";
+import { InterestDashboardCard } from "@/components/ui/custom/DashboardCards";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const ProjectCard = ({ project }: { project: Project }) => {
@@ -45,19 +41,11 @@ const Dashboard: NextPage = () => {
 
   const { data: result } = api.wallet.getDailyPassiveResult.useQuery();
 
-  const { data: sumTransactions, isLoading: isSumTransactionsLoading } =
-    api.transaction.sumTransactions.useQuery();
-
-  const mappingCards = {
-    DEPOSIT: DepositDashboardCard,
-    INTEREST: InterestDashboardCard,
-    WITHDRAW: WithdrawDashboardCard,
-  };
-
-  const sumTransactionsCards = sumTransactions?.map((transaction) => {
-    const Component = mappingCards[transaction.type];
-    return <Component key={transaction.type} transaction={transaction} />;
-  });
+  const {
+    data: allInterests,
+    isLoading: isAllInterestsLoading,
+    isSuccess: isAllInterestsSuccess,
+  } = api.transaction.sumInterests.useQuery();
 
   return (
     <div>
@@ -65,7 +53,7 @@ const Dashboard: NextPage = () => {
         Dashboard
       </Heading>
 
-      {isSumTransactionsLoading ? (
+      {isAllInterestsLoading ? (
         <div className="grid grid-cols-4 gap-4">
           <Card>
             <CardHeader>
@@ -100,7 +88,10 @@ const Dashboard: NextPage = () => {
               <CardTitle>{result}</CardTitle>
             </CardHeader>
           </Card>
-          {sumTransactionsCards?.map((card) => card)}
+          {isAllInterestsSuccess && (
+            <InterestDashboardCard transaction={allInterests} />
+          )}
+          {/* {sumTransactionsCards?.map((card) => card)} */}
         </div>
       )}
 

@@ -1,5 +1,4 @@
 import type { PrismaClient, TransactionType } from "@prisma/client";
-
 import type {
   SumTxItem,
   MassagedSumTxItem,
@@ -50,7 +49,7 @@ export const sumTransactions = async (prisma: PrismaClient, userId: string) => {
     },
   });
 
-  const sortList = ["WITHDRAW", "DEPOSIT", "INTEREST"];
+  const sortList = ["WITHDRAW", "DEPOSIT", "INTEREST", "BUY", "SELL"];
   const ordered = ensureAllTransactionTypes(sumTx).sort(
     (a, b) => sortList.indexOf(a.type) - sortList.indexOf(b.type)
   );
