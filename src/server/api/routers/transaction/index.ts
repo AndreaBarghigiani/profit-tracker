@@ -12,6 +12,7 @@ import { addInterest } from "./addInterest";
 import { getAllProjectsIds } from "../project/getAllProjectsIds";
 import { lastInterestByProjectId } from "./lastInterestByProjectId";
 import { sumTransactions } from "./sumTransactions";
+import { sumInterests } from "./sumInterests";
 import { weeklyWithdraws } from "./weeklyWithdraws";
 
 export const transactionRouter = createTRPCRouter({
@@ -152,6 +153,9 @@ export const transactionRouter = createTRPCRouter({
     }),
   sumTransactions: protectedProcedure.query(async ({ ctx }) => {
     return await sumTransactions(ctx.prisma, ctx.session.user.id);
+  }),
+  sumInterests: protectedProcedure.query(async ({ ctx }) => {
+    return await sumInterests(ctx.prisma, ctx.session.user.id);
   }),
   // Only for manual deposits or withdraws
   create: protectedProcedure
