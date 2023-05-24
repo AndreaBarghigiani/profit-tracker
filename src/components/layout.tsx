@@ -7,9 +7,17 @@ import { Role } from "@prisma/client";
 // Types
 // Components
 import Link from "next/link";
-import { Gauge, ArrowUpDown, Boxes, Coins, PiggyBank } from "lucide-react";
+import {
+  Gauge,
+  ArrowUpDown,
+  Boxes,
+  Coins,
+  PiggyBank,
+  ToyBrick,
+} from "lucide-react";
 import Heading from "@/components/ui/heading";
 import UserCard from "@/components/userCard";
+import { Separator } from "./ui/separator";
 const Sidebar = () => {
   const { data: userRole } = api.user.getRole.useQuery();
 
@@ -37,6 +45,19 @@ const Sidebar = () => {
               corners: "square",
               align: "left",
             })}
+            href={`/transactions`}
+          >
+            <ArrowUpDown className="mr-2 h-4 w-4" /> Transactions
+          </Link>
+        </li>
+        <li>
+          <Link
+            className={buttonVariants({
+              variant: "ghost",
+              size: "nav",
+              corners: "square",
+              align: "left",
+            })}
             href={`/projects`}
           >
             <Boxes className="mr-2 h-4 w-4" /> Projects
@@ -50,9 +71,9 @@ const Sidebar = () => {
               corners: "square",
               align: "left",
             })}
-            href={`/transactions`}
+            href={`/hodl`}
           >
-            <ArrowUpDown className="mr-2 h-4 w-4" /> Transactions
+            <ToyBrick className="mr-2 h-4 w-4" /> Hodls
           </Link>
         </li>
         <li>
@@ -68,22 +89,29 @@ const Sidebar = () => {
             <PiggyBank className="mr-2 h-4 w-4" /> New Investment
           </Link>
         </li>
-        {!!userRole?.role && userRole.role === Role.ADMIN && (
-          <li>
-            <Link
-              className={buttonVariants({
-                variant: "ghost",
-                size: "nav",
-                corners: "square",
-                align: "left",
-              })}
-              href={`/token/add`}
-            >
-              <Coins className="mr-2 h-4 w-4" /> Add New Token
-            </Link>
-          </li>
-        )}
       </ul>
+
+      {!!userRole?.role && userRole.role === Role.ADMIN && (
+        <>
+          <Separator className="my-4 bg-foreground/50" />
+          <h3 className="px-4 text-xl font-semibold">Admin powers</h3>
+          <ul>
+            <li>
+              <Link
+                className={buttonVariants({
+                  variant: "ghost",
+                  size: "nav",
+                  corners: "square",
+                  align: "left",
+                })}
+                href={`/token/add`}
+              >
+                <Coins className="mr-2 h-4 w-4" /> Add New Token
+              </Link>
+            </li>
+          </ul>
+        </>
+      )}
     </nav>
   );
 };
