@@ -4,7 +4,23 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { HodlValuesSchema } from "@/server/types";
 
 // Types
-import { TransactionType } from "@prisma/client";
+import { type PrismaClient, TransactionType } from "@prisma/client";
+
+export const getHodl = async ({
+  hodlId,
+  prisma,
+}: {
+  hodlId: string;
+  prisma: PrismaClient;
+}) => {
+  const hodl = await prisma.hodl.findUniqueOrThrow({
+    where: {
+      id: hodlId,
+    },
+  });
+
+  return hodl;
+};
 
 export const hodlRouter = createTRPCRouter({
   create: protectedProcedure
@@ -45,13 +61,28 @@ export const hodlRouter = createTRPCRouter({
         },
       });
     }),
-  get: protectedProcedure.input(z.string()).query(({ ctx, input }) => {
+  get: protectedProcedure
+    .input(z.object({ hodlId: z.string() }))
+    .query(({ ctx, input }) => {
+      return getHodl({ hodlId: input.hodlId, prisma: ctx.prisma });
+    }),
+  getByTokenId: protectedProcedure.input(z.string()).query(({ ctx, input }) => {
     return ctx.prisma.hodl.findMany({
       where: {
         tokenId: input,
         userId: ctx.session.user.id,
       },
       take: 1,
+    });
+  }),
+  list: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.hodl.findMany({
+      where: {
+        userId: ctx.session.user.id,
+      },
+      include: {
+        token: true,
+      },
     });
   }),
   // delete: protectedProcedure
