@@ -85,7 +85,7 @@ model Hodl {
   currentAmount     Float         @default(0)
   currentEvaluation Float         @default(0)
   totalInvested     Float         @default(0)
-  token             Token         @relation(fields: [tokenId], references: [coinranking_uuid])
+  token             Token         @relation(fields: [tokenId], references: [id])
   tokenId           String
   user              User          @relation(fields: [userId], references: [id])
   userId            String
@@ -118,16 +118,18 @@ model Wallet {
 }
 
 model Token {
-  id               String         @id @default(cuid())
-  createdAt        DateTime       @default(now())
-  symbol           String
-  name             String
-  iconUrl          String?
-  latestPrice      String         @default("0")
-  coinranking_uuid String         @unique
-  tracked          Boolean        @default(false)
-  tokenHistory     TokenHistory[]
-  hodl             Hodl[]
+  id           String         @id @default(cuid())
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime?      @default(now()) @updatedAt
+  symbol       String?
+  name         String
+  iconUrl      String?
+  latestPrice  String         @default("0")
+  coingecko_id String         @unique
+  platforms    Json
+  tracked      Boolean        @default(false)
+  tokenHistory TokenHistory[]
+  hodl         Hodl[]
 
   @@index([symbol, name])
 }
@@ -135,7 +137,7 @@ model Token {
 model TokenHistory {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-  token     Token    @relation(fields: [tokenId], references: [coinranking_uuid])
+  token     Token    @relation(fields: [tokenId], references: [id])
   tokenId   String
   price     String
 }

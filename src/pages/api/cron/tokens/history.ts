@@ -1,20 +1,19 @@
 import { TRPCError } from "@trpc/server";
 import { getHTTPStatusCodeFromError } from "@trpc/server/http";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient, TokenHistory } from "@prisma/client";
+import { prisma } from "@/server/db";
 
 type TokenHistoryData = {
   price: string;
   timestamp: number;
 };
-
+// TODO: refactor to use CoinGecko API
 export default async function tokenHistory(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   const tokenId: string =
     typeof req.query?.uuid === "string" ? req.query.uuid : "Qwsogvtv82FCd"; // Defaults to BTC
-  const prisma = new PrismaClient();
   const options = {
     "x-access-token": process.env.COINRANK_API_KEY || "",
   };

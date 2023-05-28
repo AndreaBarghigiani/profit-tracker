@@ -32,10 +32,14 @@ export const hodlRouter = createTRPCRouter({
           currentEvaluation: input.currentEvaluation,
           totalInvested: input.totalInvested,
           user: {
-            connect: { id: ctx.session.user.id },
+            connect: {
+              id: ctx.session.user.id,
+            },
           },
           token: {
-            connect: { coinranking_uuid: input.tokenId },
+            connect: {
+              coingecko_id: input.tokenId,
+            },
           },
           transaction: {
             create: {
@@ -43,6 +47,16 @@ export const hodlRouter = createTRPCRouter({
               amount: input.currentEvaluation,
             },
           },
+        },
+      });
+
+      // Update the token to make it trackable
+      await ctx.prisma.token.update({
+        where: {
+          coingecko_id: input.tokenId,
+        },
+        data: {
+          tracked: true,
         },
       });
 

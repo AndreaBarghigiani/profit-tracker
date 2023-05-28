@@ -22,7 +22,7 @@ const config = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "cdn.coinranking.com",
+        hostname: "assets.coingecko.com",
       },
     ],
   },
