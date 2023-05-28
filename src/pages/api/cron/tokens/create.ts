@@ -1,72 +1,44 @@
 import { TRPCError } from "@trpc/server";
 import { getHTTPStatusCodeFromError } from "@trpc/server/http";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/server/db";
 
-type CoinrankingTokenInfo = {
-  uuid: string;
+type CoinGeckoTokenInfo = {
+  id: string;
   symbol: string;
   name: string;
-  color: string;
-  iconUrl?: string;
-  marketCap: string;
-  price: string;
-  listedAt: number;
-  tier: number;
-  change: string;
-  rank: number;
-  sparkline: string[];
-  lowVolume: boolean;
-  coinrankingUrl: string;
-  "24hVolume": string;
-  btcPrice: string;
+  platforms: object;
 };
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const prisma = new PrismaClient();
-  const options = {
-    "x-access-token": process.env.COINRANK_API_KEY || "",
-  };
-
-  if (!options["x-access-token"]) {
-    res.status(401).json({ message: "Unauthorized" });
-    return;
-  }
-
   const result = await fetch(
-    "https://api.coinranking.com/v2/coins?tier=1&limit=5000&offset=0",
-    {
-      method: "GET",
-      headers: options,
-    }
+    `https://api.coingecko.com/api/v3/coins/list?include_platform=true`
   );
 
-  const {
-    data: { coins },
-  } = (await result.json()) as { data: { coins: CoinrankingTokenInfo[] } };
+  const data = (await result.json()) as CoinGeckoTokenInfo[];
 
-  const massaged = coins.map((coin) => ({
+  const massaged = data.map((coin) => ({
     symbol: coin.symbol,
     name: coin.name,
-    iconUrl: coin.iconUrl,
-    coinranking_uuid: coin.uuid,
-    latestPrice: coin.price,
+    coingecko_id: coin.id,
+    platforms: coin.platforms,
   }));
 
   try {
     await prisma.token.createMany({ data: massaged });
-    res.status(200).json({ message: "ok" });
+    res.status(200).json({ message: "ok", data, massaged });
   } catch (cause) {
     if (cause instanceof TRPCError) {
       const httpStatusCode = getHTTPStatusCodeFromError(cause);
       res.status(httpStatusCode).json({ message: cause.message });
       return;
     }
+
     res.status(500).json({
-      error: { message: `Something has gone wrong` },
+      error: { message: `Something has gone wrong`, cause },
     });
   }
 }

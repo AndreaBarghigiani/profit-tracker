@@ -1,9 +1,9 @@
+// Utils
 import { z } from "zod";
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import { updateMarketData } from "./updateMarketData";
+
+// Types
 
 export const tokenRouter = createTRPCRouter({
   get: protectedProcedure
@@ -11,19 +11,35 @@ export const tokenRouter = createTRPCRouter({
     .query(({ ctx, input }) => {
       return ctx.prisma.token.findUniqueOrThrow({
         where: {
-          coinranking_uuid: input.tokenId,
+          coingecko_id: input.tokenId,
         },
       });
     }),
-  sample: protectedProcedure.query(({ ctx }) => {
+  sample: protectedProcedure.query(async ({ ctx }) => {
+    const sample = [
+      "bitcoin",
+      "ethereum",
+      "matic-network",
+      "binancecoin",
+      "cardano",
+      "dogecoin",
+      "avalanche-2",
+      "cosmos",
+      "arbitrum",
+    ];
+
     return ctx.prisma.token.findMany({
-      take: 12,
+      where: {
+        coingecko_id: {
+          in: sample,
+        },
+      },
     });
   }),
   find: protectedProcedure
     .input(z.object({ query: z.string() }))
-    .query(({ ctx, input }) => {
-      return ctx.prisma.token.findMany({
+    .query(async ({ ctx, input }) => {
+      const tokens = await ctx.prisma.token.findMany({
         where: {
           OR: [
             {
@@ -40,5 +56,18 @@ export const tokenRouter = createTRPCRouter({
         },
         take: 12,
       });
+
+      // Check if I have all the info needed otherwise update the token
+      const tokenToUpdate = tokens.some(
+        (token) => !token.iconUrl || !token.latestPrice
+      );
+
+      if (tokenToUpdate) {
+        return await updateMarketData({
+          tokenIds: tokens.map((token) => token.coingecko_id),
+        });
+      }
+
+      return tokens;
     }),
 });

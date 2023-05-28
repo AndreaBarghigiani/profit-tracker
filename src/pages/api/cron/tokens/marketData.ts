@@ -1,14 +1,29 @@
 import { TRPCError } from "@trpc/server";
 import { getHTTPStatusCodeFromError } from "@trpc/server/http";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "@/server/db";
+import { updateMarketData } from "@/server/api/routers/token/updateMarketData";
 
-export default async function handler(
+export default async function tokenHistory(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const sample = [
+    "bitcoin",
+    "ethereum",
+    "matic-network",
+    "binancecoin",
+    "cardano",
+    "dogecoin",
+    "avalanche-2",
+    "cosmos",
+    "arbitrum",
+  ];
+
   try {
-    await prisma.token.deleteMany();
+    const updatedData = await updateMarketData({
+      tokenIds: sample,
+    });
+    console.log("updatedData:", updatedData);
     res.status(200).json({ message: "ok" });
   } catch (cause) {
     if (cause instanceof TRPCError) {
@@ -17,7 +32,7 @@ export default async function handler(
       return;
     }
     res.status(500).json({
-      error: { message: `Something has gone wrong` },
+      error: { message: "Something wrong" },
     });
   }
 }
