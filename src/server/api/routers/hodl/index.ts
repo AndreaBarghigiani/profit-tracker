@@ -13,13 +13,11 @@ export const getHodl = async ({
   hodlId: string;
   prisma: PrismaClient;
 }) => {
-  const hodl = await prisma.hodl.findUniqueOrThrow({
+  return await prisma.hodl.findUniqueOrThrow({
     where: {
       id: hodlId,
     },
   });
-
-  return hodl;
 };
 
 export const hodlRouter = createTRPCRouter({
@@ -41,6 +39,7 @@ export const hodlRouter = createTRPCRouter({
               coingecko_id: input.tokenId,
             },
           },
+          // The transaction is in charge of updating the wallet
           transaction: {
             create: {
               type: TransactionType.BUY,
@@ -59,21 +58,6 @@ export const hodlRouter = createTRPCRouter({
           tracked: true,
         },
       });
-
-      // Update the wallet with new project holdings
-      await ctx.prisma.wallet.update({
-        where: {
-          userId: ctx.session.user.id,
-        },
-        data: {
-          total: {
-            increment: input.currentEvaluation,
-          },
-          totalDeposit: {
-            increment: input.currentEvaluation,
-          },
-        },
-      });
     }),
   get: protectedProcedure
     .input(z.object({ hodlId: z.string() }))
@@ -89,6 +73,19 @@ export const hodlRouter = createTRPCRouter({
       take: 1,
     });
   }),
+  getTransactions: protectedProcedure
+    .input(z.object({ hodlId: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.hodl.findUniqueOrThrow({
+        where: {
+          id: input.hodlId,
+        },
+        select: {
+          createdAt: true,
+          transaction: true,
+        },
+      });
+    }),
   list: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.hodl.findMany({
       where: {
