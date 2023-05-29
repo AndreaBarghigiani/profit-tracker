@@ -2,15 +2,15 @@
 import { uppercaseFirst } from "@/utils/string";
 
 // Types
-import type { Transaction, Project, Hodl, Token } from "@prisma/client";
+import type { Transaction } from "@prisma/client";
 
 // Components
 import { ArrowBigDownDash, ArrowBigUpDash } from "lucide-react";
 
-type TransactionCardProps = {
+type HodlTransactionCardProps = {
   transaction: Transaction;
 };
-const HodlTransactionCard = ({ transaction }: TransactionCardProps) => {
+const HodlTransactionCard = ({ transaction }: HodlTransactionCardProps) => {
   // console.log("transaction:", transaction);
 
   return (
