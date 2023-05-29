@@ -1,8 +1,10 @@
 // Utils
 import { api } from "@/utils/api";
-import { useRouter } from "next/router";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { prisma } from "@/server/db";
 import { getHodl } from "@/server/api/routers/hodl";
+import AddHodlPositionForm from "@/components/addHodlPositionForm";
 
 // Types
 import type {
@@ -16,8 +18,12 @@ import Heading from "@/components/ui/heading";
 
 const AddHodlPosition: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ tokenId }) => {
-  const { data: token, isLoading: isTokenLoading } = api.token.get.useQuery({
+> = ({ tokenId, hodlId }) => {
+  const {
+    data: token,
+    isLoading: isTokenLoading,
+    isSuccess: isTokenSuccess,
+  } = api.token.get.useQuery({
     tokenId,
   });
 
@@ -29,6 +35,9 @@ const AddHodlPosition: NextPage<
       <p className="text-center text-lg text-stone-400">
         Are you buying or selling?
       </p>
+      {isTokenSuccess && (
+        <AddHodlPositionForm type="full" hodlId={hodlId} tokenId={tokenId} />
+      )}
     </div>
   );
 };
@@ -48,6 +57,7 @@ export async function getServerSideProps(
   return {
     props: {
       tokenId: hodl.tokenId,
+      hodlId: context.params.id,
     },
   };
 }

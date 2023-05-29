@@ -164,28 +164,72 @@ export const transactionRouter = createTRPCRouter({
       await ctx.prisma.transaction.create({
         data: {
           amount: input.amount,
+          evaluation: input.evaluation ? input.evaluation : null,
           type: input.type,
-          project: {
-            connect: { id: input.projectId },
-          },
+          project: input.projectId
+            ? {
+                connect: { id: input.projectId },
+              }
+            : undefined,
+          hodl: input.hodlId
+            ? {
+                connect: { id: input.hodlId },
+              }
+            : undefined,
         },
       });
 
-      await ctx.prisma.project.update({
-        where: {
-          id: input.projectId,
-        },
-        data: {
-          currentHolding: {
-            ...(input.type === TxType.WITHDRAW && {
-              decrement: input.amount,
-            }),
-            ...(input.type === TxType.DEPOSIT && {
-              increment: input.amount,
-            }),
+      if (input.projectId) {
+        await ctx.prisma.project.update({
+          where: {
+            id: input.projectId,
           },
-        },
-      });
+          data: {
+            currentHolding: {
+              ...(input.type === TxType.WITHDRAW && {
+                decrement: input.amount,
+              }),
+              ...(input.type === TxType.DEPOSIT && {
+                increment: input.amount,
+              }),
+            },
+          },
+        });
+      }
+
+      if (input.hodlId) {
+        await ctx.prisma.hodl.update({
+          where: {
+            id: input.hodlId,
+          },
+          data: {
+            currentAmount: {
+              ...(input.type === TxType.SELL && {
+                decrement: input.amount,
+              }),
+              ...(input.type === TxType.BUY && {
+                increment: input.amount,
+              }),
+            },
+            currentEvaluation: {
+              ...(input.type === TxType.SELL && {
+                decrement: input.evaluation,
+              }),
+              ...(input.type === TxType.BUY && {
+                increment: input.evaluation,
+              }),
+            },
+            totalInvested: {
+              ...(input.type === TxType.SELL && {
+                decrement: input.amount,
+              }),
+              ...(input.type === TxType.BUY && {
+                increment: input.amount,
+              }),
+            },
+          },
+        });
+      }
 
       // Update the wallet with new project holdings
       await ctx.prisma.wallet.update({
@@ -194,19 +238,19 @@ export const transactionRouter = createTRPCRouter({
         },
         data: {
           total: {
-            ...(input.type === TxType.WITHDRAW && {
+            ...(["WITHDRAW", "SELL"].includes(input.type) && {
               decrement: input.amount,
             }),
-            ...(input.type === TxType.DEPOSIT && {
+            ...(["DEPOSIT", "BUY"].includes(input.type) && {
               increment: input.amount,
             }),
           },
-          ...(input.type === TxType.DEPOSIT && {
+          ...(["DEPOSIT", "BUY"].includes(input.type) && {
             totalDeposit: {
               increment: input.amount,
             },
           }),
-          ...(input.type === TxType.WITHDRAW && {
+          ...(["WITHDRAW", "SELL"].includes(input.type) && {
             totalWithdraw: {
               increment: input.amount,
             },
