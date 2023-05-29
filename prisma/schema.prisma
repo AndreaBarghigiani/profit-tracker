@@ -93,15 +93,16 @@ model Hodl {
 }
 
 model Transaction {
-  id        String          @id @default(cuid())
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
-  amount    Float
-  type      TransactionType @default(DEPOSIT)
-  project   Project?        @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId String?
-  hodl      Hodl?           @relation(fields: [hodlId], references: [id])
-  hodlId    String?
+  id         String          @id @default(cuid())
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  amount     Float
+  evaluation Float           @default(0)
+  type       TransactionType @default(DEPOSIT)
+  project    Project?        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId  String?
+  hodl       Hodl?           @relation(fields: [hodlId], references: [id])
+  hodlId     String?
 }
 
 model Wallet {

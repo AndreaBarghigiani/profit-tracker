@@ -5,6 +5,7 @@ import { formatDate, currencyConverter } from "@/utils/string";
 import type { Hodl, Token } from "@prisma/client";
 
 // Components
+import Image from "next/image";
 import {
   Card,
   CardDescription,
@@ -27,10 +28,19 @@ type PositionCartProps = Hodl & {
 const PositionCard = ({ position }: { position: PositionCartProps }) => {
   return (
     <Card className="w-full">
-      <div className="flex items-center gap-4">
-        <CardHeader className="flex-1">
+      <div className="flex items-center gap-4 px-4">
+        {position.token?.iconUrl ? (
+          <Image
+            src={position.token.iconUrl}
+            alt={position.token.name}
+            className="rounded-full"
+            width={40}
+            height={40}
+          />
+        ) : null}
+        <CardHeader className="flex-1 px-0">
           <CardTitle className="flex justify-between">
-            {position.token.name}
+            <Link href={`/hodl/${position.id}/`}>{position.token.name}</Link>
             <p>{currencyConverter(position.currentEvaluation)}</p>
           </CardTitle>
           <CardDescription className="flex justify-between">
@@ -43,7 +53,7 @@ const PositionCard = ({ position }: { position: PositionCartProps }) => {
             <span>
               Holding:{" "}
               <strong>
-                {position.currentAmount} {position.token.symbol}
+                {position.currentAmount} {position.token.symbol?.toUpperCase()}
               </strong>
             </span>
           </CardDescription>
@@ -53,20 +63,17 @@ const PositionCard = ({ position }: { position: PositionCartProps }) => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  className={buttonVariants({ variant: "ghost" })}
+                  className={buttonVariants({ variant: "ghost", size: "sm" })}
                   href={`/hodl/add/${position.id}`}
                 >
                   <Plus className="h-4 w-4" />
                 </Link>
               </TooltipTrigger>
-              <TooltipContent>
+              <TooltipContent className="border-foreground/20">
                 <p>Add transaction</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <Button variant={"ghost"}>
-            <MoreVertical className="h-4 w-4" />
-          </Button>
         </div>
       </div>
     </Card>
