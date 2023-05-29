@@ -80,13 +80,13 @@ const AddHodl: NextPage = () => {
               <div className="grid grid-cols-3 gap-4">
                 {tokens.map((token) => (
                   <button
-                    key={token.coinranking_uuid}
+                    key={token.coingecko_id}
                     className="flex flex-col items-center justify-center rounded-lg border p-4 "
-                    onClick={() => onSelect(token.coinranking_uuid)}
+                    onClick={() => onSelect(token.coingecko_id)}
                   >
                     {token.iconUrl ? (
                       <Image
-                        alt={token.name}
+                        alt={token.name || token.symbol || "Token"}
                         width={40}
                         height={40}
                         className="mb-2 h-12 w-12 rounded-full bg-slate-800 object-contain p-2"
@@ -106,9 +106,9 @@ const AddHodl: NextPage = () => {
               <div className="grid grid-cols-3 gap-4">
                 {searchResults.map((token) => (
                   <button
-                    key={token.coinranking_uuid}
+                    key={token.coingecko_id}
                     className="flex flex-col items-center justify-center rounded-lg border p-4 "
-                    onClick={() => onSelect(token.coinranking_uuid)}
+                    onClick={() => onSelect(token.coingecko_id)}
                   >
                     {token.iconUrl ? (
                       <Image
@@ -132,7 +132,7 @@ const AddHodl: NextPage = () => {
           <>
             <h2>Token selected: {selectedToken.name}</h2>
             <p>Token value: {currencyConverter(selectedToken.latestPrice)}</p>
-            <AddHodlPositionForm tokenId={selectedToken.coinranking_uuid} />
+            <AddHodlPositionForm tokenId={selectedToken.coingecko_id} />
           </>
         ) : null}
       </section>

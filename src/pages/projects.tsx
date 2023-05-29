@@ -44,7 +44,15 @@ const Projects: NextPage = () => {
             Projects
           </Heading>
 
-          <p>These are your projects</p>
+          <p className="flex items-center">
+            These are your projects
+            <Link
+              className={buttonVariants({ className: "ml-auto" })}
+              href="/project/add"
+            >
+              Add project
+            </Link>
+          </p>
 
           <div className="grid grid-cols-3 gap-4">
             {projects.map((project: Project) => (

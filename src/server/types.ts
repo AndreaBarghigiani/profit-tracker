@@ -32,6 +32,7 @@ export type EditProjectValues = z.infer<typeof EditProjectValuesSchema>;
 // Transactions types
 export const TransactionValuesSchema = z.object({
   amount: z.number(),
+  evaluation: z.number().optional(),
   type: z.nativeEnum(TransactionType),
   projectId: z.string().nullish(),
   hodlId: z.string().nullish(),

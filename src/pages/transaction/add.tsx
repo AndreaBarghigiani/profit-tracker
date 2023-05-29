@@ -30,6 +30,9 @@ const AddTransaction: NextPage = () => {
   const router = useRouter();
 
   const projectId = router.query.projectId as string;
+  const allowedTypes = Object.values(TransactionType).filter(
+    (type) => !["BUY", "SELL"].includes(type)
+  );
 
   const { mutate } = api.transaction.create.useMutation({
     onSuccess: async () => {
@@ -78,7 +81,7 @@ const AddTransaction: NextPage = () => {
                   <SelectValue placeholder="Type of tx..." />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.values(TransactionType).map((t) => (
+                  {allowedTypes.map((t) => (
                     <SelectItem className="cursor-pointer" key={t} value={t}>
                       {uppercaseFirst(t)}
                     </SelectItem>

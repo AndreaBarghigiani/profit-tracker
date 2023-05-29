@@ -45,7 +45,6 @@ const Transaction: NextPage = () => {
   };
 
   const toShow = paginatedTransactions?.pages[currentPage]?.items;
-  console.log("toShow:", toShow);
   const nextCursor = paginatedTransactions?.pages[currentPage]?.nextCursor;
 
   return (
@@ -138,8 +137,8 @@ const Transaction: NextPage = () => {
                 </time>
                 {transaction.project && (
                   <>
-                    <div className="p-3">
-                      <p>{transaction.project.name}</p>
+                    <div className=" p-3">
+                      <p className="truncate">{transaction.project.name}</p>
                       <p className="text-xs text-foreground/50">Project</p>
                     </div>
 
