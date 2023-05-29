@@ -1,19 +1,37 @@
 // Utils
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import type { PrismaClient } from "@prisma/client";
 import { updateMarketData } from "./updateMarketData";
 
 // Types
+
+export const getToken = async ({
+  tokenId,
+  prisma,
+}: {
+  tokenId: string;
+  prisma: PrismaClient;
+}) => {
+  return await prisma.token.findFirstOrThrow({
+    where: {
+      OR: [
+        {
+          coingecko_id: tokenId,
+        },
+        {
+          id: tokenId,
+        },
+      ],
+    },
+  });
+};
 
 export const tokenRouter = createTRPCRouter({
   get: protectedProcedure
     .input(z.object({ tokenId: z.string() }))
     .query(({ ctx, input }) => {
-      return ctx.prisma.token.findUniqueOrThrow({
-        where: {
-          coingecko_id: input.tokenId,
-        },
-      });
+      return getToken({ tokenId: input.tokenId, prisma: ctx.prisma });
     }),
   sample: protectedProcedure.query(async ({ ctx }) => {
     const sample = [
