@@ -75,7 +75,7 @@ export default function CreateHodlPositionForm({
           <Input
             disabled
             type="text"
-            value={currencyConverter((watchAmount * tokenPrice).toString())}
+            value={currencyConverter({ amount: watchAmount * tokenPrice })}
           />
         </div>
       </div>
