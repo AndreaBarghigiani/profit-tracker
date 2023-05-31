@@ -21,7 +21,9 @@ const DepositDashboardCard = ({
     <Card>
       <CardHeader>
         <CardDescription>{uppercaseFirst(transaction.type)}</CardDescription>
-        <CardTitle>{currencyConverter(transaction.amount)}</CardTitle>
+        <CardTitle>
+          {currencyConverter({ amount: transaction.amount })}
+        </CardTitle>
       </CardHeader>
     </Card>
   );
@@ -36,7 +38,9 @@ const InterestDashboardCard = ({
     <Card>
       <CardHeader>
         <CardDescription>{uppercaseFirst(transaction.type)}</CardDescription>
-        <CardTitle>{currencyConverter(transaction.amount)}</CardTitle>
+        <CardTitle>
+          {currencyConverter({ amount: transaction.amount })}
+        </CardTitle>
       </CardHeader>
     </Card>
   );
@@ -51,7 +55,9 @@ const WithdrawDashboardCard = ({
     <Card>
       <CardHeader>
         <CardDescription>{uppercaseFirst(transaction.type)}</CardDescription>
-        <CardTitle>{currencyConverter(transaction.amount)}</CardTitle>
+        <CardTitle>
+          {currencyConverter({ amount: transaction.amount })}
+        </CardTitle>
       </CardHeader>
     </Card>
   );

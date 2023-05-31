@@ -23,7 +23,7 @@ export const walletRouter = createTRPCRouter({
 
     const goal = dailyGoal?.dailyProfit ?? 0;
     const weekly = await weeklyWithdraws(ctx.prisma);
-    return currencyConverter(weekly / 7 - goal);
+    return currencyConverter({ amount: weekly / 7 - goal });
   }),
   updateDaily: protectedProcedure
     .input(z.object({ dailyProfit: z.number() }))
