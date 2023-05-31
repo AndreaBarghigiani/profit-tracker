@@ -1,7 +1,5 @@
 // Utils
 import { api } from "@/utils/api";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { prisma } from "@/server/db";
 import { getHodl } from "@/server/api/routers/hodl";
 import AddHodlPositionForm from "@/components/addHodlPositionForm";

@@ -72,7 +72,7 @@ const AddHodlPositionForm = ({
       className="mx-auto w-2/3 space-y-3"
       onSubmit={handleSubmitInvestment(handleAddPosition)}
     >
-      <div className="flex gap-3">
+      <div className="flex items-end gap-3">
         <div>
           <Label htmlFor="name">Amount</Label>
           <Input
@@ -88,7 +88,8 @@ const AddHodlPositionForm = ({
           <Input
             disabled
             type="text"
-            value={currencyConverter(watchAmount * tokenPrice)}
+            placeholder="0"
+            value={currencyConverter({ amount: watchAmount * tokenPrice })}
           />
         </div>
 
@@ -115,9 +116,11 @@ const AddHodlPositionForm = ({
             />
           </div>
         ) : null}
-      </div>
 
-      <Button type="submit">Add</Button>
+        <Button className="ml-auto" type="submit">
+          Add
+        </Button>
+      </div>
     </form>
   );
 };
