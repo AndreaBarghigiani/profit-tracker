@@ -121,7 +121,7 @@ model Wallet {
 model Token {
   id           String         @id @default(cuid())
   createdAt    DateTime       @default(now())
-  updatedAt    DateTime?      @default(now()) @updatedAt
+  updatedAt    DateTime       @default(now()) @updatedAt
   symbol       String?
   name         String
   iconUrl      String?

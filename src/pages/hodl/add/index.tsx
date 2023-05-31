@@ -15,7 +15,7 @@ import Heading from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
-import AddHodlPositionForm from "@/components/addHodlPositionForm";
+import CreateHodlPositionForm from "@/components/createHodlPositionForm";
 
 export const TokenSearchSchema = z.object({
   query: z.string(),
@@ -95,7 +95,7 @@ const AddHodl: NextPage = () => {
                     ) : null}
                     <span className="text-sm text-slate-400">{token.name}</span>
                     <span className="text-sm font-semibold text-slate-300">
-                      {currencyConverter(token.latestPrice)}
+                      {currencyConverter({ amount: token.latestPrice })}
                     </span>
                   </button>
                 ))}
@@ -121,7 +121,7 @@ const AddHodl: NextPage = () => {
                     ) : null}
                     <span className="text-sm text-slate-400">{token.name}</span>
                     <span className="text-sm font-semibold text-slate-300">
-                      {currencyConverter(token.latestPrice)}
+                      {currencyConverter({ amount: token.latestPrice })}
                     </span>
                   </button>
                 ))}
@@ -131,8 +131,11 @@ const AddHodl: NextPage = () => {
         ) : value && selectedToken ? (
           <>
             <h2>Token selected: {selectedToken.name}</h2>
-            <p>Token value: {currencyConverter(selectedToken.latestPrice)}</p>
-            <AddHodlPositionForm tokenId={selectedToken.coingecko_id} />
+            <p>
+              Token value:{" "}
+              {currencyConverter({ amount: selectedToken.latestPrice })}
+            </p>
+            <CreateHodlPositionForm tokenId={selectedToken.coingecko_id} />
           </>
         ) : null}
       </section>

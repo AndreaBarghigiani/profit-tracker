@@ -20,10 +20,10 @@ export default async function tokenHistory(
   ];
 
   try {
-    const updatedData = await updateMarketData({
+    await updateMarketData({
       tokenIds: sample,
     });
-    console.log("updatedData:", updatedData);
+
     res.status(200).json({ message: "ok" });
   } catch (cause) {
     if (cause instanceof TRPCError) {

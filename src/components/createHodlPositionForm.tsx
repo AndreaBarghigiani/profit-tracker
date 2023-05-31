@@ -4,7 +4,6 @@ import { api } from "@/utils/api";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { currencyConverter } from "@/utils/string";
-import { HodlValuesSchema } from "@/server/types";
 
 // Types
 import type { HodlValues } from "@/server/types";

@@ -12,9 +12,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
-import { MoreVertical, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import {
   Tooltip,
   TooltipTrigger,

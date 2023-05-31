@@ -29,6 +29,13 @@ export const EditProjectValuesSchema = z.object({
 
 export type EditProjectValues = z.infer<typeof EditProjectValuesSchema>;
 
+// Token types
+export type UpdateTokenData = {
+  coingecko_id: string;
+  icon_url?: string;
+  latestPrice: string;
+};
+
 // Transactions types
 export const TransactionValuesSchema = z.object({
   amount: z.number(),
@@ -70,31 +77,140 @@ export const HodlValuesSchema = z.object({
 export type HodlValues = z.infer<typeof HodlValuesSchema>;
 
 // CoinGecko
-export type CoinGeckoCoinsMarkets = {
-  id: string;
-  symbol: string;
-  name: string;
-  image: string;
-  current_price: number;
-  market_cap: number;
-  market_cap_rank: number;
-  fully_diluted_valuation: number;
-  total_volume: number;
-  high_24h: number;
-  low_24h: number;
-  price_change_24h: number;
-  price_change_percentage_24h: number;
-  market_cap_change_24h: number;
-  market_cap_change_percentage_24h: number;
-  circulating_supply: number;
-  total_supply: number;
-  max_supply: number;
-  ath: number;
-  ath_change_percentage: number;
-  ath_date: string;
-  atl: number;
-  atl_change_percentage: number;
-  atl_date: string;
-  roi: null;
-  last_updated: string;
-};
+export const CoinGeckoCoinsMarketSchema = z.object({
+  id: z.string().min(1),
+  symbol: z.string().min(1),
+  name: z.string().min(1),
+  image: z.string().transform((val) => {
+    return val.startsWith("https") ? val : "/placeholder.png";
+  }),
+  current_price: z
+    .number()
+    .min(0)
+    .nullable()
+    .default(0)
+    .transform((val) => {
+      return val ?? 0;
+    }),
+  market_cap: z
+    .number()
+    .nullable()
+    .default(0)
+    .transform((val) => {
+      return val ?? 0;
+    }),
+  market_cap_rank: z
+    .number()
+    .nullable()
+    .default(0)
+    .transform((val) => {
+      return val ?? 0;
+    }),
+  fully_diluted_valuation: z
+    .number()
+    .nullable()
+    .default(0)
+    .transform((val) => {
+      return val ?? 0;
+    }),
+  total_volume: z
+    .number()
+    .nullable()
+    .default(0)
+    .transform((val) => {
+      return val ?? 0;
+    }),
+  high_24h: z
+    .number()
+    .nullable()
+    .default(0)
+    .transform((val) => {
+      return val ?? 0;
+    }),
+  low_24h: z
+    .number()
+    .nullable()
+    .default(0)
+    .transform((val) => {
+      return val ?? 0;
+    }),
+  price_change_24h: z
+    .number()
+    .nullable()
+    .default(0)
+    .transform((val) => {
+      return val ?? 0;
+    }),
+  price_change_percentage_24h: z
+    .number()
+    .nullable()
+    .default(0)
+    .transform((val) => {
+      return val ?? 0;
+    }),
+  market_cap_change_24h: z
+    .number()
+    .nullable()
+    .default(0)
+    .transform((val) => {
+      return val ?? 0;
+    }),
+  market_cap_change_percentage_24h: z
+    .number()
+    .nullable()
+    .default(0)
+    .transform((val) => {
+      return val ?? 0;
+    }),
+  circulating_supply: z
+    .number()
+    .nullable()
+    .default(0)
+    .transform((val) => {
+      return val ?? 0;
+    }),
+  total_supply: z
+    .number()
+    .nullable()
+    .default(0)
+    .transform((val) => {
+      return val ?? 0;
+    }),
+  max_supply: z
+    .number()
+    .nullable()
+    .default(0)
+    .transform((val) => {
+      return val ?? 0;
+    }),
+  ath: z
+    .number()
+    .nullable()
+    .default(0)
+    .transform((val) => {
+      return val ?? 0;
+    }),
+  ath_change_percentage: z
+    .number()
+    .nullable()
+    .default(0)
+    .transform((val) => {
+      return val ?? 0;
+    }),
+  atl: z
+    .number()
+    .nullable()
+    .default(0)
+    .transform((val) => {
+      return val ?? 0;
+    }),
+  atl_change_percentage: z
+    .number()
+    .nullable()
+    .default(0)
+    .transform((val) => {
+      return val ?? 0;
+    }),
+});
+
+export type CoinGeckoCoinsMarkets = z.infer<typeof CoinGeckoCoinsMarketSchema>;

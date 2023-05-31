@@ -75,9 +75,15 @@ export const tokenRouter = createTRPCRouter({
         take: 12,
       });
 
+      const currentTime = new Date().getTime();
+      const oneDay = 24 * 60 * 60 * 1000;
+
       // Check if I have all the info needed otherwise update the token
       const tokenToUpdate = tokens.some(
-        (token) => !token.iconUrl || !token.latestPrice
+        (token) =>
+          !token.iconUrl ||
+          !token.latestPrice ||
+          currentTime - token.updatedAt.getTime() > oneDay
       );
 
       if (tokenToUpdate) {
