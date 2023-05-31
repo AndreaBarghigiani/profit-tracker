@@ -41,14 +41,11 @@ const PositionCard = ({ position }: { position: PositionCartProps }) => {
         <CardHeader className="flex-1 px-0">
           <CardTitle className="flex justify-between">
             <Link href={`/hodl/${position.id}/`}>{position.token.name}</Link>
-            <p>{currencyConverter(position.currentEvaluation)}</p>
+            <p>{currencyConverter({ amount: position.currentEvaluation })}</p>
           </CardTitle>
           <CardDescription className="flex justify-between">
-            <time
-              className="text-xs"
-              dateTime={formatDate.format(position.createdAt)}
-            >
-              {formatDate.format(position.createdAt)}
+            <time className="text-xs" dateTime={formatDate(position.createdAt)}>
+              {formatDate(position.createdAt)}
             </time>
             <span>
               Holding:{" "}

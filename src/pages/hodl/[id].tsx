@@ -39,7 +39,7 @@ const Hodl: NextPage<
           <p>
             You started this position at:{" "}
             <time dateTime={data.createdAt.toString()}>
-              {formatDate.format(data.createdAt)}
+              {formatDate(data.createdAt)}
             </time>
           </p>
         ) : null}

@@ -29,16 +29,13 @@ const LastProjectTransaction = ({ project }: { project: Project }) => {
             <CardTitle className="flex justify-between">
               Last Transaction
               <time className="text-xs" dateTime={lastTx.createdAt.toString()}>
-                {formatDate.format(lastTx?.createdAt)}
+                {formatDate(lastTx?.createdAt)}
               </time>
             </CardTitle>
             <CardDescription className="flex justify-between">
               Type: {lastTx ? uppercaseFirst(lastTx.type) : "unknown"}
-              <time
-                className="text-xs"
-                dateTime={formatDate.format(new Date())}
-              >
-                Current: {formatDate.format(new Date())}
+              <time className="text-xs" dateTime={formatDate(new Date())}>
+                Current: {formatDate(new Date())}
               </time>
             </CardDescription>
           </CardHeader>
