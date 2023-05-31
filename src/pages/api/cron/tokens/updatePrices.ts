@@ -3,6 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { getHTTPStatusCodeFromError } from "@trpc/server/http";
 import { prisma } from "@/server/db";
 import { updatePrices } from "@/server/api/routers/token/updatePrices";
+
 // Types
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -31,10 +32,7 @@ export default async function tokenHistory(
 
     const tokenIds: string[] = tokens.map((token) => token.coingecko_id);
 
-    const updatedData = await updatePrices({
-      tokenIds,
-    });
-    console.log("updatedData:", updatedData);
+    await updatePrices({ tokenIds });
 
     res.status(200).json({ message: "ok" });
   } catch (cause) {

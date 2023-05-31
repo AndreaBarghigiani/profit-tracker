@@ -52,9 +52,15 @@ const Hodl: NextPage<
 
         {isSuccess && data.transaction ? (
           <div className="space-y-3">
+            <div className="grid grid-cols-3 gap-4 rounded-md bg-foreground/30">
+              <p className="p-3">Amount</p>
+              <p className="p-3">Type</p>
+              <p className="p-3">Date</p>
+            </div>
             {data.transaction.map((transaction) => (
               <HodlTransactionCard
                 transaction={transaction}
+                token={token}
                 key={transaction.id}
               />
             ))}
