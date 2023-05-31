@@ -39,12 +39,24 @@ export const hodlRouter = createTRPCRouter({
               coingecko_id: input.tokenId,
             },
           },
-          // The transaction is in charge of updating the wallet
           transaction: {
             create: {
               type: TransactionType.BUY,
-              amount: input.currentEvaluation,
+              amount: input.currentAmount,
+              evaluation: input.currentEvaluation,
             },
+          },
+        },
+      });
+
+      // Update the wallet adding the BUY order as Deposit
+      await ctx.prisma.wallet.update({
+        where: {
+          userId: ctx.session.user.id,
+        },
+        data: {
+          totalDeposit: {
+            increment: input.currentEvaluation,
           },
         },
       });

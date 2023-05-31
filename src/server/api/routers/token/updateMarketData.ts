@@ -1,12 +1,12 @@
+// Utils
+import { z } from "zod";
 import { prisma } from "@/server/db";
-import type { CoinGeckoCoinsMarkets } from "@/server/types";
-import { Token } from "@prisma/client";
 
-type MassagedData = {
-  coingecko_id: string;
-  icon_url: string;
-  latestPrice: string;
-};
+// Types
+import type { Token } from "@prisma/client";
+import type { UpdateTokenData } from "@/server/types";
+import { CoinGeckoCoinsMarketSchema } from "@/server/types";
+
 export const updateMarketData = async ({
   tokenIds,
 }: {
@@ -18,9 +18,9 @@ export const updateMarketData = async ({
   url.searchParams.set("locale", "en");
 
   const response = await fetch(url);
-  const data = (await response.json()) as CoinGeckoCoinsMarkets[];
+  const data = z.array(CoinGeckoCoinsMarketSchema).parse(await response.json());
 
-  const massaged: MassagedData[] = data.map((entry) => {
+  const massaged: UpdateTokenData[] = data.map((entry) => {
     return {
       coingecko_id: entry.id,
       icon_url: entry.image,
@@ -28,7 +28,7 @@ export const updateMarketData = async ({
     };
   });
 
-  const updateToken = async (token: MassagedData) => {
+  const updateToken = async (token: UpdateTokenData) => {
     return await prisma.token.update({
       where: {
         coingecko_id: token.coingecko_id,
@@ -36,6 +36,11 @@ export const updateMarketData = async ({
       data: {
         latestPrice: token.latestPrice,
         iconUrl: token.icon_url,
+        tokenHistory: {
+          create: {
+            price: token.latestPrice,
+          },
+        },
       },
     });
   };
