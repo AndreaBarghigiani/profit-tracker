@@ -61,7 +61,7 @@ const ProjectPage: NextPage = () => {
             Project Details
           </Heading>
           <div className="ml-auto text-right text-sm">
-            <p>Created at: {formatDate.format(project.createdAt)}</p>
+            <p>Created at: {formatDate(project.createdAt)}</p>
           </div>
         </header>
 
