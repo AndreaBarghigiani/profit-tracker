@@ -122,7 +122,7 @@ model Token {
   id           String         @id @default(cuid())
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @default(now()) @updatedAt
-  symbol       String?
+  symbol       String
   name         String
   iconUrl      String?
   latestPrice  String         @default("0")
