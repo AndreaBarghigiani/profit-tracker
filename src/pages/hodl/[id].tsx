@@ -1,7 +1,7 @@
 // Utils
 import { api } from "@/utils/api";
 import { prisma } from "@/server/db";
-import { formatDate } from "@/utils/string";
+import { currencyConverter, formatDate } from "@/utils/string";
 import { getHodl } from "@/server/api/routers/hodl";
 import { getToken } from "@/server/api/routers/token";
 import { buttonVariants } from "@/components/ui/button";
@@ -49,6 +49,10 @@ const Hodl: NextPage<
         <p>Amount: {amount}</p>
         <p>Evaluation: {evaluation}</p>
         <p>Total: {total}</p>
+        <p>
+          Token current price:{" "}
+          {currencyConverter({ amount: token.price, type: "long" })}
+        </p>
 
         {isSuccess && data.transaction ? (
           <div className="space-y-3">
@@ -101,6 +105,7 @@ export async function getServerSideProps(
         name: token.name,
         symbol: token.symbol,
         icon: token.iconUrl,
+        price: token.latestPrice,
       },
     },
   };
