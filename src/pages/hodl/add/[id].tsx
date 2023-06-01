@@ -40,6 +40,7 @@ const AddHodlPosition: NextPage<
     api.token.updatePrice.useMutation({
       onSuccess: async () => {
         await utils.token.get.invalidate();
+        await utils.hodl.get.invalidate();
       },
     });
 

@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { currencyConverter, uppercaseFirst } from "@/utils/string";
 import { TransactionType } from "@prisma/client";
 import { TransactionValuesSchema } from "@/server/types";
-
+import { useRouter } from "next/router";
 // Types
 import type { SubmitHandler } from "react-hook-form";
 import type { TransactionValues } from "@/server/types";
@@ -43,10 +43,12 @@ const AddHodlPositionForm = ({
   } = useForm<TransactionValues>({
     resolver: zodResolver(TransactionValuesSchema),
   });
+  const router = useRouter();
   const { mutate: addPosition } = api.transaction.create.useMutation({
     onSuccess: async () => {
-      console.log("success");
-      await utils.wallet.get.invalidate();
+      await utils.wallet.get.invalidate().then(async () => {
+        await router.push(`/hodl/${hodlId}`);
+      });
     },
   });
   const { data: selectedToken, isSuccess: isTokenSuccess } =
@@ -97,7 +99,7 @@ const AddHodlPositionForm = ({
                     amount: watchAmount * tokenPrice,
                     type: "long",
                   })
-                : "0"
+                : "$0"
             }
           />
         </div>
