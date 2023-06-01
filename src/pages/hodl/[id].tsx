@@ -1,7 +1,7 @@
 // Utils
 import { api } from "@/utils/api";
 import { prisma } from "@/server/db";
-import { currencyConverter, formatDate } from "@/utils/string";
+import { currencyConverter, formatDate, uppercaseFirst } from "@/utils/string";
 import { getHodl } from "@/server/api/routers/hodl";
 import { getToken } from "@/server/api/routers/token";
 import { buttonVariants } from "@/components/ui/button";
@@ -33,7 +33,7 @@ const Hodl: NextPage<
           <span className="text-lg">({token.symbol?.toUpperCase()})</span>
         </Heading>
 
-        <section className="flex items-center justify-between">
+        <section className="flex items-end justify-between">
           <p>
             You started this position at:{" "}
             <time dateTime={startDate}>{startDate}</time>
@@ -46,13 +46,26 @@ const Hodl: NextPage<
       </header>
 
       <section>
-        <p>Amount: {amount}</p>
-        <p>Evaluation: {evaluation}</p>
-        <p>Total: {total}</p>
-        <p>
-          Token current price:{" "}
-          {currencyConverter({ amount: token.price, type: "long" })}
-        </p>
+        <header className="my-4 flex justify-between gap-4 rounded-md border border-stone-500 bg-background px-4 py-2">
+          <div>
+            <Heading size="h4">Amount</Heading>
+            <p>
+              {amount} {uppercaseFirst(token.symbol)}
+            </p>
+          </div>
+          <div>
+            <Heading size="h4">Current Value</Heading>
+            <p>{currencyConverter({ amount: evaluation })}</p>
+          </div>
+          <div>
+            <Heading size="h4">Invested</Heading>
+            <p>{currencyConverter({ amount: total })}</p>
+          </div>
+          <div>
+            <Heading size="h4">Token current price</Heading>
+            <p>{currencyConverter({ amount: token.price, type: "long" })}</p>
+          </div>
+        </header>
 
         {isSuccess && data.transaction ? (
           <div className="space-y-3">
