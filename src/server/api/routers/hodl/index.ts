@@ -94,7 +94,11 @@ export const hodlRouter = createTRPCRouter({
         },
         select: {
           createdAt: true,
-          transaction: true,
+          transaction: {
+            orderBy: {
+              createdAt: "desc",
+            },
+          },
         },
       });
     }),
