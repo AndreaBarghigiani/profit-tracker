@@ -18,6 +18,7 @@ import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import { InterestDashboardCard } from "@/components/ui/custom/DashboardCards";
 import { Skeleton } from "@/components/ui/skeleton";
+import PositionCard from "@/components/ui/custom/PositionCard";
 
 const ProjectCard = ({ project }: { project: Project }) => {
   return (
@@ -38,7 +39,9 @@ const ProjectCard = ({ project }: { project: Project }) => {
 const Dashboard: NextPage = () => {
   const { data: projects, isSuccess: isProjectsSuccess } =
     api.project.getByCurrentUser.useQuery();
-
+  const { data: hodls, isSuccess: isHodlsSuccess } =
+    api.hodl.getByCurrentUser.useQuery();
+  console.log("hodls:", hodls);
   const { data: result } = api.wallet.getDailyPassiveResult.useQuery();
 
   const {
@@ -95,27 +98,48 @@ const Dashboard: NextPage = () => {
         </div>
       )}
 
-      {isProjectsSuccess ? (
-        <>
-          <Heading size="h2" spacing="large" className="flex justify-center">
-            These are your projects
-            <Link
-              className={buttonVariants({ className: "ml-auto" })}
-              href="/project/add"
-            >
-              Add project
-            </Link>
-          </Heading>
+      <section className="space-y-8">
+        {isProjectsSuccess ? (
+          <>
+            <Heading size="h2" spacing="large" className="flex justify-center">
+              These are your projects
+              <Link
+                className={buttonVariants({ className: "ml-auto" })}
+                href="/project/add"
+              >
+                Add project
+              </Link>
+            </Heading>
 
-          <div className="grid grid-cols-2 gap-4">
-            {projects.map((project: Project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </div>
-        </>
-      ) : (
-        <p>Loading...</p>
-      )}
+            <div className="grid grid-cols-2 gap-4">
+              {projects.map((project: Project) => (
+                <ProjectCard key={project.id} project={project} />
+              ))}
+            </div>
+          </>
+        ) : (
+          <p>Loading...</p>
+        )}
+
+        {isHodlsSuccess && (
+          <>
+            <Heading size="h2" spacing="large" className="flex justify-center">
+              These are your holdings
+              <Link
+                className={buttonVariants({ className: "ml-auto" })}
+                href="/hodl/add"
+              >
+                Add hodl
+              </Link>
+            </Heading>
+            <div className="grid grid-cols-2 gap-4">
+              {hodls.map((hodl) => (
+                <PositionCard key={hodl.id} position={hodl} />
+              ))}
+            </div>
+          </>
+        )}
+      </section>
     </div>
   );
 };

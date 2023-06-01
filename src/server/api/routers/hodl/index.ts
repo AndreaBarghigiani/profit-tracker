@@ -85,6 +85,16 @@ export const hodlRouter = createTRPCRouter({
       take: 1,
     });
   }),
+  getByCurrentUser: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.hodl.findMany({
+      where: {
+        userId: ctx.session.user.id,
+      },
+      include: {
+        token: true,
+      },
+    });
+  }),
   getTransactions: protectedProcedure
     .input(z.object({ hodlId: z.string() }))
     .query(({ ctx, input }) => {
