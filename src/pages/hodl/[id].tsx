@@ -4,6 +4,7 @@ import { prisma } from "@/server/db";
 import { formatDate } from "@/utils/string";
 import { getHodl } from "@/server/api/routers/hodl";
 import { getToken } from "@/server/api/routers/token";
+import { buttonVariants } from "@/components/ui/button";
 
 // Types
 import type {
@@ -15,18 +16,15 @@ import type {
 // Components
 import Heading from "@/components/ui/heading";
 import HodlTransactionCard from "@/components/ui/custom/HodlTransactionCard";
+import Link from "next/link";
 
 const Hodl: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ hodlId, amount, evaluation, total, token }) => {
+> = ({ hodlId, startDate, amount, evaluation, total, token }) => {
   const { data, isSuccess } = api.hodl.getTransactions.useQuery({
     hodlId,
   });
-  // if (isSuccess) {
-  //   const { createdAt, transaction: transactions } = data;
-  //   console.log("transactions:", transactions);
-  //   console.log("createdAt:", createdAt);
-  // }
+
   return (
     <div className="mx-auto max-w-3xl space-y-4">
       <header>
@@ -35,14 +33,16 @@ const Hodl: NextPage<
           <span className="text-lg">({token.symbol?.toUpperCase()})</span>
         </Heading>
 
-        {isSuccess && data.createdAt ? (
+        <section className="flex items-center justify-between">
           <p>
             You started this position at:{" "}
-            <time dateTime={data.createdAt.toString()}>
-              {formatDate(data.createdAt)}
-            </time>
+            <time dateTime={startDate}>{startDate}</time>
           </p>
-        ) : null}
+
+          <Link className={buttonVariants()} href={`/hodl/add/${hodlId}`}>
+            Add a new position
+          </Link>
+        </section>
       </header>
 
       <section>
@@ -83,6 +83,8 @@ export async function getServerSideProps(
     prisma,
   });
 
+  const startDate = formatDate(hodl.createdAt);
+
   const token = await getToken({
     tokenId: hodl.tokenId,
     prisma,
@@ -91,6 +93,7 @@ export async function getServerSideProps(
   return {
     props: {
       hodlId: context.params.id,
+      startDate,
       amount: hodl.currentAmount,
       evaluation: hodl.currentEvaluation,
       total: hodl.totalInvested,

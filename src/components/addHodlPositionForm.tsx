@@ -39,6 +39,7 @@ const AddHodlPositionForm = ({
     handleSubmit: handleSubmitInvestment,
     watch,
     control,
+    formState: { errors },
   } = useForm<TransactionValues>({
     resolver: zodResolver(TransactionValuesSchema),
   });
@@ -77,7 +78,8 @@ const AddHodlPositionForm = ({
           <Label htmlFor="name">Amount</Label>
           <Input
             type="number"
-            step=".01"
+            placeholder="0.00"
+            step="any"
             id="amount"
             {...registerInvestment("amount", { valueAsNumber: true })}
           />
@@ -89,7 +91,14 @@ const AddHodlPositionForm = ({
             disabled
             type="text"
             placeholder="0"
-            value={currencyConverter({ amount: watchAmount * tokenPrice })}
+            value={
+              watchAmount
+                ? currencyConverter({
+                    amount: watchAmount * tokenPrice,
+                    type: "long",
+                  })
+                : "0"
+            }
           />
         </div>
 
