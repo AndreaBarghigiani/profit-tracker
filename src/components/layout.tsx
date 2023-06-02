@@ -1,5 +1,5 @@
 // Utils & Hooks
-import { api } from "@/utils/api";
+// import { api } from "@/utils/api";
 import { buttonVariants } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 // import { Role } from "@prisma/client";
@@ -19,7 +19,7 @@ import Heading from "@/components/ui/heading";
 import UserCard from "@/components/userCard";
 // import { Separator } from "./ui/separator";
 const Sidebar = () => {
-  const { data: userRole } = api.user.getRole.useQuery();
+  // const { data: userRole } = api.user.getRole.useQuery();
 
   return (
     <nav>

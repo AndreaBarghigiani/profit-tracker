@@ -39,7 +39,7 @@ const AddHodlPositionForm = ({
     handleSubmit: handleSubmitInvestment,
     watch,
     control,
-    formState: { errors },
+    // formState: { errors },
   } = useForm<TransactionValues>({
     resolver: zodResolver(TransactionValuesSchema),
   });

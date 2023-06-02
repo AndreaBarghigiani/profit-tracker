@@ -96,7 +96,7 @@ export const tokenRouter = createTRPCRouter({
     }),
   updatePrice: protectedProcedure
     .input(z.object({ tokenId: z.string() }))
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ input }) => {
       return await updateMarketData({ tokenIds: [input.tokenId] });
     }),
 });
