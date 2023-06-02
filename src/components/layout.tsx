@@ -2,7 +2,7 @@
 import { api } from "@/utils/api";
 import { buttonVariants } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
-import { Role } from "@prisma/client";
+// import { Role } from "@prisma/client";
 
 // Types
 // Components
@@ -11,13 +11,13 @@ import {
   Gauge,
   ArrowUpDown,
   Boxes,
-  Coins,
+  // Coins,
   PiggyBank,
   ToyBrick,
 } from "lucide-react";
 import Heading from "@/components/ui/heading";
 import UserCard from "@/components/userCard";
-import { Separator } from "./ui/separator";
+// import { Separator } from "./ui/separator";
 const Sidebar = () => {
   const { data: userRole } = api.user.getRole.useQuery();
 
@@ -35,6 +35,19 @@ const Sidebar = () => {
             href={`/dashboard`}
           >
             <Gauge className="mr-2 h-4 w-4" /> Dashboard
+          </Link>
+        </li>
+        <li>
+          <Link
+            className={buttonVariants({
+              variant: "ghost",
+              size: "nav",
+              corners: "square",
+              align: "left",
+            })}
+            href={`/new-investment`}
+          >
+            <PiggyBank className="mr-2 h-4 w-4" /> New Investment
           </Link>
         </li>
         <li>
@@ -76,22 +89,9 @@ const Sidebar = () => {
             <ToyBrick className="mr-2 h-4 w-4" /> Hodls
           </Link>
         </li>
-        <li>
-          <Link
-            className={buttonVariants({
-              variant: "ghost",
-              size: "nav",
-              corners: "square",
-              align: "left",
-            })}
-            href={`/new-investment`}
-          >
-            <PiggyBank className="mr-2 h-4 w-4" /> New Investment
-          </Link>
-        </li>
       </ul>
 
-      {!!userRole?.role && userRole.role === Role.ADMIN && (
+      {/* {!!userRole?.role && userRole.role === Role.ADMIN && (
         <>
           <Separator className="my-4 bg-foreground/50" />
           <h3 className="px-4 text-xl font-semibold">Admin powers</h3>
@@ -111,7 +111,7 @@ const Sidebar = () => {
             </li>
           </ul>
         </>
-      )}
+      )} */}
     </nav>
   );
 };

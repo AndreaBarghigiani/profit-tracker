@@ -101,6 +101,7 @@ export const transactionRouter = createTRPCRouter({
           },
           hodl: {
             select: {
+              id: true,
               token: {
                 select: {
                   name: true,
@@ -164,7 +165,7 @@ export const transactionRouter = createTRPCRouter({
       await ctx.prisma.transaction.create({
         data: {
           amount: input.amount,
-          evaluation: input.evaluation ? input.evaluation : null,
+          evaluation: input.evaluation,
           type: input.type,
           project: input.projectId
             ? {

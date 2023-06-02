@@ -1,6 +1,7 @@
 // Utils
 import { api } from "@/utils/api";
 import { formatDate, uppercaseFirst } from "@/utils/string";
+import clsx from "clsx";
 
 // Types
 import type { Project } from "@prisma/client";
@@ -14,15 +15,24 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-const LastProjectTransaction = ({ project }: { project: Project }) => {
+const LastProjectTransaction = ({
+  project,
+  className,
+}: {
+  project: Project;
+  className?: string;
+}) => {
   const { data: lastTx, isSuccess: isSuccessLastTransaction } =
     api.transaction.lastTransaction.useQuery(
       { projectId: project.id, projectAccruing: project.accruing },
       { enabled: !!project }
     );
 
+  const classes = clsx("w-full", {
+    [className]: !!className,
+  });
   return (
-    <Card className="w-full">
+    <Card className={classes}>
       {isSuccessLastTransaction && (
         <>
           <CardHeader>

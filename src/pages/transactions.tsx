@@ -160,7 +160,7 @@ const Transaction: NextPage = () => {
                     </div>
 
                     <Link
-                      href={`/projects/`}
+                      href={`/hodl/${transaction.hodl.id}`}
                       className={buttonVariants({ variant: "link" })}
                     >
                       Check out investment

@@ -63,7 +63,8 @@ export default function CreateHodlPositionForm({
           <Label htmlFor="name">Amount</Label>
           <Input
             type="number"
-            step=".01"
+            placeholder="0.00"
+            step="any"
             id="amount"
             {...registerInvestment("amount", { valueAsNumber: true })}
           />

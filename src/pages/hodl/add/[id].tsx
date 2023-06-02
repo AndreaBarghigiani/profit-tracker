@@ -3,7 +3,7 @@ import { api } from "@/utils/api";
 import { prisma } from "@/server/db";
 import { getHodl } from "@/server/api/routers/hodl";
 import { clsx } from "clsx";
-import AddHodlPositionForm from "@/components/addHodlPositionForm";
+import { currencyConverter } from "@/utils/string";
 
 // Types
 import type {
@@ -13,6 +13,7 @@ import type {
 } from "next";
 
 // Components
+import AddHodlPositionForm from "@/components/addHodlPositionForm";
 import Heading from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import {
@@ -61,32 +62,37 @@ const AddHodlPosition: NextPage<
         Current evaluation
       </Heading>
 
-      <section className="mb-4 flex items-center justify-center gap-4">
-        <p className="text-center text-stone-400">
-          1 {token?.name} = ${token?.latestPrice}
-        </p>
-
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              {isTokenSuccess && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => updatePrice({ tokenId: token.coingecko_id })}
-                >
-                  <RefreshCcw className={iconClass} />
-                </Button>
-              )}
-            </TooltipTrigger>
-            <TooltipContent className="border-foreground/20">
-              <p>Update price</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </section>
       {isTokenSuccess && (
-        <AddHodlPositionForm type="full" hodlId={hodlId} tokenId={tokenId} />
+        <>
+          <section className="mb-4 flex items-center justify-center gap-4">
+            <p className="text-center text-stone-400">
+              1 {token.name} ={" "}
+              {currencyConverter({ amount: token.latestPrice, type: "long" })}
+            </p>
+
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  {isTokenSuccess && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() =>
+                        updatePrice({ tokenId: token.coingecko_id })
+                      }
+                    >
+                      <RefreshCcw className={iconClass} />
+                    </Button>
+                  )}
+                </TooltipTrigger>
+                <TooltipContent className="border-foreground/20">
+                  <p>Update price</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </section>
+          <AddHodlPositionForm type="full" hodlId={hodlId} tokenId={tokenId} />
+        </>
       )}
     </div>
   );

@@ -5,7 +5,7 @@ import { currencyConverter } from "@/utils/string";
 
 export const walletRouter = createTRPCRouter({
   get: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.wallet.findUnique({
+    return ctx.prisma.wallet.findUniqueOrThrow({
       where: {
         userId: ctx.session.user.id,
       },

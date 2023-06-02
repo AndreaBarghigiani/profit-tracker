@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useEffect } from "react";
 
 const AddTransaction: NextPage = () => {
   const router = useRouter();
@@ -40,13 +41,26 @@ const AddTransaction: NextPage = () => {
     },
   });
 
-  const { register, handleSubmit, control } = useForm<TransactionValues>({
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    setValue,
+    // formState: { errors },
+  } = useForm<TransactionValues>({
     resolver: zodResolver(TransactionValuesSchema),
     defaultValues: {
       type: "DEPOSIT",
       projectId,
     },
   });
+
+  const watchAmount = watch("amount", 0);
+
+  useEffect(() => {
+    setValue("evaluation", watchAmount);
+  }, [watchAmount, setValue]);
 
   const onSubmit: SubmitHandler<TransactionValues> = (data) => {
     mutate(data);
@@ -69,6 +83,13 @@ const AddTransaction: NextPage = () => {
             {...register("amount", { valueAsNumber: true })}
           />
         </div>
+
+        <Input
+          type="hidden"
+          id="evaluatioon"
+          step=".01"
+          {...register("evaluation", { valueAsNumber: true })}
+        />
 
         <div>
           <Label htmlFor="type">Transaction Type</Label>

@@ -40,9 +40,18 @@ export const sumTransactions = async (prisma: PrismaClient, userId: string) => {
   const sumTx = await prisma.transaction.groupBy({
     by: ["type"],
     where: {
-      project: {
-        userId,
-      },
+      OR: [
+        {
+          project: {
+            userId,
+          },
+        },
+        {
+          hodl: {
+            userId,
+          },
+        },
+      ],
     },
     _sum: {
       amount: true,
