@@ -20,7 +20,7 @@ const LastProjectTransaction = ({
   className,
 }: {
   project: Project;
-  className?: string;
+  className: string;
 }) => {
   const { data: lastTx, isSuccess: isSuccessLastTransaction } =
     api.transaction.lastTransaction.useQuery(

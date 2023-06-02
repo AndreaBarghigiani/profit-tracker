@@ -11,7 +11,7 @@ import PositionCard from "@/components/ui/custom/PositionCard";
 const Hodl: NextPage = () => {
   const {
     data: positions,
-    isLoading: isPositionsLoading,
+    // isLoading: isPositionsLoading,
     isSuccess: isPositionsSuccess,
   } = api.hodl.list.useQuery();
 
