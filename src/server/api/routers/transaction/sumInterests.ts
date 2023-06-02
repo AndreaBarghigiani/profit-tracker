@@ -18,8 +18,6 @@ export const sumInterests = async (
     },
   });
 
-  console.log(sumTx);
-
   return {
     type: TransactionType.INTEREST,
     amount: sumTx._sum.amount ?? 0,

@@ -26,7 +26,7 @@ export const addInterest = async (projectId: string, prisma: PrismaClient) => {
 
   const timeDiff = currentTime - lastTransaction.createdAt.getTime() - 1;
 
-  if (!(timeDiff > projectFrequencyHours)) return;
+  if (timeDiff < projectFrequencyHours) return;
 
   // 1. calculate interest amount
   const amount: number = project.compound

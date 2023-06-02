@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { currencyConverter } from "@/utils/string";
+import { clsx } from "clsx";
 
 // Types
 import type { NextPage } from "next";
@@ -16,6 +17,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import CreateHodlPositionForm from "@/components/createHodlPositionForm";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipProvider,
+  TooltipContent,
+} from "@/components/ui/tooltip";
+import { RefreshCcw } from "lucide-react";
 
 export const TokenSearchSchema = z.object({
   query: z.string(),
@@ -24,6 +32,7 @@ export const TokenSearchSchema = z.object({
 export type TokenSearch = z.infer<typeof TokenSearchSchema>;
 
 const AddHodl: NextPage = () => {
+  const utils = api.useContext();
   const { register: registerSearch, handleSubmit: handleSubmitSearch } =
     useForm<TokenSearch>({
       resolver: zodResolver(TokenSearchSchema),
@@ -41,6 +50,13 @@ const AddHodl: NextPage = () => {
     { tokenId: value },
     { enabled: !!value }
   );
+  const { mutateAsync: updatePrice, isLoading: isPriceLoading } =
+    api.token.updatePrice.useMutation({
+      onSuccess: async () => {
+        await utils.token.get.invalidate();
+        await utils.hodl.get.invalidate();
+      },
+    });
 
   const onSelect = (currentValue: string) => {
     setValue(currentValue);
@@ -50,6 +66,10 @@ const AddHodl: NextPage = () => {
   const handleSearch: SubmitHandler<TokenSearch> = (query) => {
     setQuery(query.query);
   };
+
+  const iconClass = clsx("h-4 w-4 text-stone-400", {
+    "animate-spin": isPriceLoading,
+  });
 
   return (
     <main className="container mx-auto">
@@ -130,11 +150,40 @@ const AddHodl: NextPage = () => {
           </>
         ) : value && selectedToken ? (
           <>
-            <h2>Token selected: {selectedToken.name}</h2>
-            <p>
-              Token value:{" "}
-              {currencyConverter({ amount: selectedToken.latestPrice })}
-            </p>
+            <Heading size="h3" className="text-center text-stone-400">
+              Current evaluation
+            </Heading>
+
+            <section className="mb-4 flex items-center justify-center gap-4">
+              <p className="text-center text-stone-400">
+                1 {selectedToken.name} ={" "}
+                {currencyConverter({
+                  amount: selectedToken.latestPrice,
+                  type: "long",
+                })}
+              </p>
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    {isTokenSuccess && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                          updatePrice({ tokenId: selectedToken.coingecko_id })
+                        }
+                      >
+                        <RefreshCcw className={iconClass} />
+                      </Button>
+                    )}
+                  </TooltipTrigger>
+                  <TooltipContent className="border-foreground/20">
+                    <p>Update price</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </section>
             <CreateHodlPositionForm tokenId={selectedToken.coingecko_id} />
           </>
         ) : null}

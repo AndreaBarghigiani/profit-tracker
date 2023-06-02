@@ -93,6 +93,7 @@ export const projectRouter = createTRPCRouter({
             create: {
               type: TransactionType.DEPOSIT,
               amount: input.initial,
+              evaluation: input.initial,
             },
           },
         },

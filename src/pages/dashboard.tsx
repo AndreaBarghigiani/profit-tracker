@@ -1,5 +1,6 @@
 //Utils
 import { api } from "@/utils/api";
+import { currencyConverter } from "@/utils/string";
 
 // Types
 import type { NextPage } from "next";
@@ -37,11 +38,13 @@ const ProjectCard = ({ project }: { project: Project }) => {
 };
 
 const Dashboard: NextPage = () => {
+  const { data: wallet, isSuccess: isWalletSuccess } =
+    api.wallet.get.useQuery();
+  console.log("wallet:", wallet);
   const { data: projects, isSuccess: isProjectsSuccess } =
     api.project.getByCurrentUser.useQuery();
   const { data: hodls, isSuccess: isHodlsSuccess } =
     api.hodl.getByCurrentUser.useQuery();
-  console.log("hodls:", hodls);
   const { data: result } = api.wallet.getDailyPassiveResult.useQuery();
 
   const {
@@ -85,16 +88,35 @@ const Dashboard: NextPage = () => {
         </div>
       ) : (
         <div className="grid grid-cols-4 gap-4">
+          {isWalletSuccess && (
+            <>
+              <Card>
+                <CardHeader>
+                  <CardDescription>Money at work</CardDescription>
+                  <CardTitle>
+                    {currencyConverter({ amount: wallet.totalDeposit })}
+                  </CardTitle>
+                </CardHeader>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardDescription>Profits</CardDescription>
+                  <CardTitle>
+                    {currencyConverter({ amount: wallet.totalWithdraw })}
+                  </CardTitle>
+                </CardHeader>
+              </Card>
+            </>
+          )}
+          {isAllInterestsSuccess && (
+            <InterestDashboardCard transaction={allInterests} />
+          )}
           <Card>
             <CardHeader>
               <CardDescription>Target</CardDescription>
               <CardTitle>{result}</CardTitle>
             </CardHeader>
           </Card>
-          {isAllInterestsSuccess && (
-            <InterestDashboardCard transaction={allInterests} />
-          )}
-          {/* {sumTransactionsCards?.map((card) => card)} */}
         </div>
       )}
 

@@ -1,7 +1,7 @@
 // Utils
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
-import { uppercaseFirst, formatDate } from "@/utils/string";
+import { uppercaseFirst, formatDate, currencyConverter } from "@/utils/string";
 
 // Types
 import type { NextPage } from "next";
@@ -55,7 +55,7 @@ const ProjectPage: NextPage = () => {
         </Heading>
         <p>{project.description}</p>
       </header>
-      <article className="space-y-3">
+      <article>
         <header className="flex items-center">
           <Heading as="h2" size="h2">
             Project Details
@@ -65,31 +65,27 @@ const ProjectPage: NextPage = () => {
           </div>
         </header>
 
-        <div className="flex flex-wrap justify-between gap-3 pb-8">
-          {project.currentHolding ? (
-            <Card>
-              <CardHeader>
-                <CardTitle>Current Holding</CardTitle>
-                <CardDescription>
-                  ${project.currentHolding.toFixed(2)}
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          ) : null}
-
+        <div className="grid grid-cols-4 gap-3 ">
           <Card>
             <CardHeader>
-              <CardTitle>Increase Frequency</CardTitle>
-              <CardDescription>
-                {uppercaseFirst(project.increaseFrequency)}
-              </CardDescription>
+              <CardDescription>Current Holding</CardDescription>
+              <CardTitle>
+                {currencyConverter({ amount: project.currentHolding })}
+              </CardTitle>
             </CardHeader>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Increase Amount</CardTitle>
-              <CardDescription>{project.increaseAmount}%</CardDescription>
+              <CardDescription>Increase Frequency</CardDescription>
+              <CardTitle>{uppercaseFirst(project.increaseFrequency)}</CardTitle>
+            </CardHeader>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardDescription>Increase Amount</CardDescription>
+              <CardTitle>{project.increaseAmount}%</CardTitle>
             </CardHeader>
           </Card>
 
@@ -105,11 +101,11 @@ const ProjectPage: NextPage = () => {
               </CardDescription>
             </CardHeader>
           </Card>
-
-          <LastProjectTransaction project={project} />
         </div>
 
-        <div className="flex">
+        <LastProjectTransaction className="mb-8 mt-3" project={project} />
+
+        <div className="mb-4 flex">
           <Heading as="h3" size="h3">
             Project transactions
           </Heading>

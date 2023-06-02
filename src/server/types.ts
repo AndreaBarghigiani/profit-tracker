@@ -39,7 +39,7 @@ export type UpdateTokenData = {
 // Transactions types
 export const TransactionValuesSchema = z.object({
   amount: z.number(),
-  evaluation: z.number().optional(),
+  evaluation: z.number(),
   type: z.nativeEnum(TransactionType),
   projectId: z.string().nullish(),
   hodlId: z.string().nullish(),
