@@ -58,6 +58,7 @@ const AddTransaction: NextPage = () => {
 
   const watchAmount = watch("amount", 0);
 
+  // TODO: find elegant way to do so, maybe just change form types
   useEffect(() => {
     setValue("evaluation", watchAmount);
   }, [watchAmount, setValue]);
@@ -79,15 +80,15 @@ const AddTransaction: NextPage = () => {
           <Input
             type="number"
             id="amount"
-            step=".01"
+            step="any"
             {...register("amount", { valueAsNumber: true })}
           />
         </div>
 
         <Input
           type="hidden"
-          id="evaluatioon"
-          step=".01"
+          id="evaluation"
+          step="any"
           {...register("evaluation", { valueAsNumber: true })}
         />
 
