@@ -1,9 +1,11 @@
 // Utils
 import { z } from "zod";
 import { api } from "@/utils/api";
+import clsx from "clsx";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { currencyConverter } from "@/utils/string";
+import { useRouter } from "next/router";
 
 // Types
 import type { HodlValues } from "@/server/types";
@@ -13,6 +15,7 @@ import type { SubmitHandler } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "./ui/button";
+import { RefreshCcw, Plus } from "lucide-react";
 
 export const CreatePositionValuesSchema = z.object({
   amount: z.number(),
@@ -26,12 +29,15 @@ export default function CreateHodlPositionForm({
   tokenId: string;
 }) {
   const utils = api.useContext();
-  const { mutate: createPosition } = api.hodl.create.useMutation({
-    onSuccess: async () => {
-      console.log("success");
-      await utils.wallet.get.invalidate();
-    },
-  });
+  const router = useRouter();
+  const { mutate: createPosition, isLoading: isCreatingPositionLoading } =
+    api.hodl.create.useMutation({
+      onSuccess: async () => {
+        await utils.wallet.get.invalidate().then(async () => {
+          await router.push(`/hodl/`);
+        });
+      },
+    });
   const { data: selectedToken, isSuccess: isTokenSuccess } =
     api.token.get.useQuery({ tokenId: tokenId }, { enabled: !!tokenId });
   const {
@@ -53,6 +59,10 @@ export default function CreateHodlPositionForm({
     createPosition(massaged);
   };
 
+  const iconClass = clsx("h-4 w-4 mr-2", {
+    "animate-spin": isCreatingPositionLoading,
+  });
+
   return (
     <form
       className="space-y-3"
@@ -63,6 +73,7 @@ export default function CreateHodlPositionForm({
           <Label htmlFor="name">Amount</Label>
           <Input
             type="number"
+            disabled={isCreatingPositionLoading}
             placeholder="0.00"
             step="any"
             id="amount"
@@ -80,7 +91,17 @@ export default function CreateHodlPositionForm({
         </div>
       </div>
 
-      <Button type="submit">Add</Button>
+      <Button disabled={isCreatingPositionLoading} type="submit">
+        {isCreatingPositionLoading ? (
+          <>
+            <RefreshCcw className={iconClass} /> Loading...
+          </>
+        ) : (
+          <>
+            <Plus className={iconClass} /> Create
+          </>
+        )}
+      </Button>
     </form>
   );
 }

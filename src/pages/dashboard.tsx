@@ -40,13 +40,11 @@ const ProjectCard = ({ project }: { project: Project }) => {
 const Dashboard: NextPage = () => {
   const { data: wallet, isSuccess: isWalletSuccess } =
     api.wallet.get.useQuery();
-  console.log("wallet:", wallet);
   const { data: projects, isSuccess: isProjectsSuccess } =
     api.project.getByCurrentUser.useQuery();
   const { data: hodls, isSuccess: isHodlsSuccess } =
     api.hodl.getByCurrentUser.useQuery();
   const { data: result } = api.wallet.getDailyPassiveResult.useQuery();
-
   const {
     data: allInterests,
     isLoading: isAllInterestsLoading,
