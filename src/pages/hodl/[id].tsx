@@ -29,14 +29,13 @@ const Hodl: NextPage<
     hodlId,
   });
 
-  const { mutate: deletePosition, isLoading: isDeletingPosition } =
-    api.hodl.delete.useMutation({
-      onSuccess: async () => {
-        await utils.wallet.get.invalidate().then(async () => {
-          await router.push(`/dashboard/`);
-        });
-      },
-    });
+  const { mutate: deletePosition } = api.hodl.delete.useMutation({
+    onSuccess: async () => {
+      await utils.wallet.get.invalidate().then(async () => {
+        await router.push(`/dashboard/`);
+      });
+    },
+  });
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">

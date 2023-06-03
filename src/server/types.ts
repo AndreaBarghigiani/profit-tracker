@@ -51,6 +51,7 @@ export type SumTxItem = {
   type: TransactionType;
   _sum: {
     evaluation: number | null;
+    amount: number | null;
   };
 };
 
@@ -58,12 +59,14 @@ export type SumTxItemValued = {
   type: TransactionType;
   _sum: {
     evaluation: number;
+    amount: number;
   };
 };
 
 export type MassagedSumTxItem = {
   type: TransactionType;
   evaluation: number;
+  amount: number;
 };
 
 // Hodl types
