@@ -1,5 +1,7 @@
 // Utils
 import { api } from "@/utils/api";
+import clsx from "clsx";
+import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { currencyConverter, uppercaseFirst } from "@/utils/string";
@@ -21,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { RefreshCcw, Plus } from "lucide-react";
 
 type AddPositionProps = {
   tokenId: string;
@@ -34,23 +37,26 @@ const AddHodlPositionForm = ({
   type = "quick",
 }: AddPositionProps) => {
   const utils = api.useContext();
+  const router = useRouter();
   const {
     register: registerInvestment,
     handleSubmit: handleSubmitInvestment,
     watch,
     control,
+    setValue,
     // formState: { errors },
   } = useForm<TransactionValues>({
     resolver: zodResolver(TransactionValuesSchema),
   });
-  const router = useRouter();
-  const { mutate: addPosition } = api.transaction.create.useMutation({
-    onSuccess: async () => {
-      await utils.wallet.get.invalidate().then(async () => {
-        await router.push(`/hodl/${hodlId}`);
-      });
-    },
-  });
+
+  const { mutate: addPosition, isLoading: isAddingPosition } =
+    api.transaction.create.useMutation({
+      onSuccess: async () => {
+        await utils.wallet.get.invalidate().then(async () => {
+          await router.push(`/hodl/${hodlId}`);
+        });
+      },
+    });
   const { data: selectedToken, isSuccess: isTokenSuccess } =
     api.token.get.useQuery({ tokenId: tokenId }, { enabled: !!tokenId });
   const tokenPrice = isTokenSuccess ? parseFloat(selectedToken.latestPrice) : 0;
@@ -58,6 +64,11 @@ const AddHodlPositionForm = ({
   const allowedTypes = Object.values(TransactionType).filter((type) =>
     ["BUY", "SELL"].includes(type)
   );
+
+  // TODO: find elegant way to do so, maybe just change form types
+  useEffect(() => {
+    setValue("evaluation", watchAmount);
+  }, [watchAmount, setValue]);
 
   const handleAddPosition: SubmitHandler<TransactionValues> = (data) => {
     const massaged: TransactionValues = {
@@ -70,6 +81,10 @@ const AddHodlPositionForm = ({
     addPosition(massaged);
   };
 
+  const iconClass = clsx("h-4 w-4 mr-2", {
+    "animate-spin": isAddingPosition,
+  });
+
   return (
     <form
       className="mx-auto w-2/3 space-y-3"
@@ -80,6 +95,7 @@ const AddHodlPositionForm = ({
           <Label htmlFor="name">Amount</Label>
           <Input
             type="number"
+            disabled={isAddingPosition}
             placeholder="0.00"
             step="any"
             id="amount"
@@ -102,6 +118,12 @@ const AddHodlPositionForm = ({
                 : "$0"
             }
           />
+          <Input
+            type="hidden"
+            id="evaluation"
+            step="any"
+            {...registerInvestment("evaluation", { valueAsNumber: true })}
+          />
         </div>
 
         {type === "full" ? (
@@ -111,7 +133,10 @@ const AddHodlPositionForm = ({
               control={control}
               name="type"
               render={({ field }) => (
-                <Select onValueChange={field.onChange}>
+                <Select
+                  onValueChange={field.onChange}
+                  disabled={isAddingPosition}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Type of tx..." />
                   </SelectTrigger>
@@ -128,8 +153,16 @@ const AddHodlPositionForm = ({
           </div>
         ) : null}
 
-        <Button className="ml-auto" type="submit">
-          Add
+        <Button disabled={isAddingPosition} type="submit" className="ml-auto">
+          {isAddingPosition ? (
+            <>
+              <RefreshCcw className={iconClass} /> Loading...
+            </>
+          ) : (
+            <>
+              <Plus className={iconClass} /> Add
+            </>
+          )}
         </Button>
       </div>
     </form>
