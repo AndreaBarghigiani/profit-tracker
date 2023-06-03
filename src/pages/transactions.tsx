@@ -1,7 +1,7 @@
 // Utils
 import { useState } from "react";
 import { api } from "@/utils/api";
-import { uppercaseFirst } from "@/utils/string";
+import { uppercaseFirst, currencyConverter } from "@/utils/string";
 
 // Components
 import Heading from "@/components/ui/heading";
@@ -92,7 +92,16 @@ const Transaction: NextPage = () => {
                 key={index}
                 className="grid grid-cols-5 items-center gap-4 rounded-md bg-foreground/10"
               >
-                <Skeleton className="m-3 h-[20px] w-[100px] bg-foreground/50" />
+                <div className="m-3 space-y-3">
+                  <Skeleton
+                    as="p"
+                    className=" h-[20px] w-[200px] bg-foreground/50"
+                  />
+                  <Skeleton
+                    as="p"
+                    className=" h-3 w-[200px] bg-foreground/70"
+                  />
+                </div>
                 <Skeleton className="m-3 h-[20px] w-[200px] bg-foreground/50" />
                 <div className="m-3 space-y-3">
                   <Skeleton
@@ -113,7 +122,24 @@ const Transaction: NextPage = () => {
                 key={transaction.id}
                 className="grid grid-cols-5 items-center gap-4 rounded-md bg-foreground/10"
               >
-                <p className="p-3">{`$${transaction.amount.toFixed(2)}`}</p>
+                <div className="p-3">
+                  {!!transaction.project && (
+                    <p>{currencyConverter({ amount: transaction.amount })}</p>
+                  )}
+                  {!!transaction.hodl && (
+                    <p>
+                      {currencyConverter({ amount: transaction.evaluation })}
+                    </p>
+                  )}
+
+                  <p className="text-xs text-foreground/50">
+                    {transaction.hodl
+                      ? transaction.amount.toString() +
+                        " " +
+                        transaction.hodl.token.symbol.toUpperCase()
+                      : null}
+                  </p>
+                </div>
                 <p className="flex items-center p-3">
                   {transaction.type === "DEPOSIT" ||
                   transaction.type === "BUY" ? (
@@ -135,7 +161,7 @@ const Transaction: NextPage = () => {
                     })}
                   </p>
                 </time>
-                {transaction.project && (
+                {!!transaction.project && (
                   <>
                     <div className=" p-3">
                       <p className="truncate">{transaction.project.name}</p>
@@ -152,7 +178,7 @@ const Transaction: NextPage = () => {
                   </>
                 )}
 
-                {transaction.hodl && (
+                {!!transaction.hodl && (
                   <>
                     <div className="p-3">
                       <p>{transaction.hodl.token.name}</p>

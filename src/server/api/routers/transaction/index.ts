@@ -91,6 +91,7 @@ export const transactionRouter = createTRPCRouter({
         select: {
           id: true,
           amount: true,
+          evaluation: true,
           type: true,
           createdAt: true,
           project: {
@@ -105,6 +106,7 @@ export const transactionRouter = createTRPCRouter({
               token: {
                 select: {
                   name: true,
+                  symbol: true,
                 },
               },
             },
