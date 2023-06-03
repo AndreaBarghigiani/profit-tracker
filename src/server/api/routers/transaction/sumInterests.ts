@@ -15,11 +15,13 @@ export const sumInterests = async (
     },
     _sum: {
       amount: true,
+      evaluation: true,
     },
   });
 
   return {
     type: TransactionType.INTEREST,
     amount: sumTx._sum.amount ?? 0,
+    evaluation: sumTx._sum.evaluation ?? 0,
   };
 };

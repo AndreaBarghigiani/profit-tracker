@@ -128,6 +128,7 @@ export const projectRouter = createTRPCRouter({
           },
         },
         _sum: {
+          amount: true,
           evaluation: true,
         },
       });

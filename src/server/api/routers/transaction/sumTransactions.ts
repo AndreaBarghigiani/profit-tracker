@@ -24,10 +24,12 @@ export function ensureAllTransactionTypes(
         const evaluation = existingItem._sum.evaluation
           ? existingItem._sum.evaluation
           : 0;
+        const amount = existingItem._sum.amount ? existingItem._sum.amount : 0;
         acc.push({
           type: existingItem.type,
           _sum: {
             evaluation,
+            amount,
           },
         });
       } else {
@@ -35,6 +37,7 @@ export function ensureAllTransactionTypes(
           type,
           _sum: {
             evaluation: 0,
+            amount: 0,
           },
         });
       }
@@ -64,6 +67,7 @@ export const sumTransactions = async (prisma: PrismaClient, userId: string) => {
     },
     _sum: {
       evaluation: true,
+      amount: true,
     },
   });
   console.log("sumTx:", sumTx);
@@ -77,6 +81,7 @@ export const sumTransactions = async (prisma: PrismaClient, userId: string) => {
     return {
       type: item.type,
       evaluation: item._sum.evaluation,
+      amount: item._sum.amount ?? 0,
     };
   });
 
