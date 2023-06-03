@@ -1,4 +1,7 @@
 // Utils
+import { api } from "@/utils/api";
+import { useRouter } from "next/router";
+import clsx from "clsx";
 import { formatDate, currencyConverter } from "@/utils/string";
 
 // Types
@@ -12,9 +15,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants, Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Plus, Trash2, RefreshCcw } from "lucide-react";
 import {
   Tooltip,
   TooltipTrigger,
@@ -26,6 +29,20 @@ type PositionCartProps = Hodl & {
   token: Token;
 };
 const PositionCard = ({ position }: { position: PositionCartProps }) => {
+  const utils = api.useContext();
+  const router = useRouter();
+  const { mutate: deletePosition, isLoading: isDeletingPosition } =
+    api.hodl.delete.useMutation({
+      onSuccess: async () => {
+        await utils.wallet.get.invalidate().then(async () => {
+          await router.push(`/dashboard/`);
+        });
+      },
+    });
+
+  const iconClass = clsx("h-4 w-4", {
+    "animate-spin": isDeletingPosition,
+  });
   return (
     <Card className="w-full">
       <div className="flex items-center gap-4 px-4">
@@ -68,6 +85,26 @@ const PositionCard = ({ position }: { position: PositionCartProps }) => {
               </TooltipTrigger>
               <TooltipContent className="border-foreground/20">
                 <p>Add transaction</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => deletePosition(position.id)}
+                >
+                  {isDeletingPosition ? (
+                    <RefreshCcw className={iconClass} />
+                  ) : (
+                    <Trash2 className={iconClass} />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent className="border-foreground/20">
+                <p>Delete position</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

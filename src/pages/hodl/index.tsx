@@ -7,30 +7,53 @@ import type { NextPage } from "next";
 // Components
 import Heading from "@/components/ui/heading";
 import PositionCard from "@/components/ui/custom/PositionCard";
+import { buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
 
 const Hodl: NextPage = () => {
-  const {
-    data: positions,
-    // isLoading: isPositionsLoading,
-    isSuccess: isPositionsSuccess,
-  } = api.hodl.list.useQuery();
+  const { data: positions, isSuccess: isPositionsSuccess } =
+    api.hodl.list.useQuery();
 
   return (
     <div>
       <Heading size="page" gradient="gold" spacing="massive">
         Your positions
       </Heading>
-      <p className="text-center text-lg text-stone-400">
-        In here I cal list all my Hodl positions.
-      </p>
 
-      {isPositionsSuccess ? (
+      {!!positions && (
+        <div className="my-4 space-y-3 text-center text-stone-400">
+          <Link
+            className={buttonVariants({ className: "ml-auto" })}
+            href="/hodl/add"
+          >
+            New position
+          </Link>
+          <p className=" text-lg ">
+            Here you go, track and compare your positions.
+          </p>
+        </div>
+      )}
+
+      {!positions && (
+        <div className="space-y-3 text-center text-stone-400">
+          <Heading>Looks like you have no positions open, yet!</Heading>
+          <p>Just click the button below and start track your investments.</p>
+          <Link
+            className={buttonVariants({ className: "ml-auto" })}
+            href="/hodl/add"
+          >
+            Create one
+          </Link>
+        </div>
+      )}
+
+      {isPositionsSuccess && (
         <div className="space-y-3">
           {positions.map((position) => (
             <PositionCard key={position.id} position={position} />
           ))}
         </div>
-      ) : null}
+      )}
     </div>
   );
 };
