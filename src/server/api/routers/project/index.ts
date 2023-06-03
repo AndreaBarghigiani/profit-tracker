@@ -128,7 +128,7 @@ export const projectRouter = createTRPCRouter({
           },
         },
         _sum: {
-          amount: true,
+          evaluation: true,
         },
       });
 
@@ -141,11 +141,10 @@ export const projectRouter = createTRPCRouter({
       const removeFromWallet = ordered.reduce(
         (acc, cur) =>
           cur.type === "WITHDRAW"
-            ? acc - cur._sum.amount
-            : acc + cur._sum.amount,
+            ? acc - cur._sum.evaluation
+            : acc + cur._sum.evaluation,
         0
       );
-      console.log("to be removed", removeFromWallet);
 
       await ctx.prisma.wallet.update({
         where: {
