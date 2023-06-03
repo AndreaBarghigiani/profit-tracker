@@ -50,20 +50,20 @@ export type TransactionValues = z.infer<typeof TransactionValuesSchema>;
 export type SumTxItem = {
   type: TransactionType;
   _sum: {
-    amount: number | null;
+    evaluation: number | null;
   };
 };
 
 export type SumTxItemValued = {
   type: TransactionType;
   _sum: {
-    amount: number;
+    evaluation: number;
   };
 };
 
 export type MassagedSumTxItem = {
   type: TransactionType;
-  amount: number;
+  evaluation: number;
 };
 
 // Hodl types

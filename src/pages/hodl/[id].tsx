@@ -1,5 +1,6 @@
 // Utils
 import { api } from "@/utils/api";
+import { useRouter } from "next/router";
 import { prisma } from "@/server/db";
 import { currencyConverter, formatDate, uppercaseFirst } from "@/utils/string";
 import { getHodl } from "@/server/api/routers/hodl";
@@ -17,13 +18,25 @@ import type {
 import Heading from "@/components/ui/heading";
 import HodlTransactionCard from "@/components/ui/custom/HodlTransactionCard";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const Hodl: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ hodlId, startDate, amount, evaluation, total, token }) => {
+  const utils = api.useContext();
+  const router = useRouter();
   const { data, isSuccess } = api.hodl.getTransactions.useQuery({
     hodlId,
   });
+
+  const { mutate: deletePosition, isLoading: isDeletingPosition } =
+    api.hodl.delete.useMutation({
+      onSuccess: async () => {
+        await utils.wallet.get.invalidate().then(async () => {
+          await router.push(`/dashboard/`);
+        });
+      },
+    });
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">
@@ -33,15 +46,21 @@ const Hodl: NextPage<
           <span className="text-lg">({token.symbol?.toUpperCase()})</span>
         </Heading>
 
-        <section className="flex items-end justify-between">
+        <section className="flex items-end">
           <p>
             You started this position at:{" "}
             <time dateTime={startDate}>{startDate}</time>
           </p>
 
-          <Link className={buttonVariants()} href={`/hodl/add/${hodlId}`}>
+          <Link
+            className={buttonVariants({ className: "ml-auto" })}
+            href={`/hodl/add/${hodlId}`}
+          >
             Add a new position
           </Link>
+          <Button variant="link" onClick={() => deletePosition(hodlId)}>
+            Delete
+          </Button>
         </section>
       </header>
 

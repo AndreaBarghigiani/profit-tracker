@@ -2,6 +2,7 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { HodlValuesSchema } from "@/server/types";
+import { ensureAllTransactionTypes } from "../transaction/sumTransactions";
 
 // Types
 import { type PrismaClient, TransactionType } from "@prisma/client";
@@ -122,54 +123,54 @@ export const hodlRouter = createTRPCRouter({
       },
     });
   }),
-  // delete: protectedProcedure
-  //   .input(z.string())
-  //   .mutation(async ({ ctx, input }) => {
-  //     const allProjectTx = await ctx.prisma.transaction.groupBy({
-  //       by: ["type"],
-  //       where: {
-  //         project: {
-  //           id: input,
-  //         },
-  //       },
-  //       _sum: {
-  //         amount: true,
-  //       },
-  //     });
+  delete: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input }) => {
+      const allHodlTx = await ctx.prisma.transaction.groupBy({
+        by: ["type"],
+        where: {
+          hodl: {
+            id: input,
+          },
+        },
+        _sum: {
+          amount: true,
+          evaluation: true,
+        },
+      });
 
-  //     const sortList = ["WITHDRAW", "DEPOSIT", "INTEREST"];
+      const sortList = ["BUY", "SELL"];
 
-  //     const ordered = ensureAllTransactionTypes(allProjectTx).sort(
-  //       (a, b) => sortList.indexOf(a.type) - sortList.indexOf(b.type)
-  //     );
+      const ordered = ensureAllTransactionTypes(allHodlTx).sort(
+        (a, b) => sortList.indexOf(a.type) - sortList.indexOf(b.type)
+      );
 
-  //     const removeFromWallet = ordered.reduce(
-  //       (acc, cur) =>
-  //         cur.type === "WITHDRAW"
-  //           ? acc - cur._sum.amount
-  //           : acc + cur._sum.amount,
-  //       0
-  //     );
-  //     console.log("to be removed", removeFromWallet);
+      const removeFromWallet = ordered.reduce(
+        (acc, cur) =>
+          cur.type === "SELL"
+            ? acc - cur._sum.evaluation
+            : acc + cur._sum.evaluation,
+        0
+      );
 
-  //     await ctx.prisma.wallet.update({
-  //       where: {
-  //         userId: ctx.session.user.id,
-  //       },
-  //       data: {
-  //         total: {
-  //           decrement: removeFromWallet,
-  //         },
-  //         totalDeposit: {
-  //           decrement: removeFromWallet,
-  //         },
-  //       },
-  //     });
+      await ctx.prisma.wallet.update({
+        where: {
+          userId: ctx.session.user.id,
+        },
+        data: {
+          total: {
+            decrement: removeFromWallet,
+          },
+          totalDeposit: {
+            decrement: removeFromWallet,
+          },
+        },
+      });
 
-  //     await ctx.prisma.project.delete({
-  //       where: {
-  //         id: input,
-  //       },
-  //     });
-  //   }),
+      await ctx.prisma.hodl.delete({
+        where: {
+          id: input,
+        },
+      });
+    }),
 });

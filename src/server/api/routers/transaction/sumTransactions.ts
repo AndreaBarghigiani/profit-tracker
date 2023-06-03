@@ -8,24 +8,33 @@ import type {
 export function ensureAllTransactionTypes(
   sumTx: SumTxItem[]
 ): SumTxItemValued[] {
-  const allTypes: TransactionType[] = ["DEPOSIT", "WITHDRAW", "INTEREST"];
+  const allTypes: TransactionType[] = [
+    "DEPOSIT",
+    "WITHDRAW",
+    "INTEREST",
+    "BUY",
+    "SELL",
+  ];
 
   const result: SumTxItemValued[] = allTypes.reduce(
     (acc: SumTxItemValued[], type: TransactionType) => {
       const existingItem = sumTx.find((item) => item.type === type);
+      console.log("existingItem:", existingItem);
       if (existingItem) {
-        const amount = existingItem._sum.amount ? existingItem._sum.amount : 0;
+        const evaluation = existingItem._sum.evaluation
+          ? existingItem._sum.evaluation
+          : 0;
         acc.push({
           type: existingItem.type,
           _sum: {
-            amount,
+            evaluation,
           },
         });
       } else {
         acc.push({
           type,
           _sum: {
-            amount: 0,
+            evaluation: 0,
           },
         });
       }
@@ -54,9 +63,10 @@ export const sumTransactions = async (prisma: PrismaClient, userId: string) => {
       ],
     },
     _sum: {
-      amount: true,
+      evaluation: true,
     },
   });
+  console.log("sumTx:", sumTx);
 
   const sortList = ["WITHDRAW", "DEPOSIT", "INTEREST", "BUY", "SELL"];
   const ordered = ensureAllTransactionTypes(sumTx).sort(
@@ -66,7 +76,7 @@ export const sumTransactions = async (prisma: PrismaClient, userId: string) => {
   const massaged: MassagedSumTxItem[] = ordered.map((item) => {
     return {
       type: item.type,
-      amount: item._sum.amount,
+      evaluation: item._sum.evaluation,
     };
   });
 
