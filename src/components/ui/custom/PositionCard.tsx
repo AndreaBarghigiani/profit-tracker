@@ -30,13 +30,11 @@ type PositionCartProps = Hodl & {
 };
 const PositionCard = ({ position }: { position: PositionCartProps }) => {
   const utils = api.useContext();
-  const router = useRouter();
   const { mutate: deletePosition, isLoading: isDeletingPosition } =
     api.hodl.delete.useMutation({
       onSuccess: async () => {
-        await utils.wallet.get.invalidate().then(async () => {
-          await router.push(`/dashboard/`);
-        });
+        await utils.wallet.get.invalidate();
+        await utils.hodl.getByCurrentUser.invalidate();
       },
     });
 

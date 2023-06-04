@@ -12,7 +12,7 @@ import Link from "next/link";
 
 const Hodl: NextPage = () => {
   const { data: positions, isSuccess: isPositionsSuccess } =
-    api.hodl.list.useQuery();
+    api.hodl.getByCurrentUser.useQuery();
 
   return (
     <div>

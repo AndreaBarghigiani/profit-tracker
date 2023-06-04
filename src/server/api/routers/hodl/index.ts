@@ -113,16 +113,17 @@ export const hodlRouter = createTRPCRouter({
         },
       });
     }),
-  list: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.hodl.findMany({
-      where: {
-        userId: ctx.session.user.id,
-      },
-      include: {
-        token: true,
-      },
-    });
-  }),
+  // Right now it's the same as getByCurrentUser
+  // list: protectedProcedure.query(({ ctx }) => {
+  //   return ctx.prisma.hodl.findMany({
+  //     where: {
+  //       userId: ctx.session.user.id,
+  //     },
+  //     include: {
+  //       token: true,
+  //     },
+  //   });
+  // }),
   delete: protectedProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
