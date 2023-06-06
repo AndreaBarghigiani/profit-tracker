@@ -11,10 +11,12 @@ export const formatDate = (date: number | Date | undefined) =>
 type CurrencyConverterType = {
   amount: number | string;
   type?: "short" | "long";
+  showSign?: boolean;
 };
 export const currencyConverter = ({
   amount,
   type = "short",
+  showSign = false,
 }: CurrencyConverterType) => {
   const numeric = typeof amount === "string" ? parseFloat(amount) : amount;
 
@@ -22,6 +24,7 @@ export const currencyConverter = ({
     style: "currency",
     currency: "USD",
     minimumFractionDigits: 2,
+    signDisplay: showSign ? "always" : "never",
     maximumFractionDigits: type === "long" ? 10 : 2,
   }).format(numeric);
 };
