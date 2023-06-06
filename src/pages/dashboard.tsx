@@ -20,6 +20,7 @@ import Link from "next/link";
 import { InterestDashboardCard } from "@/components/ui/custom/DashboardCards";
 import { Skeleton } from "@/components/ui/skeleton";
 import PositionCard from "@/components/ui/custom/PositionCard";
+import HodlCard from "@/components/ui/custom/HodlCard";
 
 const ProjectCard = ({ project }: { project: Project }) => {
   return (
@@ -154,7 +155,7 @@ const Dashboard: NextPage = () => {
             </Heading>
             <div className="grid grid-cols-2 gap-4">
               {hodls.map((hodl) => (
-                <PositionCard key={hodl.id} position={hodl} />
+                <HodlCard key={hodl.id} position={hodl} />
               ))}
             </div>
           </>
