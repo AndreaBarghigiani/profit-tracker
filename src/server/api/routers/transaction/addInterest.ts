@@ -4,10 +4,10 @@ import { type PrismaClient, TransactionType } from "@prisma/client";
 import { getProject } from "../project";
 
 const mapFrequency: Record<string, number> = {
-  DAILY: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
-  WEEKLY: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
-  MONTHLY: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
-  YEARLY: 365 * 24 * 60 * 60 * 1000, // 365 days in milliseconds
+  DAILY: 23 * 60 * 60 * 1000, // 24 hours in milliseconds
+  WEEKLY: 7 * 23 * 60 * 60 * 1000, // 7 days in milliseconds
+  MONTHLY: 30 * 23 * 60 * 60 * 1000, // 30 days in milliseconds
+  YEARLY: 365 * 23 * 60 * 60 * 1000, // 365 days in milliseconds
 };
 
 export const addInterest = async (projectId: string, prisma: PrismaClient) => {
@@ -37,6 +37,7 @@ export const addInterest = async (projectId: string, prisma: PrismaClient) => {
   await prisma.transaction.create({
     data: {
       amount,
+      evaluation: amount,
       projectId: project.id,
       type: TransactionType.INTEREST,
     },
