@@ -48,7 +48,7 @@ export function ensureAllTransactionTypes(
   return result;
 }
 
-export const sumTransactions = async (prisma: PrismaClient, userId: string) => {
+export const sumTransactions = async (userId: string, prisma: PrismaClient) => {
   const sumTx = await prisma.transaction.groupBy({
     by: ["type"],
     where: {
@@ -70,7 +70,6 @@ export const sumTransactions = async (prisma: PrismaClient, userId: string) => {
       amount: true,
     },
   });
-  console.log("sumTx:", sumTx);
 
   const sortList = ["WITHDRAW", "DEPOSIT", "INTEREST", "BUY", "SELL"];
   const ordered = ensureAllTransactionTypes(sumTx).sort(

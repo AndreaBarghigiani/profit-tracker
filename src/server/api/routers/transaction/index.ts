@@ -14,6 +14,7 @@ import { lastInterestByProjectId } from "./lastInterestByProjectId";
 import { sumTransactions } from "./sumTransactions";
 import { sumInterests } from "./sumInterests";
 import { weeklyWithdraws } from "./weeklyWithdraws";
+import { sumProjectInterests } from "./sumProjectInterests";
 
 export const transactionRouter = createTRPCRouter({
   list: publicProcedure
@@ -145,6 +146,11 @@ export const transactionRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       await addInterest(input.projectId, ctx.prisma);
     }),
+  projectInterest: protectedProcedure
+    .input(z.object({ projectId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await sumProjectInterests(input.projectId, ctx.prisma);
+    }),
   lastTransaction: protectedProcedure
     .input(z.object({ projectId: z.string(), projectAccruing: z.boolean() }))
     .query(async ({ ctx, input }) => {
@@ -155,10 +161,10 @@ export const transactionRouter = createTRPCRouter({
       );
     }),
   sumTransactions: protectedProcedure.query(async ({ ctx }) => {
-    return await sumTransactions(ctx.prisma, ctx.session.user.id);
+    return await sumTransactions(ctx.session.user.id, ctx.prisma);
   }),
   sumInterests: protectedProcedure.query(async ({ ctx }) => {
-    return await sumInterests(ctx.prisma, ctx.session.user.id);
+    return await sumInterests(ctx.session.user.id, ctx.prisma);
   }),
   // Only for manual deposits or withdraws
   create: protectedProcedure
@@ -224,10 +230,10 @@ export const transactionRouter = createTRPCRouter({
             },
             totalInvested: {
               ...(input.type === TxType.SELL && {
-                decrement: input.amount,
+                decrement: input.evaluation,
               }),
               ...(input.type === TxType.BUY && {
-                increment: input.amount,
+                increment: input.evaluation,
               }),
             },
           },
@@ -242,20 +248,20 @@ export const transactionRouter = createTRPCRouter({
         data: {
           total: {
             ...(["WITHDRAW", "SELL"].includes(input.type) && {
-              decrement: input.amount,
+              decrement: input.evaluation,
             }),
             ...(["DEPOSIT", "BUY"].includes(input.type) && {
-              increment: input.amount,
+              increment: input.evaluation,
             }),
           },
           ...(["DEPOSIT", "BUY"].includes(input.type) && {
             totalDeposit: {
-              increment: input.amount,
+              increment: input.evaluation,
             },
           }),
           ...(["WITHDRAW", "SELL"].includes(input.type) && {
             totalWithdraw: {
-              increment: input.amount,
+              increment: input.evaluation,
             },
           }),
         },

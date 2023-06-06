@@ -2,15 +2,15 @@ import { type PrismaClient, TransactionType } from "@prisma/client";
 
 import type { MassagedSumTxItem } from "@/server/types";
 
-export const sumInterests = async (
-  userId: string,
+export const sumProjectInterests = async (
+  projectId: string,
   prisma: PrismaClient
 ): Promise<MassagedSumTxItem> => {
   const sumTx = await prisma.transaction.aggregate({
     where: {
       type: "INTEREST",
       project: {
-        userId,
+        id: projectId,
       },
     },
     _sum: {
@@ -18,6 +18,8 @@ export const sumInterests = async (
       evaluation: true,
     },
   });
+
+  console.log("sumTx:", sumTx);
 
   return {
     type: TransactionType.INTEREST,
