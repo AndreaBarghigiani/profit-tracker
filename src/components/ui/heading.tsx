@@ -44,11 +44,13 @@ const Heading = <C extends React.ElementType = "h1">({
   gradient,
   spacing,
   className,
+  ...props
 }: HeadingProps<C>) => {
   const Component = as || "h1";
   return (
     <Component
       className={cn(headingVariants({ size, gradient, spacing, className }))}
+      {...props}
     >
       {children}
     </Component>
