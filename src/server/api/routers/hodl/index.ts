@@ -113,6 +113,18 @@ export const hodlRouter = createTRPCRouter({
         },
       });
     }),
+  getCardData: protectedProcedure
+    .input(z.object({ hodlId: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.hodl.findUniqueOrThrow({
+        where: {
+          id: input.hodlId,
+        },
+        include: {
+          token: true,
+        },
+      });
+    }),
   // Right now it's the same as getByCurrentUser
   // list: protectedProcedure.query(({ ctx }) => {
   //   return ctx.prisma.hodl.findMany({

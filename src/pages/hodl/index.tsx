@@ -7,6 +7,7 @@ import type { NextPage } from "next";
 // Components
 import Heading from "@/components/ui/heading";
 import PositionCard from "@/components/ui/custom/PositionCard";
+import HodlCard from "@/components/ui/custom/HodlCard";
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -48,9 +49,9 @@ const Hodl: NextPage = () => {
       )}
 
       {isPositionsSuccess && (
-        <div className="space-y-3">
+        <div className="grid grid-cols-2 gap-4">
           {positions.map((position) => (
-            <PositionCard key={position.id} position={position} />
+            <HodlCard key={position.id} position={position} />
           ))}
         </div>
       )}
