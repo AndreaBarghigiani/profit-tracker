@@ -122,13 +122,13 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen">
       {status === "authenticated" ? (
-        <aside className="top-50 fixed left-0 flex  h-full flex-col border-r border-foreground/50 bg-background">
+        <aside className="top-50 fixed left-0 flex h-full w-72 flex-col border-r border-foreground/50 bg-background">
           <Heading className="mt-8 px-4 py-2">Underdog Tracker</Heading>
           <Sidebar />
           <UserCard />
         </aside>
       ) : null}
-      <main className="mx-auto max-w-6xl p-5">{children}</main>
+      <main className="ml-72 px-7 py-5">{children}</main>
     </div>
   );
 };
