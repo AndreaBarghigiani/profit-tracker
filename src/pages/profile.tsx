@@ -33,18 +33,26 @@ const Profile: NextPage = () => {
         Profile
       </Heading>
 
-      <Button variant="destructive" className="mx-auto" onClick={handleDelete}>
-        Delete
-      </Button>
-
       <p className="text-center">
         Here you can customize aspects of your profile, for now we let you
         update your daily goal.
       </p>
 
-      {isWalletSuccess && (
-        <ProfileForm profileData={{ dailyProfit: wallet.dailyProfit }} />
-      )}
+      <div className="mx-auto max-w-3xl">
+        {isWalletSuccess && (
+          <ProfileForm profileData={{ dailyProfit: wallet.dailyProfit }} />
+        )}
+
+        <footer className="flex">
+          <Button
+            variant="ghost-danger"
+            className="ml-auto mt-4"
+            onClick={handleDelete}
+          >
+            Delete
+          </Button>
+        </footer>
+      </div>
     </div>
   );
 };

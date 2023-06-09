@@ -48,7 +48,7 @@ const ProjectPage: NextPage = () => {
   if (!project) return <div>Project not found</div>;
 
   return (
-    <div className="mx-auto max-w-3xl space-y-4">
+    <div className="space-y-4">
       <header>
         <Heading size={"page"} gradient="gold" spacing={"massive"}>
           {project.name}
@@ -116,7 +116,10 @@ const ProjectPage: NextPage = () => {
             >
               Add Transaction
             </Link>
-            <Button variant="link" onClick={() => deleteProject(project.id)}>
+            <Button
+              variant="ghost-danger"
+              onClick={() => deleteProject(project.id)}
+            >
               Delete
             </Button>
           </div>
