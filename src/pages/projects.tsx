@@ -7,31 +7,9 @@ import type { Project } from "@prisma/client";
 
 // Components
 import Heading from "@/components/ui/heading";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
-
-const ProjectCard = ({ project }: { project: Project }) => {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{project.name}</CardTitle>
-        <CardDescription>{project.description}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Link href={`/project/${project.id}`} className={buttonVariants()}>
-          View project
-        </Link>
-      </CardContent>
-    </Card>
-  );
-};
+import ProjectCard from "@/components/ui/custom/ProjectCard";
 
 const Projects: NextPage = () => {
   const { data: projects, isSuccess: isProjectsSuccess } =
@@ -54,7 +32,7 @@ const Projects: NextPage = () => {
             </Link>
           </p>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             {projects.map((project: Project) => (
               <ProjectCard key={project.id} project={project} />
             ))}

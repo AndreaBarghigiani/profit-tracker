@@ -109,7 +109,10 @@ const HodlCard = ({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
-                    className={buttonVariants({ variant: "ghost", size: "xs" })}
+                    className={buttonVariants({
+                      variant: "ghost",
+                      size: "sm",
+                    })}
                     href={`/hodl/add/${position.id}`}
                   >
                     <Plus className="h-4 w-4" />
@@ -121,7 +124,21 @@ const HodlCard = ({
               </Tooltip>
             </TooltipProvider>
 
-            <TooltipProvider>
+            <Link
+              href={`/hodl/${position.id}`}
+              className={buttonVariants({
+                variant: "outline",
+                size: "sm",
+                className: "ml-auto",
+              })}
+            >
+              <Eye className="mr-2 h-4 w-4" />
+              Details
+            </Link>
+
+            {/* 
+						Not show single icon button for the moment
+						<TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
@@ -160,7 +177,7 @@ const HodlCard = ({
                   <p>Delete position</p>
                 </TooltipContent>
               </Tooltip>
-            </TooltipProvider>
+            </TooltipProvider> */}
           </div>
         </section>
       </div>

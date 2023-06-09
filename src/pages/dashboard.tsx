@@ -1,6 +1,5 @@
 //Utils
 import { api } from "@/utils/api";
-import { currencyConverter } from "@/utils/string";
 
 // Types
 import type { NextPage } from "next";
@@ -8,49 +7,22 @@ import type { Project } from "@prisma/client";
 
 // Components
 import Heading from "@/components/ui/heading";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
-import { InterestDashboardCard } from "@/components/ui/custom/DashboardCards";
-import { Skeleton } from "@/components/ui/skeleton";
-import PositionCard from "@/components/ui/custom/PositionCard";
+import { Plus } from "lucide-react";
 import HodlCard from "@/components/ui/custom/HodlCard";
-
-const ProjectCard = ({ project }: { project: Project }) => {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{project.name}</CardTitle>
-        <CardDescription>{project.description}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Link href={`/project/${project.id}`} className={buttonVariants()}>
-          View project
-        </Link>
-      </CardContent>
-    </Card>
-  );
-};
+import UserStats from "@/components/ui/custom/UserStats";
+import ProjectCard from "@/components/ui/custom/ProjectCard";
 
 const Dashboard: NextPage = () => {
-  const { data: wallet, isSuccess: isWalletSuccess } =
-    api.wallet.get.useQuery();
+  api.wallet.get.useQuery();
   const { data: projects, isSuccess: isProjectsSuccess } =
     api.project.getByCurrentUser.useQuery();
   const { data: hodls, isSuccess: isHodlsSuccess } =
     api.hodl.getByCurrentUser.useQuery();
-  const { data: result } = api.wallet.getDailyPassiveResult.useQuery();
-  const {
-    data: allInterests,
-    isLoading: isAllInterestsLoading,
-    isSuccess: isAllInterestsSuccess,
-  } = api.transaction.sumInterests.useQuery();
+
+  const { data: userStats, isSuccess: isUserStatsSuccess } =
+    api.wallet.getUserStats.useQuery();
 
   return (
     <div>
@@ -58,109 +30,62 @@ const Dashboard: NextPage = () => {
         Dashboard
       </Heading>
 
-      {isAllInterestsLoading ? (
-        <div className="grid grid-cols-4 gap-4">
-          <Card>
-            <CardHeader>
-              <Skeleton as="p" className="h-4 w-24 bg-foreground/70" />
-              <Skeleton as="h3" className="h-5 w-32 bg-foreground/50" />
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader>
-              <Skeleton as="p" className="h-4 w-24 bg-foreground/70" />
-              <Skeleton as="h3" className="h-5 w-32 bg-foreground/50" />
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader>
-              <Skeleton as="p" className="h-4 w-24 bg-foreground/70" />
-              <Skeleton as="h3" className="h-5 w-32 bg-foreground/50" />
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader>
-              <Skeleton as="p" className="h-4 w-24 bg-foreground/70" />
-              <Skeleton as="h3" className="h-5 w-32 bg-foreground/50" />
-            </CardHeader>
-          </Card>
-        </div>
-      ) : (
-        <div className="grid grid-cols-4 gap-4">
-          {isWalletSuccess && (
-            <>
-              <Card>
-                <CardHeader>
-                  <CardDescription>Money at work</CardDescription>
-                  <CardTitle>
-                    {currencyConverter({ amount: wallet.totalDeposit })}
-                  </CardTitle>
-                </CardHeader>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardDescription>Profits</CardDescription>
-                  <CardTitle>
-                    {currencyConverter({ amount: wallet.totalWithdraw })}
-                  </CardTitle>
-                </CardHeader>
-              </Card>
-            </>
-          )}
-          {isAllInterestsSuccess && (
-            <InterestDashboardCard transaction={allInterests} />
-          )}
-          <Card>
-            <CardHeader>
-              <CardDescription>Target</CardDescription>
-              <CardTitle>{result}</CardTitle>
-            </CardHeader>
-          </Card>
-        </div>
-      )}
+      <div className="grid grid-cols-5 gap-4">
+        <section className="col-span-4 space-y-12">
+          {isProjectsSuccess ? (
+            <div>
+              <Heading size="h2" spacing="2xl" className="flex items-center">
+                Your projects
+                <Link
+                  className={buttonVariants({
+                    size: "sm",
+                    className: "ml-4 flex items-center",
+                  })}
+                  href="/project/add"
+                >
+                  <Plus className="mr-2 h-3 w-3" />
+                  Add project
+                </Link>
+              </Heading>
 
-      <section className="space-y-8">
-        {isProjectsSuccess ? (
-          <>
-            <Heading size="h2" spacing="large" className="flex justify-center">
-              These are your projects
-              <Link
-                className={buttonVariants({ className: "ml-auto" })}
-                href="/project/add"
-              >
-                Add project
-              </Link>
-            </Heading>
-
-            <div className="grid grid-cols-2 gap-4">
-              {projects.map((project: Project) => (
-                <ProjectCard key={project.id} project={project} />
-              ))}
+              <div className="grid grid-cols-2 gap-4">
+                {projects.map((project: Project) => (
+                  <ProjectCard key={project.id} project={project} />
+                ))}
+              </div>
             </div>
-          </>
-        ) : (
-          <p>Loading...</p>
-        )}
+          ) : (
+            <p>Loading...</p>
+          )}
 
-        {isHodlsSuccess && (
-          <>
-            <Heading size="h2" spacing="large" className="flex justify-center">
-              These are your holdings
-              <Link
-                className={buttonVariants({ className: "ml-auto" })}
-                href="/hodl/add"
-              >
-                Add hodl
-              </Link>
-            </Heading>
-            <div className="grid grid-cols-2 gap-4">
-              {hodls.map((hodl) => (
-                <HodlCard key={hodl.id} position={hodl} />
-              ))}
+          {isHodlsSuccess && (
+            <div>
+              <Heading size="h2" spacing="2xl" className="flex items-center">
+                Your holdings
+                <Link
+                  className={buttonVariants({
+                    size: "sm",
+                    className: "ml-4 flex items-center",
+                  })}
+                  href="/hodl/add"
+                >
+                  <Plus className="mr-2 h-3 w-3" />
+                  Add hodl
+                </Link>
+              </Heading>
+              <div className="grid grid-cols-2 gap-4">
+                {hodls.map((hodl) => (
+                  <HodlCard key={hodl.id} position={hodl} />
+                ))}
+              </div>
             </div>
-          </>
+          )}
+        </section>
+
+        {isUserStatsSuccess && (
+          <UserStats orientation="vertical" userStats={userStats} />
         )}
-      </section>
+      </div>
     </div>
   );
 };
