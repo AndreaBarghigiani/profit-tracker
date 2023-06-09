@@ -1,5 +1,5 @@
 // Utils
-import { api } from "@/utils/api";
+// import { api } from "@/utils/api";
 import clsx from "clsx";
 import { currencyConverter } from "@/utils/string";
 
@@ -10,9 +10,10 @@ import type { Hodl, Token } from "@prisma/client";
 import Image from "next/image";
 import Heading from "@/components/ui/heading";
 import Link from "next/link";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Eye, Wallet, Diff, Plus, Trash2, RefreshCcw } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+// import { Skeleton } from "@/components/ui/skeleton";
+// import { Eye, Wallet, Diff, Plus, Trash2, RefreshCcw } from "lucide-react";
+import { Eye, Wallet, Diff, Plus } from "lucide-react";
 import {
   Tooltip,
   TooltipTrigger,
@@ -24,15 +25,7 @@ type HodlCardProps = Hodl & {
   token: Token;
 };
 
-const HodlCard = ({
-  // hodlId,
-  position,
-}: {
-  // hodlId: string;
-  position: HodlCardProps;
-}) => {
-  const utils = api.useContext();
-
+const HodlCard = ({ position }: { position: HodlCardProps }) => {
   const currentEvaluation =
     position.currentAmount * parseFloat(position.token.latestPrice);
   const diffAmount = currentEvaluation - position.totalInvested;
@@ -40,15 +33,6 @@ const HodlCard = ({
   const diffPerc =
     ((currentEvaluation - position.totalInvested) / position.totalInvested) *
     100;
-
-  // Mutations
-  const { mutate: deletePosition, isLoading: isDeletingPosition } =
-    api.hodl.delete.useMutation({
-      onSuccess: async () => {
-        await utils.wallet.get.invalidate();
-        await utils.hodl.getByCurrentUser.invalidate();
-      },
-    });
 
   // Classes
   const badgeClass = clsx(
@@ -59,9 +43,18 @@ const HodlCard = ({
     }
   );
 
-  const deleteIconClass = clsx("h-4 w-4", {
-    "animate-spin": isDeletingPosition,
-  });
+  // Keeping for now, in case I want to add delete functionality
+  // const utils = api.useContext();
+  // const { mutate: deletePosition, isLoading: isDeletingPosition } =
+  //   api.hodl.delete.useMutation({
+  //     onSuccess: async () => {
+  //       await utils.wallet.get.invalidate();
+  //       await utils.hodl.getByCurrentUser.invalidate();
+  //     },
+  //   });
+  // const deleteIconClass = clsx("h-4 w-4", {
+  //   "animate-spin": isDeletingPosition,
+  // });
 
   return (
     <div className="flex items-center rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg">

@@ -3,7 +3,9 @@ import Heading from "@/components/ui/heading";
 import type { NextPage } from "next";
 
 // Components
-const colors = [100, 200, 300, 400, 500, 600, 700, 800, 900];
+
+// Understand why the loop with values doesn't work
+// const colors = [100, 200, 300, 400, 500, 600, 700, 800, 900];
 
 const Colors: NextPage = () => {
   const colorClasses = "flex h-20 w-20 items-center justify-center";
