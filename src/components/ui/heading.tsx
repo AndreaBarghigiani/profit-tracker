@@ -28,6 +28,8 @@ const headingVariants = cva("font-semibold", {
       small: "my-1",
       normal: "my-2",
       large: "my-4",
+      xl: "my-6",
+      "2xl": "my-8",
       massive: "my-10",
     },
   },
