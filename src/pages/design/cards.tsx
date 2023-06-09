@@ -1,6 +1,5 @@
 // Utils
 import { api } from "@/utils/api";
-import { currencyConverter } from "@/utils/string";
 
 // Types
 import Heading from "@/components/ui/heading";
@@ -10,8 +9,6 @@ import type { NextPage } from "next";
 import HodlCard from "@/components/ui/custom/HodlCard";
 import ProjectCard from "@/components/ui/custom/ProjectCard";
 import UserStats from "@/components/ui/custom/UserStats";
-import { Separator } from "@/components/ui/separator";
-import { Info } from "lucide-react";
 
 const Cards: NextPage = () => {
   const { data: hodls, isSuccess: isHodlsSuccess } =

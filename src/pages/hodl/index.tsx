@@ -6,7 +6,6 @@ import type { NextPage } from "next";
 
 // Components
 import Heading from "@/components/ui/heading";
-import PositionCard from "@/components/ui/custom/PositionCard";
 import HodlCard from "@/components/ui/custom/HodlCard";
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";

@@ -9,13 +9,7 @@ import type { ReactElement } from "react";
 
 // Components
 import Heading from "@/components/ui/heading";
-import {
-  Info,
-  Dumbbell,
-  DollarSign,
-  Percent,
-  CalendarRange,
-} from "lucide-react";
+import { Dumbbell, DollarSign, Percent, CalendarRange } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 type UserStatsCardProps = {
