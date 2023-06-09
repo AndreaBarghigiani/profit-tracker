@@ -82,7 +82,7 @@ export const projectRouter = createTRPCRouter({
   create: protectedProcedure
     .input(ProjectValuesSchema)
     .mutation(async ({ ctx, input }) => {
-      await ctx.prisma.project.create({
+      const project = await ctx.prisma.project.create({
         data: {
           ...input,
           currentHolding: input.initial,
@@ -116,6 +116,8 @@ export const projectRouter = createTRPCRouter({
           },
         },
       });
+
+      return project;
     }),
   delete: protectedProcedure
     .input(z.string())

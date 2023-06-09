@@ -25,7 +25,7 @@ export const hodlRouter = createTRPCRouter({
   create: protectedProcedure
     .input(HodlValuesSchema)
     .mutation(async ({ ctx, input }) => {
-      await ctx.prisma.hodl.create({
+      const position = await ctx.prisma.hodl.create({
         data: {
           currentAmount: input.currentAmount,
           currentEvaluation: input.currentEvaluation,
@@ -71,6 +71,8 @@ export const hodlRouter = createTRPCRouter({
           tracked: true,
         },
       });
+
+      return position;
     }),
   get: protectedProcedure
     .input(z.object({ hodlId: z.string() }))
