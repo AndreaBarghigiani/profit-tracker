@@ -2,6 +2,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { weeklyWithdraws } from "./transaction/weeklyWithdraws";
 import { currencyConverter } from "@/utils/string";
+import { sumInterests } from "./transaction/sumInterests";
 
 export const walletRouter = createTRPCRouter({
   get: protectedProcedure.query(({ ctx }) => {
@@ -10,6 +11,20 @@ export const walletRouter = createTRPCRouter({
         userId: ctx.session.user.id,
       },
     });
+  }),
+  getUserStats: protectedProcedure.query(async ({ ctx }) => {
+    const wallet = await ctx.prisma.wallet.findUniqueOrThrow({
+      where: {
+        userId: ctx.session.user.id,
+      },
+    });
+
+    const interests = await sumInterests(ctx.session.user.id, ctx.prisma);
+
+    return {
+      wallet,
+      interests,
+    };
   }),
   getDailyPassiveResult: protectedProcedure.query(async ({ ctx }) => {
     const dailyGoal = await ctx.prisma.wallet.findUnique({
