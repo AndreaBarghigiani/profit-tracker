@@ -87,7 +87,7 @@ model Hodl {
   totalInvested     Float         @default(0)
   token             Token         @relation(fields: [tokenId], references: [id])
   tokenId           String
-  user              User          @relation(fields: [userId], references: [id])
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            String
   transaction       Transaction[]
 }
