@@ -5,7 +5,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { currencyConverter } from "@/utils/string";
-import { clsx } from "clsx";
+import clsx from "clsx";
+import { useRouter } from "next/router";
 
 // Types
 import type { NextPage } from "next";
@@ -33,6 +34,7 @@ export type TokenSearch = z.infer<typeof TokenSearchSchema>;
 
 const AddHodl: NextPage = () => {
   const utils = api.useContext();
+  const router = useRouter();
   const { register: registerSearch, handleSubmit: handleSubmitSearch } =
     useForm<TokenSearch>({
       resolver: zodResolver(TokenSearchSchema),
@@ -55,6 +57,9 @@ const AddHodl: NextPage = () => {
       onSuccess: async () => {
         await utils.token.get.invalidate();
         await utils.hodl.get.invalidate();
+        await utils.wallet.getUserStats.invalidate().then(async () => {
+          await router.push(`/hodl/`);
+        });
       },
     });
 

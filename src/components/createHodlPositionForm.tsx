@@ -32,9 +32,9 @@ export default function CreateHodlPositionForm({
   const router = useRouter();
   const { mutate: createPosition, isLoading: isCreatingPositionLoading } =
     api.hodl.create.useMutation({
-      onSuccess: async () => {
+      onSuccess: async (data) => {
         await utils.wallet.get.invalidate().then(async () => {
-          await router.push(`/hodl/`);
+          await router.push(`/hodl/${data.id}`);
         });
       },
     });

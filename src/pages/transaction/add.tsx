@@ -29,6 +29,7 @@ import { useEffect } from "react";
 
 const AddTransaction: NextPage = () => {
   const router = useRouter();
+  const utils = api.useContext();
 
   const projectId = router.query.projectId as string;
   const allowedTypes = Object.values(TransactionType).filter(
@@ -37,7 +38,9 @@ const AddTransaction: NextPage = () => {
 
   const { mutate } = api.transaction.create.useMutation({
     onSuccess: async () => {
-      await router.push(`/project/${projectId}`);
+      await utils.wallet.getUserStats.invalidate().then(async () => {
+        await router.push(`/project/${projectId}`);
+      });
     },
   });
 
