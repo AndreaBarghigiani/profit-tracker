@@ -33,10 +33,7 @@ const ProfileForm = ({ profileData }: { profileData: ProfileValues }) => {
   };
 
   return (
-    <form
-      className="mx-auto max-w-lg space-y-3"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+    <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
       <Label htmlFor="dailyProfit">Daily Profit</Label>
       <Input
         type="number"

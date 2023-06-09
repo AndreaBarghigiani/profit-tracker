@@ -13,7 +13,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-accent",
+        default: "bg-dog-200 text-primary-foreground hover:bg-main",
         active: "bg-accent text-accent-foreground hover:bg-accent/90",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
@@ -22,6 +22,8 @@ const buttonVariants = cva(
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "text-dog-300 hover:text-main-600",
+        "ghost-danger":
+          "text-alert-300 hover:text-primary-foreground hover:bg-alert-400",
         link: "underline-offset-4 hover:underline text-primary",
       },
       size: {
