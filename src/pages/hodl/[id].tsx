@@ -57,7 +57,7 @@ const Hodl: NextPage<
           >
             Add a new position
           </Link>
-          <Button variant="link" onClick={() => deletePosition(hodlId)}>
+          <Button variant="ghost-danger" onClick={() => deletePosition(hodlId)}>
             Delete
           </Button>
         </section>

@@ -1,5 +1,6 @@
 // Utils
 import { api } from "@/utils/api";
+import { currencyConverter } from "@/utils/string";
 
 // Types
 import Heading from "@/components/ui/heading";
@@ -8,6 +9,9 @@ import type { NextPage } from "next";
 // Components
 import HodlCard from "@/components/ui/custom/HodlCard";
 import ProjectCard from "@/components/ui/custom/ProjectCard";
+import UserStats from "@/components/ui/custom/UserStats";
+import { Separator } from "@/components/ui/separator";
+import { Info } from "lucide-react";
 
 const Cards: NextPage = () => {
   const { data: hodls, isSuccess: isHodlsSuccess } =
@@ -16,26 +20,14 @@ const Cards: NextPage = () => {
     api.project.getByCurrentUser.useQuery();
   const { data: userStats, isSuccess: isUserStatsSuccess } =
     api.wallet.getUserStats.useQuery();
-  console.log("userStats:", userStats);
 
   return (
     <>
       <div className="my-2">
         <Heading>Summary Card</Heading>
-        <div className="grid grid-cols-4 rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg">
-          <div>
-            <Heading size="h3">Money at Work</Heading>
-          </div>
-          <div>
-            <Heading size="h3">Profits</Heading>
-          </div>
-          <div>
-            <Heading size="h3">Interests</Heading>
-          </div>
-          <div>
-            <Heading size="h3">Daily Target</Heading>
-          </div>
-        </div>
+        {isUserStatsSuccess && (
+          <UserStats orientation="vertical" userStats={userStats} />
+        )}
       </div>
 
       <div className="my-2">
