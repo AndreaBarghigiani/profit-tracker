@@ -2,6 +2,7 @@
 // import { api } from "@/utils/api";
 import { buttonVariants } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
+import clsx from "clsx";
 // import { Role } from "@prisma/client";
 
 // Types
@@ -17,7 +18,9 @@ import {
 } from "lucide-react";
 import Heading from "@/components/ui/heading";
 import UserCard from "@/components/userCard";
-// import { Separator } from "./ui/separator";
+// import { Separator } from "@/components/ui/separator";
+// import WalletInfo from "./ui/testing/WalletInfo";
+
 const Sidebar = () => {
   // const { data: userRole } = api.user.getRole.useQuery();
 
@@ -91,6 +94,8 @@ const Sidebar = () => {
         </li>
       </ul>
 
+      {/* <Separator className="my-4 bg-foreground/50" />
+      <WalletInfo /> */}
       {/* {!!userRole?.role && userRole.role === Role.ADMIN && (
         <>
           <Separator className="my-4 bg-foreground/50" />
@@ -118,6 +123,9 @@ const Sidebar = () => {
 
 const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
   const { status } = useSession();
+  const mainClass = clsx("px-7 py-5", {
+    "ml-72": status === "authenticated",
+  });
 
   return (
     <div className="min-h-screen">
@@ -128,7 +136,9 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
           <UserCard />
         </aside>
       ) : null}
-      <main className="ml-72 px-7 py-5">{children}</main>
+      <main className={mainClass}>
+        <div className="mx-auto max-w-7xl">{children}</div>
+      </main>
     </div>
   );
 };
