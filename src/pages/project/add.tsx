@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/select";
 
 const AddProject: NextPage = () => {
+  const utils = api.useContext();
   const router = useRouter();
   const { register, handleSubmit, control } = useForm<ProjectValues>({
     resolver: zodResolver(ProjectValuesSchema),
@@ -37,8 +38,10 @@ const AddProject: NextPage = () => {
   });
 
   const { mutate } = api.project.create.useMutation({
-    onSuccess: async () => {
-      await router.push(`/projects/`);
+    onSuccess: async (data) => {
+      await utils.wallet.getUserStats.invalidate().then(async () => {
+        await router.push(`/project/${data.id}`);
+      });
     },
   });
 

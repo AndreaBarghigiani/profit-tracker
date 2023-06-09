@@ -2,7 +2,8 @@
 import { api } from "@/utils/api";
 import { prisma } from "@/server/db";
 import { getHodl } from "@/server/api/routers/hodl";
-import { clsx } from "clsx";
+import clsx from "clsx";
+import { useRouter } from "next/router";
 import { currencyConverter } from "@/utils/string";
 
 // Types
@@ -28,6 +29,7 @@ const AddHodlPosition: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ tokenId, hodlId }) => {
   const utils = api.useContext();
+  const router = useRouter();
 
   const {
     data: token,
@@ -42,6 +44,9 @@ const AddHodlPosition: NextPage<
       onSuccess: async () => {
         await utils.token.get.invalidate();
         await utils.hodl.get.invalidate();
+        await utils.wallet.getUserStats.invalidate().then(async () => {
+          await router.push(`/hodl/`);
+        });
       },
     });
 
