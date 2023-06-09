@@ -127,6 +127,10 @@ module.exports = {
           border: "hsl(var(--redpurple-border))",
         },
       },
+      spacing: {
+        "128": "32rem",
+        "144": "36rem",
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
