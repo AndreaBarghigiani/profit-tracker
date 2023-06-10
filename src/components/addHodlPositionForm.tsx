@@ -1,41 +1,36 @@
 // Utils
 import { api } from "@/utils/api";
 import clsx from "clsx";
-import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { currencyConverter, uppercaseFirst } from "@/utils/string";
 import { TransactionType } from "@prisma/client";
 import { TransactionValuesSchema } from "@/server/types";
 import { useRouter } from "next/router";
+
 // Types
 import type { SubmitHandler } from "react-hook-form";
-import type { TransactionValues } from "@/server/types";
+import type { TransactionValues, TokenWithoutDates } from "@/server/types";
 
 // Components
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "./ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { RefreshCcw, Plus } from "lucide-react";
+import { ToggleGroup, ToggleItem } from "@/components/ui/toggle-group";
+import Heading from "@/components/ui/heading";
 
 type AddPositionProps = {
-  tokenId: string;
+  token: TokenWithoutDates;
   hodlId: string;
-  type?: "quick" | "full";
 };
 
-const AddHodlPositionForm = ({
-  tokenId,
-  hodlId,
-  type = "quick",
-}: AddPositionProps) => {
+type AddPositionFormProps = TransactionValues & {
+  tokenPrice: number;
+};
+
+const AddHodlPositionForm = ({ token, hodlId }: AddPositionProps) => {
+  const selectedToken = token;
   const utils = api.useContext();
   const router = useRouter();
   const {
@@ -43,10 +38,14 @@ const AddHodlPositionForm = ({
     handleSubmit: handleSubmitInvestment,
     watch,
     control,
-    setValue,
     // formState: { errors },
-  } = useForm<TransactionValues>({
+  } = useForm<AddPositionFormProps>({
     resolver: zodResolver(TransactionValuesSchema),
+    defaultValues: {
+      type: TransactionType.BUY,
+      amount: 0,
+      tokenPrice: parseFloat(selectedToken.latestPrice),
+    },
   });
 
   const { mutate: addPosition, isLoading: isAddingPosition } =
@@ -57,25 +56,18 @@ const AddHodlPositionForm = ({
         });
       },
     });
-  const { data: selectedToken, isSuccess: isTokenSuccess } =
-    api.token.get.useQuery({ tokenId: tokenId }, { enabled: !!tokenId });
-  const tokenPrice = isTokenSuccess ? parseFloat(selectedToken.latestPrice) : 0;
-  const watchAmount = watch("amount", 0);
+
+  const [watchAmount, watchTokenPrice] = watch(["amount", "tokenPrice"]);
   const allowedTypes = Object.values(TransactionType).filter((type) =>
     ["BUY", "SELL"].includes(type)
   );
-
-  // TODO: find elegant way to do so, maybe just change form types
-  useEffect(() => {
-    setValue("evaluation", watchAmount);
-  }, [watchAmount, setValue]);
 
   const handleAddPosition: SubmitHandler<TransactionValues> = (data) => {
     const massaged: TransactionValues = {
       type: data.type,
       hodlId,
       amount: data.amount,
-      evaluation: data.amount * tokenPrice,
+      evaluation: data.amount * watchTokenPrice,
     };
 
     addPosition(massaged);
@@ -90,7 +82,7 @@ const AddHodlPositionForm = ({
       className="mx-auto w-2/3 space-y-3"
       onSubmit={handleSubmitInvestment(handleAddPosition)}
     >
-      <div className="flex items-end gap-3">
+      <div className="flex items-end justify-between">
         <div>
           <Label htmlFor="name">Amount</Label>
           <Input
@@ -104,67 +96,69 @@ const AddHodlPositionForm = ({
         </div>
 
         <div>
-          <Label>Evaluation</Label>
+          <Label>Price per token</Label>
           <Input
-            disabled
-            type="text"
-            placeholder="0"
-            value={
-              watchAmount
-                ? currencyConverter({
-                    amount: watchAmount * tokenPrice,
-                    type: "long",
-                  })
-                : "$0"
-            }
-          />
-          <Input
-            type="hidden"
-            id="evaluation"
+            type="number"
             step="any"
-            {...registerInvestment("evaluation", { valueAsNumber: true })}
+            disabled={isAddingPosition}
+            placeholder="0.00"
+            id="tokenPrice"
+            {...registerInvestment("tokenPrice", { valueAsNumber: true })}
           />
         </div>
 
-        {type === "full" ? (
-          <div>
-            <Label htmlFor="type">Transaction Type</Label>
-            <Controller
-              control={control}
-              name="type"
-              render={({ field }) => (
-                <Select
-                  onValueChange={field.onChange}
-                  disabled={isAddingPosition}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Type of tx..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {allowedTypes.map((t) => (
-                      <SelectItem className="cursor-pointer" key={t} value={t}>
-                        {uppercaseFirst(t)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </div>
-        ) : null}
-
-        <Button disabled={isAddingPosition} type="submit" className="ml-auto">
-          {isAddingPosition ? (
-            <>
-              <RefreshCcw className={iconClass} /> Loading...
-            </>
-          ) : (
-            <>
-              <Plus className={iconClass} /> Add
-            </>
+        <Controller
+          control={control}
+          name="type"
+          render={({ field }) => (
+            <ToggleGroup
+              type="single"
+              value={field.value}
+              className="flex justify-center"
+              onValueChange={field.onChange}
+            >
+              {allowedTypes.map((t) => (
+                <ToggleItem key={t} value={t}>
+                  {uppercaseFirst(t)}
+                </ToggleItem>
+              ))}
+            </ToggleGroup>
           )}
-        </Button>
+        />
       </div>
+
+      <Input
+        type="hidden"
+        id="evaluation"
+        step="any"
+        {...registerInvestment("evaluation", { valueAsNumber: true })}
+        value={watchAmount * watchTokenPrice}
+      />
+
+      <div className="rounded-md border border-input bg-dog-800 px-8 py-5">
+        <Heading size="h4" spacing="small" className="mt-0 text-dog-400">
+          Evaluation
+        </Heading>
+        <p className="text-4xl font-semibold text-dog-100">
+          {watchAmount
+            ? currencyConverter({
+                amount: watchAmount * watchTokenPrice,
+                type: "long",
+              })
+            : "$0"}
+        </p>
+      </div>
+      <Button disabled={isAddingPosition} type="submit" className="ml-auto">
+        {isAddingPosition ? (
+          <>
+            <RefreshCcw className={iconClass} /> Loading...
+          </>
+        ) : (
+          <>
+            <Plus className={iconClass} /> Add
+          </>
+        )}
+      </Button>
     </form>
   );
 };
