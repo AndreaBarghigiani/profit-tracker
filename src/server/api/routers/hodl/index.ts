@@ -18,6 +18,9 @@ export const getHodl = async ({
     where: {
       id: hodlId,
     },
+    include: {
+      token: true,
+    },
   });
 };
 

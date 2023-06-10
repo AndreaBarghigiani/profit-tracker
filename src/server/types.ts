@@ -3,7 +3,7 @@ import { z } from "zod";
 import { Frequency } from "@prisma/client";
 
 // Types
-import { TransactionType } from "@prisma/client";
+import { type Token, TransactionType } from "@prisma/client";
 
 // Projects types
 export const ProjectValuesSchema = z.object({
@@ -78,6 +78,11 @@ export const HodlValuesSchema = z.object({
 });
 
 export type HodlValues = z.infer<typeof HodlValuesSchema>;
+
+export type TokenWithoutDates = Partial<
+  Pick<Token, "createdAt" | "updatedAt">
+> &
+  Omit<Token, "createdAt" | "updatedAt">;
 
 // CoinGecko
 export const CoinGeckoCoinsMarketSchema = z.object({
