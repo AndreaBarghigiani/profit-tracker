@@ -14,7 +14,7 @@ module.exports = {
     extend: {
       colors: {
         border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
+        input: "#606251", // dog-600
         ring: "hsl(var(--ring))",
         background: "hsl(var(--dog-900))",
         foreground: "hsl(var(--dog-200))",
@@ -40,17 +40,17 @@ module.exports = {
           900: "#1a1400",
         },
         dog: {
-          DEFAULT: "hsl(var(--dog-500))",
-          50: "hsl(var(--dog-50))",
-          100: "hsl(var(--dog-100))",
-          200: "hsl(var(--dog-200))",
-          300: "hsl(var(--dog-300))",
-          400: "hsl(var(--dog-400))",
-          500: "hsl(var(--dog-500))",
-          600: "hsl(var(--dog-600))",
-          700: "hsl(var(--dog-700))",
-          800: "hsl(var(--dog-800))",
-          900: "hsl(var(--dog-900))",
+          DEFAULT: "#7b7e68",
+          50: "#f3f3f1",
+          100: "#dcdcd5",
+          200: "#c4c5ba",
+          300: "#acae9e",
+          400: "#959781",
+          500: "#7b7e68",
+          600: "#606251",
+          700: "#44463a",
+          800: "#292a23",
+          900: "#0e0e0c",
         },
         alert: {
           DEFAULT: "#f32648",
