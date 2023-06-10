@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "./ui/button";
 import { RefreshCcw, Plus } from "lucide-react";
+import Heading from "./ui/heading";
 
 export const CreatePositionValuesSchema = z.object({
   amount: z.number(),
@@ -82,13 +83,14 @@ export default function CreateHodlPositionForm({
         </div>
 
         <div>
-          <Label>Evaluation</Label>
-          <Input
-            disabled
-            type="text"
-            value={currencyConverter({ amount: watchAmount * tokenPrice })}
-          />
+          <Label>Price per Token</Label>
+          <Input type="text" />
         </div>
+      </div>
+
+      <div className="rounded bg-dog-700">
+        <Heading size="h3">Evaluation</Heading>
+        <p>{currencyConverter({ amount: watchAmount * tokenPrice })}</p>
       </div>
 
       <Button disabled={isCreatingPositionLoading} type="submit">

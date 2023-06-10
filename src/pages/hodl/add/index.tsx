@@ -57,9 +57,11 @@ const AddHodl: NextPage = () => {
       onSuccess: async () => {
         await utils.token.get.invalidate();
         await utils.hodl.get.invalidate();
-        await utils.wallet.getUserStats.invalidate().then(async () => {
-          await router.push(`/hodl/`);
-        });
+        await utils.wallet.getUserStats.invalidate();
+        // Don't need to redirect to the hodl page
+        // 	.then(async () => {
+        //   await router.push(`/hodl/`);
+        // });
       },
     });
 
