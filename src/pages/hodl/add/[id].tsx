@@ -1,10 +1,6 @@
 // Utils
-import { api } from "@/utils/api";
 import { prisma } from "@/server/db";
 import { getHodl } from "@/server/api/routers/hodl";
-import clsx from "clsx";
-import { useRouter } from "next/router";
-import { currencyConverter } from "@/utils/string";
 
 // Types
 import type {
@@ -12,93 +8,25 @@ import type {
   GetServerSidePropsContext,
   NextPage,
 } from "next";
+import type { TokenWithoutDates } from "@/server/types";
 
 // Components
 import AddHodlPositionForm from "@/components/addHodlPositionForm";
 import Heading from "@/components/ui/heading";
-import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipProvider,
-  TooltipContent,
-} from "@/components/ui/tooltip";
-import { RefreshCcw } from "lucide-react";
 
 const AddHodlPosition: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ tokenId, hodlId }) => {
-  const utils = api.useContext();
-  const router = useRouter();
-
-  const {
-    data: token,
-    isLoading: isTokenLoading,
-    isSuccess: isTokenSuccess,
-  } = api.token.get.useQuery({
-    tokenId,
-  });
-
-  const { mutateAsync: updatePrice, isLoading: isPriceLoading } =
-    api.token.updatePrice.useMutation({
-      onSuccess: async () => {
-        await utils.token.get.invalidate();
-        await utils.hodl.get.invalidate();
-        await utils.wallet.getUserStats.invalidate().then(async () => {
-          await router.push(`/hodl/`);
-        });
-      },
-    });
-
-  const iconClass = clsx("h-4 w-4 text-stone-400", {
-    "animate-spin": isPriceLoading,
-  });
-
+> = ({ token, hodlId }) => {
   return (
     <div>
       <Heading size="page" gradient="gold" spacing="massive">
-        Your positions for {isTokenLoading ? "..." : token?.name}
+        Your positions for {token.name}
       </Heading>
       <p className="mb-4 text-center text-lg text-stone-400">
         Are you buying or selling?
       </p>
 
-      <Heading size="h3" className="text-center text-stone-400">
-        Current evaluation
-      </Heading>
-
-      {isTokenSuccess && (
-        <>
-          <section className="mb-4 flex items-center justify-center gap-4">
-            <p className="text-center text-stone-400">
-              1 {token.name} ={" "}
-              {currencyConverter({ amount: token.latestPrice, type: "long" })}
-            </p>
-
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  {isTokenSuccess && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() =>
-                        updatePrice({ tokenId: token.coingecko_id })
-                      }
-                    >
-                      <RefreshCcw className={iconClass} />
-                    </Button>
-                  )}
-                </TooltipTrigger>
-                <TooltipContent className="border-foreground/20">
-                  <p>Update price</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </section>
-          <AddHodlPositionForm type="full" hodlId={hodlId} tokenId={tokenId} />
-        </>
-      )}
+      <AddHodlPositionForm type="full" hodlId={hodlId} token={token} />
     </div>
   );
 };
@@ -114,10 +42,14 @@ export async function getServerSideProps(
     hodlId: context.params.id,
     prisma,
   });
+  const token: TokenWithoutDates = hodl.token;
+
+  delete token.createdAt;
+  delete token.updatedAt;
 
   return {
     props: {
-      tokenId: hodl.tokenId,
+      token: token,
       hodlId: context.params.id,
     },
   };
