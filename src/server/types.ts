@@ -43,6 +43,7 @@ export const TransactionValuesSchema = z.object({
   type: z.nativeEnum(TransactionType),
   projectId: z.string().nullish(),
   hodlId: z.string().nullish(),
+  tokenId: z.string().nullish(),
 });
 
 export type TransactionValues = z.infer<typeof TransactionValuesSchema>;
