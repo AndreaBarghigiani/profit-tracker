@@ -170,7 +170,7 @@ export const transactionRouter = createTRPCRouter({
   create: protectedProcedure
     .input(TransactionValuesSchema)
     .mutation(async ({ ctx, input }) => {
-      await ctx.prisma.transaction.create({
+      const transaction = await ctx.prisma.transaction.create({
         data: {
           amount: input.amount,
           evaluation: input.evaluation,
@@ -266,6 +266,8 @@ export const transactionRouter = createTRPCRouter({
           }),
         },
       });
+
+      return transaction;
     }),
   delete: protectedProcedure
     .input(z.object({ transactionId: z.string() }))

@@ -1,7 +1,7 @@
 // Utils
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { HodlValuesSchema } from "@/server/types";
+import { TransactionValuesSchema } from "@/server/types";
 import { ensureAllTransactionTypes } from "../transaction/sumTransactions";
 
 // Types
@@ -26,13 +26,16 @@ export const getHodl = async ({
 
 export const hodlRouter = createTRPCRouter({
   create: protectedProcedure
-    .input(HodlValuesSchema)
+    .input(TransactionValuesSchema)
     .mutation(async ({ ctx, input }) => {
+      if (!input.tokenId) return;
+      console.log("input.tokenId:", input.tokenId);
+
       const position = await ctx.prisma.hodl.create({
         data: {
-          currentAmount: input.currentAmount,
-          currentEvaluation: input.currentEvaluation,
-          totalInvested: input.totalInvested,
+          currentAmount: input.amount,
+          currentEvaluation: input.evaluation,
+          totalInvested: input.evaluation,
           user: {
             connect: {
               id: ctx.session.user.id,
@@ -46,8 +49,8 @@ export const hodlRouter = createTRPCRouter({
           transaction: {
             create: {
               type: TransactionType.BUY,
-              amount: input.currentAmount,
-              evaluation: input.currentEvaluation,
+              amount: input.amount,
+              evaluation: input.evaluation,
             },
           },
         },
@@ -60,7 +63,7 @@ export const hodlRouter = createTRPCRouter({
         },
         data: {
           totalDeposit: {
-            increment: input.currentEvaluation,
+            increment: input.evaluation,
           },
         },
       });
