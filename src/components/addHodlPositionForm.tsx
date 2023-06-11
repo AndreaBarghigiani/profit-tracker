@@ -10,7 +10,11 @@ import { useRouter } from "next/router";
 
 // Types
 import type { SubmitHandler } from "react-hook-form";
-import type { TransactionValues, TokenWithoutDates } from "@/server/types";
+import type {
+  TransactionValues,
+  TokenWithoutDates,
+  HodlValues,
+} from "@/server/types";
 
 // Components
 import { Input } from "@/components/ui/input";
@@ -28,7 +32,7 @@ import {
 
 type AddPositionProps = {
   token: TokenWithoutDates;
-  hodlId: string;
+  hodlId: string | null;
 };
 
 type AddPositionFormProps = TransactionValues & {
@@ -55,11 +59,22 @@ const AddHodlPositionForm = ({ token, hodlId }: AddPositionProps) => {
     },
   });
 
+  const { mutate: createPosition, isLoading: isCreatingPosition } =
+    api.hodl.create.useMutation({
+      onSuccess: async (data) => {
+        if (!data?.id) return;
+        await utils.wallet.get.invalidate().then(async () => {
+          await router.push(`/hodl/${data.id}`);
+        });
+      },
+    });
+
   const { mutate: addPosition, isLoading: isAddingPosition } =
     api.transaction.create.useMutation({
-      onSuccess: async () => {
+      onSuccess: async (data) => {
         await utils.wallet.get.invalidate().then(async () => {
-          await router.push(`/hodl/${hodlId}`);
+          if (!data?.hodlId) return;
+          await router.push(`/hodl/${data.hodlId}`);
         });
       },
     });
@@ -82,17 +97,18 @@ const AddHodlPositionForm = ({ token, hodlId }: AddPositionProps) => {
   const handleAddPosition: SubmitHandler<TransactionValues> = (data) => {
     const massaged: TransactionValues = {
       type: data.type,
-      hodlId,
       amount: data.amount,
       evaluation: data.amount * watchTokenPrice,
     };
 
-    addPosition(massaged);
+    if (!hodlId) {
+      massaged.tokenId = selectedToken.coingecko_id;
+      createPosition(massaged);
+    } else {
+      massaged.hodlId = hodlId;
+      addPosition(massaged);
+    }
   };
-
-  const iconClass = clsx("h-4 w-4", {
-    "animate-spin": isAddingPosition || isPriceLoading,
-  });
 
   return (
     <form
@@ -104,7 +120,7 @@ const AddHodlPositionForm = ({ token, hodlId }: AddPositionProps) => {
           <Label htmlFor="name">Amount</Label>
           <Input
             type="number"
-            disabled={isAddingPosition}
+            disabled={isAddingPosition || isCreatingPosition}
             placeholder="0.00"
             step="any"
             id="amount"
@@ -118,7 +134,7 @@ const AddHodlPositionForm = ({ token, hodlId }: AddPositionProps) => {
             <Input
               type="number"
               step="any"
-              disabled={isAddingPosition}
+              disabled={isAddingPosition || isCreatingPosition}
               placeholder="0.00"
               id="tokenPrice"
               {...registerInvestment("tokenPrice", { valueAsNumber: true })}
@@ -134,7 +150,11 @@ const AddHodlPositionForm = ({ token, hodlId }: AddPositionProps) => {
                       updatePrice({ tokenId: selectedToken.coingecko_id })
                     }
                   >
-                    <RefreshCcw className={iconClass} />
+                    <RefreshCcw
+                      className={clsx("h-4 w-4", {
+                        "animate-spin": isPriceLoading,
+                      })}
+                    />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent className="border-foreground/20">
@@ -186,14 +206,24 @@ const AddHodlPositionForm = ({ token, hodlId }: AddPositionProps) => {
             : "$0"}
         </p>
       </div>
-      <Button disabled={isAddingPosition} type="submit" className="ml-auto">
-        {isAddingPosition ? (
+      <Button
+        disabled={isAddingPosition || isCreatingPosition}
+        type="submit"
+        className="ml-auto"
+      >
+        {isAddingPosition || isCreatingPosition ? (
           <>
-            <RefreshCcw className={iconClass} /> Loading...
+            <RefreshCcw
+              className={clsx("h-4 w-4", {
+                "animate-spin": isAddingPosition || isCreatingPosition,
+              })}
+            />
+            <span className="ml-2">Loading...</span>
           </>
         ) : (
           <>
-            <Plus className={iconClass} /> Add
+            <Plus className="h-4 w-4" />
+            <span className="ml-2">Add</span>
           </>
         )}
       </Button>
