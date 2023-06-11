@@ -11,7 +11,12 @@ const WalletInfo = () => {
 
   return (
     <div className="p-2">
-      <Heading size="h4">General Info</Heading>
+      <Heading size="h4" className="mb-0">
+        General Info
+      </Heading>
+      <p className="mb-4 text-xs text-dog-400">
+        Section added just for testing purposes
+      </p>
       {isUserStatsSuccess && (
         <ul>
           <li>
