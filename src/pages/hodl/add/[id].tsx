@@ -26,7 +26,7 @@ const AddHodlPosition: NextPage<
         Are you buying or selling?
       </p>
 
-      <AddHodlPositionForm type="full" hodlId={hodlId} token={token} />
+      <AddHodlPositionForm hodlId={hodlId} token={token} />
     </div>
   );
 };

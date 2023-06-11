@@ -1,11 +1,25 @@
 // Utils
 import { currencyConverter, uppercaseFirst } from "@/utils/string";
+import { api } from "@/utils/api";
+import clsx from "clsx";
 
 // Types
 import type { Token, Transaction } from "@prisma/client";
 
 // Components
-import { ArrowBigDownDash, ArrowBigUpDash } from "lucide-react";
+import {
+  ArrowBigDownDash,
+  ArrowBigUpDash,
+  Trash2,
+  RefreshCcw,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipProvider,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 type HodlTransactionCardProps = {
   transaction: Transaction;
@@ -16,10 +30,23 @@ const HodlTransactionCard = ({
   transaction,
   token,
 }: HodlTransactionCardProps) => {
+  const utils = api.useContext();
+  const { mutate: deleteTransaction, isLoading: isDeletingTransaction } =
+    api.transaction.delete.useMutation({
+      onSuccess: async () => {
+        await utils.wallet.getUserStats.invalidate();
+        await utils.hodl.getTransactions.invalidate();
+      },
+    });
+
+  const iconClass = clsx("h-4 w-4", {
+    "animate-spin": isDeletingTransaction,
+  });
+
   return (
     <div
       key={transaction.id}
-      className="grid grid-cols-3 items-center gap-4 rounded-md bg-foreground/10"
+      className="grid grid-cols-4 items-center gap-4 rounded-md bg-foreground/10"
     >
       <div className="p-3">
         <p>
@@ -53,6 +80,29 @@ const HodlTransactionCard = ({
           })}
         </p>
       </time>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="ml-auto mr-3"
+              onClick={() =>
+                deleteTransaction({ transactionId: transaction.id })
+              }
+            >
+              {isDeletingTransaction ? (
+                <RefreshCcw className={iconClass} />
+              ) : (
+                <Trash2 className={iconClass} />
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent className="border-foreground/20">
+            <p>Delete transaction</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
   );
 };
