@@ -19,6 +19,12 @@ import { Button } from "./ui/button";
 import { RefreshCcw, Plus } from "lucide-react";
 import { ToggleGroup, ToggleItem } from "@/components/ui/toggle-group";
 import Heading from "@/components/ui/heading";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipProvider,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 type AddPositionProps = {
   token: TokenWithoutDates;
@@ -38,6 +44,7 @@ const AddHodlPositionForm = ({ token, hodlId }: AddPositionProps) => {
     handleSubmit: handleSubmitInvestment,
     watch,
     control,
+    setValue,
     // formState: { errors },
   } = useForm<AddPositionFormProps>({
     resolver: zodResolver(TransactionValuesSchema),
@@ -57,6 +64,16 @@ const AddHodlPositionForm = ({ token, hodlId }: AddPositionProps) => {
       },
     });
 
+  const { mutateAsync: updatePrice, isLoading: isPriceLoading } =
+    api.token.updatePrice.useMutation({
+      onSuccess: async (data) => {
+        await utils.token.get.invalidate();
+        const token = data.pop();
+        if (!token) return;
+        setValue("tokenPrice", parseFloat(token.latestPrice));
+      },
+    });
+
   const [watchAmount, watchTokenPrice] = watch(["amount", "tokenPrice"]);
   const allowedTypes = Object.values(TransactionType).filter((type) =>
     ["BUY", "SELL"].includes(type)
@@ -73,8 +90,8 @@ const AddHodlPositionForm = ({ token, hodlId }: AddPositionProps) => {
     addPosition(massaged);
   };
 
-  const iconClass = clsx("h-4 w-4 mr-2", {
-    "animate-spin": isAddingPosition,
+  const iconClass = clsx("h-4 w-4", {
+    "animate-spin": isAddingPosition || isPriceLoading,
   });
 
   return (
@@ -97,14 +114,35 @@ const AddHodlPositionForm = ({ token, hodlId }: AddPositionProps) => {
 
         <div>
           <Label>Price per token</Label>
-          <Input
-            type="number"
-            step="any"
-            disabled={isAddingPosition}
-            placeholder="0.00"
-            id="tokenPrice"
-            {...registerInvestment("tokenPrice", { valueAsNumber: true })}
-          />
+          <div className="flex items-center">
+            <Input
+              type="number"
+              step="any"
+              disabled={isAddingPosition}
+              placeholder="0.00"
+              id="tokenPrice"
+              {...registerInvestment("tokenPrice", { valueAsNumber: true })}
+            />
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    type="button"
+                    size="sm"
+                    onClick={() =>
+                      updatePrice({ tokenId: selectedToken.coingecko_id })
+                    }
+                  >
+                    <RefreshCcw className={iconClass} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent className="border-foreground/20">
+                  <p>Update price</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </div>
 
         <Controller

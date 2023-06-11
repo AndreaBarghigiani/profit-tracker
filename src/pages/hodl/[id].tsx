@@ -36,7 +36,6 @@ const Hodl: NextPage<
       });
     },
   });
-
   return (
     <div className="mx-auto max-w-3xl space-y-4">
       <header>
