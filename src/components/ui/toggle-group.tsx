@@ -16,7 +16,7 @@ const toggleGroupItemClasses = cn(
   // Focus
   "focus:outline-none focus:z-10 focus:ring-2 focus:ring-main-600 focus:ring-offset-main-700",
   // Selected
-  "data-[state=on]:text-dog-300 data-[state=on]:bg-dog-900"
+  "data-[state=on]:text-dog-800 data-[state=on]:bg-dog-200"
 );
 const ToggleGroup = ToggleGroupPrimitive.Root;
 const ToggleItem = React.forwardRef<
