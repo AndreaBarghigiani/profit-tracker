@@ -10,11 +10,7 @@ import { useRouter } from "next/router";
 
 // Types
 import type { SubmitHandler } from "react-hook-form";
-import type {
-  TransactionValues,
-  TokenWithoutDates,
-  HodlValues,
-} from "@/server/types";
+import type { TransactionValues, TokenWithoutDates } from "@/server/types";
 
 // Components
 import { Input } from "@/components/ui/input";
