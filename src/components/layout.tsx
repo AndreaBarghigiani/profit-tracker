@@ -18,8 +18,8 @@ import {
 } from "lucide-react";
 import Heading from "@/components/ui/heading";
 import UserCard from "@/components/userCard";
-// import { Separator } from "@/components/ui/separator";
-// import WalletInfo from "./ui/testing/WalletInfo";
+import { Separator } from "@/components/ui/separator";
+import WalletInfo from "./ui/testing/WalletInfo";
 
 const Sidebar = () => {
   // const { data: userRole } = api.user.getRole.useQuery();
@@ -94,8 +94,8 @@ const Sidebar = () => {
         </li>
       </ul>
 
-      {/* <Separator className="my-4 bg-foreground/50" />
-      <WalletInfo /> */}
+      <Separator className="my-4 bg-foreground/50" />
+      <WalletInfo />
       {/* {!!userRole?.role && userRole.role === Role.ADMIN && (
         <>
           <Separator className="my-4 bg-foreground/50" />
