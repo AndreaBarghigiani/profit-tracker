@@ -267,4 +267,33 @@ export const transactionRouter = createTRPCRouter({
         },
       });
     }),
+  delete: protectedProcedure
+    .input(z.object({ transactionId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const transaction = await ctx.prisma.transaction.delete({
+        where: {
+          id: input.transactionId,
+        },
+      });
+
+      await ctx.prisma.wallet.update({
+        where: {
+          userId: ctx.session.user.id,
+        },
+        data: {
+          total: {
+            decrement:
+              transaction.evaluation > transaction.amount
+                ? transaction.evaluation
+                : transaction.amount,
+          },
+          totalDeposit: {
+            decrement:
+              transaction.evaluation > transaction.amount
+                ? transaction.evaluation
+                : transaction.amount,
+          },
+        },
+      });
+    }),
 });
