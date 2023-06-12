@@ -19,7 +19,7 @@ export function ensureAllTransactionTypes(
   const result: SumTxItemValued[] = allTypes.reduce(
     (acc: SumTxItemValued[], type: TransactionType) => {
       const existingItem = sumTx.find((item) => item.type === type);
-      console.log("existingItem:", existingItem);
+
       if (existingItem) {
         const evaluation = existingItem._sum.evaluation
           ? existingItem._sum.evaluation
