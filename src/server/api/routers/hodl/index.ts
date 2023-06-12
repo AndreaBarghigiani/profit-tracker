@@ -29,7 +29,6 @@ export const hodlRouter = createTRPCRouter({
     .input(TransactionValuesSchema)
     .mutation(async ({ ctx, input }) => {
       if (!input.tokenId) return;
-      console.log("input.tokenId:", input.tokenId);
 
       const position = await ctx.prisma.hodl.create({
         data: {

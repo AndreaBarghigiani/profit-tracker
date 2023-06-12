@@ -56,7 +56,6 @@ const EditProjectPage: NextPage<
   const onSubmit: SubmitHandler<EditProjectValues> = (data) => {
     data.id = project.id;
     data.increaseFrequency = Frequency[data.increaseFrequency] as Frequency;
-    console.log("you want to submit");
     mutate(data);
   };
 
