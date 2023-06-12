@@ -1,13 +1,14 @@
 // Utils
 import { lastInterestByProjectId } from "./lastInterestByProjectId";
-import { type PrismaClient, TransactionType } from "@prisma/client";
+import { type PrismaClient, TransactionType, Frequency } from "@prisma/client";
 import { getProject } from "../project";
 
 const mapFrequency: Record<string, number> = {
-  DAILY: 23 * 60 * 60 * 1000, // 24 hours in milliseconds
-  WEEKLY: 7 * 23 * 60 * 60 * 1000, // 7 days in milliseconds
-  MONTHLY: 30 * 23 * 60 * 60 * 1000, // 30 days in milliseconds
-  YEARLY: 365 * 23 * 60 * 60 * 1000, // 365 days in milliseconds
+  [Frequency.HOURLY]: 60 * 60 * 1000, // 1 hours in milliseconds
+  [Frequency.DAILY]: 23 * 60 * 60 * 1000, // 24 hours in milliseconds
+  [Frequency.WEEKLY]: 7 * 23 * 60 * 60 * 1000, // 7 days in milliseconds
+  [Frequency.MONTLY]: 30 * 23 * 60 * 60 * 1000, // 30 days in milliseconds
+  [Frequency.YEARLY]: 365 * 23 * 60 * 60 * 1000, // 365 days in milliseconds
 };
 
 export const addInterest = async (projectId: string, prisma: PrismaClient) => {

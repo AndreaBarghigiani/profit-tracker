@@ -27,7 +27,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
       <div className="rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg">
         <header className="flex items-start justify-between gap-6">
           <Skeleton as="h2" className="h-5 w-32 bg-dog-400" />
-          <Skeleton as="p" className="h-5 w-4 bg-dog-400" />
+          <Skeleton as="div" className="h-5 w-4 bg-dog-400" />
         </header>
 
         <section className="mt-4 flex items-center gap-6">
@@ -54,12 +54,12 @@ const ProjectCard = ({ project }: { project: Project }) => {
         <Heading size="h2" className="my-0">
           {project.name}
         </Heading>
-        <p className="flex flex-shrink-0 items-center rounded-3xl border border-dog-800 px-3 py-1 text-xs text-dog-600">
+        <div className="flex flex-shrink-0 items-center rounded-3xl border border-dog-800 px-3 py-1 text-xs text-dog-600">
           <div className="mr-2 text-dog-600">
             <TimerReset className="h-4 w-4" />
           </div>
           {project.increaseAmount}% {project.increaseFrequency}
-        </p>
+        </div>
       </header>
 
       <section className="mt-4 flex items-center gap-6">
