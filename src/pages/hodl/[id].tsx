@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 
 const Hodl: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ hodlId, startDate, amount, evaluation, total, token }) => {
+> = ({ hodlId, startDate, amount, total, token }) => {
   const utils = api.useContext();
   const router = useRouter();
   const { data, isSuccess } = api.hodl.getTransactions.useQuery({
@@ -51,7 +51,7 @@ const Hodl: NextPage<
           </p>
 
           <Link
-            className={buttonVariants({ className: "ml-auto" })}
+            className={buttonVariants({ className: "ml-auto mr-3" })}
             href={`/hodl/add/${hodlId}`}
           >
             Add a new position
@@ -72,7 +72,7 @@ const Hodl: NextPage<
           </div>
           <div>
             <Heading size="h4">Current Value</Heading>
-            <p>{currencyConverter({ amount: evaluation })}</p>
+            <p>{currencyConverter({ amount: amount * token.price })}</p>
           </div>
           <div>
             <Heading size="h4">Invested</Heading>
@@ -129,13 +129,12 @@ export async function getServerSideProps(
       hodlId: context.params.id,
       startDate,
       amount: hodl.currentAmount,
-      evaluation: hodl.currentEvaluation,
       total: hodl.totalInvested,
       token: {
         name: token.name,
         symbol: token.symbol,
         icon: token.iconUrl,
-        price: token.latestPrice,
+        price: parseFloat(token.latestPrice),
       },
     },
   };
