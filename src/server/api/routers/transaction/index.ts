@@ -144,7 +144,7 @@ export const transactionRouter = createTRPCRouter({
   addInterest: protectedProcedure
     .input(z.object({ projectId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      await addInterest(input.projectId, ctx.prisma);
+      return await addInterest(input.projectId, ctx.prisma);
     }),
   projectInterest: protectedProcedure
     .input(z.object({ projectId: z.string() }))
