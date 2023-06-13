@@ -6,6 +6,18 @@ import { updateMarketData } from "./updateMarketData";
 
 // Types
 
+const sample = [
+  "bitcoin",
+  "ethereum",
+  "matic-network",
+  "binancecoin",
+  "cardano",
+  "dogecoin",
+  "avalanche-2",
+  "cosmos",
+  "arbitrum",
+];
+
 export const getToken = async ({
   tokenId,
   prisma,
@@ -27,32 +39,24 @@ export const getToken = async ({
   });
 };
 
+export const getSample = async ({ prisma }: { prisma: PrismaClient }) => {
+  return await prisma.token.findMany({
+    where: {
+      coingecko_id: {
+        in: sample,
+      },
+    },
+  });
+};
+
 export const tokenRouter = createTRPCRouter({
   get: protectedProcedure
     .input(z.object({ tokenId: z.string() }))
     .query(({ ctx, input }) => {
       return getToken({ tokenId: input.tokenId, prisma: ctx.prisma });
     }),
-  sample: protectedProcedure.query(async ({ ctx }) => {
-    const sample = [
-      "bitcoin",
-      "ethereum",
-      "matic-network",
-      "binancecoin",
-      "cardano",
-      "dogecoin",
-      "avalanche-2",
-      "cosmos",
-      "arbitrum",
-    ];
-
-    return ctx.prisma.token.findMany({
-      where: {
-        coingecko_id: {
-          in: sample,
-        },
-      },
-    });
+  sample: protectedProcedure.query(({ ctx }) => {
+    return getSample({ prisma: ctx.prisma });
   }),
   find: protectedProcedure
     .input(z.object({ query: z.string() }))
