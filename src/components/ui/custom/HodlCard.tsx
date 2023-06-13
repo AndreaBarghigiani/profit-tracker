@@ -70,9 +70,17 @@ const HodlCard = ({ position }: { position: HodlCardProps }) => {
 
       <div className="w-full">
         <header className="flex items-start justify-between gap-6">
-          <Heading size="h2" className="my-0">
-            {position.token.name}
-          </Heading>
+          <Link
+            href={`/hodl/${position.id}`}
+            className={buttonVariants({
+              variant: "link",
+              size: "link",
+            })}
+          >
+            <Heading size="h2" className="my-0">
+              {position.token.name}
+            </Heading>
+          </Link>
           <p className={badgeClass}>{diffPerc.toFixed(2)}%</p>
         </header>
 
@@ -117,21 +125,7 @@ const HodlCard = ({ position }: { position: HodlCardProps }) => {
               </Tooltip>
             </TooltipProvider>
 
-            <Link
-              href={`/hodl/${position.id}`}
-              className={buttonVariants({
-                variant: "outline",
-                size: "sm",
-                className: "ml-auto",
-              })}
-            >
-              <Eye className="mr-2 h-4 w-4" />
-              Details
-            </Link>
-
-            {/* 
-						Not show single icon button for the moment
-						<TooltipProvider>
+            <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
@@ -151,6 +145,8 @@ const HodlCard = ({ position }: { position: HodlCardProps }) => {
               </Tooltip>
             </TooltipProvider>
 
+            {/* 
+										Not show single icon button for the moment
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
