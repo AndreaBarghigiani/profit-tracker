@@ -29,7 +29,7 @@ const HodlCard = ({ position }: { position: HodlCardProps }) => {
   const currentEvaluation =
     position.currentAmount * parseFloat(position.token.latestPrice);
   const diffAmount = currentEvaluation - position.totalInvested;
-  const isDiffPositive = diffAmount > 0;
+  const isDiffPositive = diffAmount >= 0;
   const diffPerc =
     ((currentEvaluation - position.totalInvested) / position.totalInvested) *
     100;
