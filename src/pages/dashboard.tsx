@@ -31,6 +31,10 @@ const Dashboard: NextPage = () => {
       </Heading>
 
       <div className="grid grid-cols-5 gap-4">
+        {isUserStatsSuccess && (
+          <UserStats orientation="vertical" userStats={userStats} />
+        )}
+
         <section className="col-span-4 space-y-12">
           {isProjectsSuccess ? (
             <div>
@@ -48,7 +52,7 @@ const Dashboard: NextPage = () => {
                 </Link>
               </Heading>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="flex grid-cols-2 flex-col gap-4 lg:grid">
                 {projects.map((project: Project) => (
                   <ProjectCard key={project.id} project={project} />
                 ))}
@@ -81,10 +85,6 @@ const Dashboard: NextPage = () => {
             </div>
           )}
         </section>
-
-        {isUserStatsSuccess && (
-          <UserStats orientation="vertical" userStats={userStats} />
-        )}
       </div>
     </div>
   );

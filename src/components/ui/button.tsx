@@ -24,10 +24,11 @@ const buttonVariants = cva(
         ghost: "text-dog-300 hover:text-main-600",
         "ghost-danger":
           "text-alert-300 hover:text-primary-foreground hover:bg-alert-400",
-        link: "underline-offset-4 hover:underline text-primary",
+        link: "underline-offset-4 hover:underline hover:text-main-600",
       },
       size: {
         default: "h-10 py-2 px-4",
+        link: "h-auto py-0 px-0",
         xs: "h-6 px-1",
         sm: "h-9 px-3",
         lg: "h-11 px-8",

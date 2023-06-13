@@ -11,6 +11,12 @@ import Heading from "@/components/ui/heading";
 import { TimerReset, PiggyBank, Eye, BarChart } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipProvider,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 const ProjectCard = ({ project }: { project: Project }) => {
   const {
@@ -51,9 +57,17 @@ const ProjectCard = ({ project }: { project: Project }) => {
   return (
     <div className="rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg">
       <header className="flex items-start justify-between gap-6">
-        <Heading size="h2" className="my-0">
-          {project.name}
-        </Heading>
+        <Link
+          href={`/project/${project.id}`}
+          className={buttonVariants({
+            variant: "link",
+            size: "link",
+          })}
+        >
+          <Heading size="h2" className="my-0">
+            {project.name}
+          </Heading>
+        </Link>
         <div className="flex flex-shrink-0 items-center rounded-3xl border border-dog-800 px-3 py-1 text-xs text-dog-600">
           <div className="mr-2 text-dog-600">
             <TimerReset className="h-4 w-4" />
@@ -81,17 +95,25 @@ const ProjectCard = ({ project }: { project: Project }) => {
           </span>
         </div>
 
-        <Link
-          href={`/project/${project.id}`}
-          className={buttonVariants({
-            variant: "outline",
-            size: "sm",
-            className: "ml-auto",
-          })}
-        >
-          <Eye className="mr-2 h-4 w-4" />
-          Details
-        </Link>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                href={`/project/${project.id}`}
+                className={buttonVariants({
+                  variant: "ghost",
+                  size: "xs",
+                  className: "ml-auto",
+                })}
+              >
+                <Eye className="h-4 w-4" />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent className="border-dog-800 text-dog-500">
+              <p>Project details</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </section>
     </div>
   );
