@@ -61,7 +61,7 @@ const AddHodl: NextPage<
       <section className="mx-auto my-4 max-w-lg rounded border border-dog-700 bg-dog-800 p-4">
         <>
           <form
-            className="mb-4 flex items-center space-x-3"
+            className="mb-2 flex items-center space-x-3"
             onSubmit={handleSubmitSearch(handleSearch)}
           >
             <Input
@@ -78,8 +78,14 @@ const AddHodl: NextPage<
             </Button>
           </form>
 
-          <ul>
-            {isSearchSuccess
+          {isSearchSuccess && searchResults.length === 0 && (
+            <p className="text-center text-xs text-dog-400">
+              No results found. Please search again.
+            </p>
+          )}
+
+          <ul className="mt-2">
+            {isSearchSuccess && searchResults.length > 0
               ? searchResults.map((token) => (
                   <HodlRow key={token.coingecko_id} token={token} />
                 ))
