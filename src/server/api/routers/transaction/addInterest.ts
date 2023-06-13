@@ -4,7 +4,8 @@ import { type PrismaClient, TransactionType, Frequency } from "@prisma/client";
 import { getProject } from "../project";
 
 const mapFrequency: Record<string, number> = {
-  [Frequency.HOURLY]: 60 * 60 * 1000, // 1 hours in milliseconds
+  // All following will be slightly off due to cron settings
+  [Frequency.HOURLY]: 59 * 60 * 1000, // 1 hours in milliseconds
   [Frequency.DAILY]: 23 * 60 * 60 * 1000, // 24 hours in milliseconds
   [Frequency.WEEKLY]: 7 * 23 * 60 * 60 * 1000, // 7 days in milliseconds
   [Frequency.MONTLY]: 30 * 23 * 60 * 60 * 1000, // 30 days in milliseconds
