@@ -82,42 +82,34 @@ export const projectRouter = createTRPCRouter({
   create: protectedProcedure
     .input(ProjectValuesSchema)
     .mutation(async ({ ctx, input }) => {
-      const project = await ctx.prisma.project.create({
-        data: {
-          ...input,
-          currentHolding: input.initial,
-          user: {
-            connect: { id: ctx.session.user.id },
-          },
-          transaction: {
-            create: {
-              type: TransactionType.DEPOSIT,
-              amount: input.initial,
-              evaluation: input.initial,
-            },
-          },
-        },
-        include: {
-          transaction: true,
-        },
-      });
-
-      // Add deposit to wallet
       await ctx.prisma.wallet.update({
         where: {
           userId: ctx.session.user.id,
         },
         data: {
-          total: {
-            increment: input.initial,
+          exposure: {
+            increment: input.deposit,
           },
           totalDeposit: {
-            increment: input.initial,
+            increment: input.deposit,
+          },
+          project: {
+            create: {
+              ...input,
+              exposure: input.deposit,
+              deposit: input.deposit,
+              userId: ctx.session.user.id,
+              transaction: {
+                create: {
+                  type: TransactionType.DEPOSIT,
+                  amount: input.deposit,
+                  evaluation: input.deposit,
+                },
+              },
+            },
           },
         },
       });
-
-      return project;
     }),
   delete: protectedProcedure
     .input(z.string())
