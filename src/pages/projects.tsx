@@ -23,7 +23,7 @@ const Projects: NextPage = () => {
           </Heading>
 
           {projects.length > 0 ? (
-            <div className="grid grid-cols-2 gap-4">
+            <>
               <p className="flex items-center">
                 These are your projects
                 <Link
@@ -34,10 +34,12 @@ const Projects: NextPage = () => {
                 </Link>
               </p>
 
-              {projects.map((project: Project) => (
-                <ProjectCard key={project.id} project={project} />
-              ))}
-            </div>
+              <div className="grid grid-cols-2 gap-4">
+                {projects.map((project: Project) => (
+                  <ProjectCard key={project.id} project={project} />
+                ))}
+              </div>
+            </>
           ) : (
             <div className="mx-auto flex h-64 max-w-2xl flex-col items-center justify-center space-y-3 rounded-xl border border-dashed">
               <p>Looks like you don&apos;t have any projects yet.</p>
