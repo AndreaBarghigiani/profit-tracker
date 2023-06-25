@@ -22,21 +22,30 @@ const Projects: NextPage = () => {
             Projects
           </Heading>
 
-          <p className="flex items-center">
-            These are your projects
-            <Link
-              className={buttonVariants({ className: "ml-auto" })}
-              href="/project/add"
-            >
-              Add project
-            </Link>
-          </p>
+          {projects.length > 0 ? (
+            <div className="grid grid-cols-2 gap-4">
+              <p className="flex items-center">
+                These are your projects
+                <Link
+                  className={buttonVariants({ className: "ml-auto" })}
+                  href="/project/create"
+                >
+                  Add project
+                </Link>
+              </p>
 
-          <div className="grid grid-cols-2 gap-4">
-            {projects.map((project: Project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </div>
+              {projects.map((project: Project) => (
+                <ProjectCard key={project.id} project={project} />
+              ))}
+            </div>
+          ) : (
+            <div className="mx-auto flex h-64 max-w-2xl flex-col items-center justify-center space-y-3 rounded-xl border border-dashed">
+              <p>Looks like you don&apos;t have any projects yet.</p>
+              <Link className={buttonVariants()} href="/project/create">
+                Add project
+              </Link>
+            </div>
+          )}
         </div>
       ) : (
         <p>Loading...</p>
