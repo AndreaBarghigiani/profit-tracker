@@ -13,6 +13,37 @@ export const walletRouter = createTRPCRouter({
     });
   }),
   getUserStats: protectedProcedure.query(async ({ ctx }) => {
+    const projectTotals = await ctx.prisma.project.aggregate({
+      where: {
+        userId: ctx.session.user.id,
+      },
+      _sum: {
+        exposure: true,
+        deposit: true,
+        profits: true,
+      },
+    });
+
+    const hodlTotals = await ctx.prisma.hodl.aggregate({
+      where: {
+        userId: ctx.session.user.id,
+      },
+      _sum: {
+        exposure: true,
+        profits: true,
+      },
+    });
+
+    projectTotals;
+
+    const totals = {
+      exposure:
+        (projectTotals._sum.exposure ?? 0) + (hodlTotals._sum.exposure ?? 0),
+      deposit: projectTotals._sum.deposit,
+      profits:
+        (projectTotals._sum.profits ?? 0) + (hodlTotals._sum.profits ?? 0),
+    };
+
     const wallet = await ctx.prisma.wallet.findUniqueOrThrow({
       where: {
         userId: ctx.session.user.id,
@@ -24,6 +55,9 @@ export const walletRouter = createTRPCRouter({
     return {
       wallet,
       interests,
+      totals,
+      projectTotals,
+      hodlTotals,
     };
   }),
   getDailyPassiveResult: protectedProcedure.query(async ({ ctx }) => {
