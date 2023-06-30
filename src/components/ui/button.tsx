@@ -25,6 +25,9 @@ const buttonVariants = cva(
         "ghost-danger":
           "text-alert-300 hover:text-primary-foreground hover:bg-alert-400",
         link: "underline-offset-4 hover:underline hover:text-main-600",
+        admin: "bg-alert-200 text-alert-900	",
+        adminOutline:
+          "border border-alert-200 text-alert-200 hover:bg-alert-200 hover:text-alert-900",
       },
       size: {
         default: "h-10 py-2 px-4",

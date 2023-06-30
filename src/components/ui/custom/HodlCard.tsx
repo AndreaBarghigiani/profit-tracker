@@ -27,12 +27,11 @@ type HodlCardProps = Hodl & {
 
 const HodlCard = ({ position }: { position: HodlCardProps }) => {
   const currentEvaluation =
-    position.currentAmount * parseFloat(position.token.latestPrice);
-  const diffAmount = currentEvaluation - position.totalInvested;
+    position.amount * parseFloat(position.token.latestPrice);
+  const diffAmount = currentEvaluation - position.exposure;
   const isDiffPositive = diffAmount >= 0;
   const diffPerc =
-    ((currentEvaluation - position.totalInvested) / position.totalInvested) *
-    100;
+    ((currentEvaluation - position.exposure) / position.exposure) * 100;
 
   // Classes
   const badgeClass = clsx(
@@ -91,7 +90,7 @@ const HodlCard = ({ position }: { position: HodlCardProps }) => {
             </div>
             <span className="text-2xl font-semibold">
               {currencyConverter({
-                amount: position.totalInvested,
+                amount: currentEvaluation,
               })}
             </span>
           </div>

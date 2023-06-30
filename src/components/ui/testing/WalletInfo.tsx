@@ -18,29 +18,43 @@ const WalletInfo = () => {
         Section added just for testing purposes
       </p>
       {isUserStatsSuccess && (
-        <ul>
-          <li>
-            <strong>Total:</strong>{" "}
-            {currencyConverter({
-              amount: userStats.wallet.total,
-              showSign: true,
-            })}
-          </li>
-          <li>
-            <strong>Total Deposits:</strong>{" "}
-            {currencyConverter({
-              amount: userStats.wallet.totalDeposit,
-              showSign: true,
-            })}
-          </li>
-          <li>
-            <strong>Total Withdraw:</strong>{" "}
-            {currencyConverter({
-              amount: userStats.wallet.totalWithdraw,
-              showSign: true,
-            })}
-          </li>
-        </ul>
+        <>
+          <ul>
+            <li>
+              <strong>Exposure:</strong>{" "}
+              {currencyConverter({
+                amount: userStats.totals.exposure,
+                showSign: true,
+              })}
+            </li>
+            <li>
+              <strong>Liquid Funds:</strong>{" "}
+              {currencyConverter({
+                amount: userStats.wallet.liquidFunds,
+                showSign: true,
+              })}
+            </li>
+            <li>
+              <strong>Total Withdraw:</strong>{" "}
+              {currencyConverter({
+                amount: userStats.totals.profits,
+                showSign: true,
+              })}
+            </li>
+          </ul>
+          {/* <Heading size="h4" className="mb-0">
+            Interests
+          </Heading>
+          <ul>
+            <li>
+              <strong>Total Withdraw:</strong>{" "}
+              {currencyConverter({
+                amount: userStats.wallet.profits,
+                showSign: true,
+              })}
+            </li>
+          </ul> */}
+        </>
       )}
     </div>
   );

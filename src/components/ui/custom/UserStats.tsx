@@ -9,13 +9,23 @@ import type { ReactElement } from "react";
 
 // Components
 import Heading from "@/components/ui/heading";
-import { Dumbbell, DollarSign, Percent, CalendarRange } from "lucide-react";
+import {
+  AlertTriangle,
+  DollarSign,
+  Percent,
+  CalendarRange,
+} from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 type UserStatsCardProps = {
   userStats: {
     wallet: Wallet;
     interests: MassagedSumTxItem;
+    totals: {
+      profits: number;
+      deposit: number;
+      exposure: number;
+    };
   };
   orientation?: "horizontal" | "vertical";
 };
@@ -35,9 +45,9 @@ const UserStats = ({ userStats, orientation }: UserStatsCardProps) => {
   return (
     <div className={wrapperClasses}>
       <UserStatsCol
-        title="Money at Work"
-        value={userStats.wallet.totalDeposit}
-        rightIcon={<Dumbbell className="mr-2 h-4 w-4 flex-shrink-0" />}
+        title="Exposure"
+        value={userStats.totals.exposure}
+        rightIcon={<AlertTriangle className="mr-2 h-4 w-4 flex-shrink-0" />}
       />
       <Separator
         orientation={separatorOrientation}
@@ -47,7 +57,7 @@ const UserStats = ({ userStats, orientation }: UserStatsCardProps) => {
 
       <UserStatsCol
         title="Profits"
-        value={userStats.wallet.totalWithdraw}
+        value={userStats.totals.profits}
         rightIcon={<DollarSign className="mr-2 h-4 w-4 flex-shrink-0" />}
       />
       <Separator
