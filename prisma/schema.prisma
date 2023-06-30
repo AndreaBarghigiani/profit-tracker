@@ -60,36 +60,62 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+model Wallet {
+  id                  String    @id @default(cuid())
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  lastInterestAccrued DateTime  @default(now())
+  dailyProfit         Float     @default(0)
+  liquidFunds         Float     @default(0) // Total funds available for withdrawal or to invest
+  exposure            Float     @default(0) // How much the user is exposed to the market
+  totalDeposit        Float     @default(0)
+  profits             Float     @default(0)
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId              String    @unique
+  project             Project[]
+  hodl                Hodl[]
+}
+
 model Project {
   id                String        @id @default(cuid())
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @default(now()) @updatedAt
   name              String
   description       String
-  currentHolding    Float
-  initial           Float
+  exposure          Float         @default(0) // How much the user is exposed to this project
+  deposit           Float         @default(0) // Total deposits made to this project
+  moneyAtWork       Float         @default(0) // Total deposits made to this project
+  interest          Float         @default(0) // Total interest earned from this project, still to be withdrawn
+  profits           Float         @default(0) // Total profits earned from this project, WITHDRAW transactions after exposure goes to 0
+  lockPeriod        Int           @default(0) // How long the user has to wait before withdrawing the deposit
+  depositFee        Float         @default(0) // Fee charged when depositing
+  withdrawalFee     Float         @default(0) // Fee charged when withdrawing
   increaseFrequency Frequency     @default(DAILY)
   increaseAmount    Float
   compound          Boolean
   accruing          Boolean       @default(false)
-  type              String        @default("project")
   user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            String
+  type              String        @default("project")
+  wallet            Wallet        @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  walletId          String
   transaction       Transaction[]
 }
 
 model Hodl {
-  id                String        @id @default(cuid())
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @default(now()) @updatedAt
-  currentAmount     Float         @default(0)
-  currentEvaluation Float         @default(0)
-  totalInvested     Float         @default(0)
-  token             Token         @relation(fields: [tokenId], references: [id])
-  tokenId           String
-  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId            String
-  transaction       Transaction[]
+  id          String        @id @default(cuid())
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now()) @updatedAt
+  amount      Float         @default(0) // Total amount of tokens held
+  exposure    Float         @default(0) // How much the user is exposed to this token
+  profits     Float         @default(0) // Total profits earned from this token, SELL transactions after exposure goes to 0
+  token       Token         @relation(fields: [tokenId], references: [id])
+  tokenId     String
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  wallet      Wallet        @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  walletId    String
+  transaction Transaction[]
 }
 
 model Transaction {
@@ -103,19 +129,6 @@ model Transaction {
   projectId  String?
   hodl       Hodl?           @relation(fields: [hodlId], references: [id], onDelete: Cascade)
   hodlId     String?
-}
-
-model Wallet {
-  id                  String   @id @default(cuid())
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
-  lastInterestAccrued DateTime @default(now())
-  dailyProfit         Float    @default(0)
-  total               Float    @default(0)
-  totalDeposit        Float    @default(0)
-  totalWithdraw       Float    @default(0)
-  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId              String   @unique
 }
 
 model Token {
@@ -164,4 +177,5 @@ enum TransactionType {
   INTEREST
   BUY
   SELL
+  REMOVE // Remove from deposit
 }

@@ -5,11 +5,26 @@ import { Frequency } from "@prisma/client";
 // Types
 import { type Token, TransactionType } from "@prisma/client";
 
+// Wallet types
+
+export const WalletSchema = z.object({
+  id: z.string(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+  lastInterestAccrued: z.date(),
+  dailyProfit: z.number(),
+  liquidFunds: z.number(),
+  exposure: z.number(),
+  totalDeposit: z.number(), // Think this will be removed
+  profits: z.number(),
+  userId: z.string(),
+});
+
 // Projects types
 export const ProjectValuesSchema = z.object({
   name: z.string(),
   description: z.string(),
-  initial: z.number(),
+  deposit: z.number(),
   increaseFrequency: z.nativeEnum(Frequency),
   increaseAmount: z.number(),
   compound: z.boolean(),
@@ -28,6 +43,15 @@ export const EditProjectValuesSchema = z.object({
 });
 
 export type EditProjectValues = z.infer<typeof EditProjectValuesSchema>;
+
+export const ProjectTransactionSchema = z.object({
+  amount: z.number(),
+  evaluation: z.number(),
+  type: z.nativeEnum(TransactionType),
+  projectId: z.string(),
+});
+
+export type ProjectTransaction = z.infer<typeof ProjectTransactionSchema>;
 
 // Token types
 export type UpdateTokenData = {
@@ -52,7 +76,9 @@ export type SumTxItem = {
   type: TransactionType;
   _sum: {
     evaluation: number | null;
+    deposit?: number | null;
     amount: number | null;
+    profits?: number | null;
   };
 };
 
@@ -60,14 +86,18 @@ export type SumTxItemValued = {
   type: TransactionType;
   _sum: {
     evaluation: number;
+    deposit?: number;
     amount: number;
+    profits?: number;
   };
 };
 
 export type MassagedSumTxItem = {
   type: TransactionType;
   evaluation: number;
+  deposit?: number;
   amount: number;
+  profits?: number;
 };
 
 // Hodl types
