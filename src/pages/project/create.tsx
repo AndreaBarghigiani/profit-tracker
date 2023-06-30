@@ -40,7 +40,10 @@ const AddProject: NextPage = () => {
   const { mutate } = api.project.create.useMutation({
     onSuccess: async (data) => {
       await utils.wallet.getUserStats.invalidate().then(async () => {
-        await router.push(`/project/${data.id}`);
+        // Momentarly redirect to dashboard
+        // I would like to redirect to the project page
+        // HINT: use prisma transation https://www.prisma.io/docs/concepts/components/prisma-client/transactions#the-transaction-api
+        await router.push(`/projects`);
       });
     },
   });
@@ -78,12 +81,12 @@ const AddProject: NextPage = () => {
 
         <section className="flex items-end gap-5">
           <div>
-            <Label htmlFor="initial">Initial Deposit</Label>
+            <Label htmlFor="deposit">Initial Deposit</Label>
             <Input
               type="number"
-              id="initial"
+              id="deposit"
               step=".01"
-              {...register("initial", { valueAsNumber: true })}
+              {...register("deposit", { valueAsNumber: true })}
             />
           </div>
 

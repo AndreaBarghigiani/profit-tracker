@@ -82,7 +82,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
             <PiggyBank className="h-6 w-6" />
           </div>
           <span className="text-4xl font-semibold">
-            {currencyConverter({ amount: project.currentHolding })}
+            {currencyConverter({ amount: project.deposit })}
           </span>
         </div>
 
