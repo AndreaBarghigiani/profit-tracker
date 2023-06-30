@@ -2,26 +2,39 @@
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
 import { uppercaseFirst, formatDate, currencyConverter } from "@/utils/string";
+import { useState } from "react";
 
 // Types
 import type { NextPage } from "next";
+import type { Project } from "@prisma/client";
 
 // Components
 import Heading from "@/components/ui/heading";
 import { ArrowBigDownDash, ArrowBigUpDash, Check, X } from "lucide-react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import OnlyAdmin from "@/components/ui/custom/OnlyAdmin";
 import {
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import AddProjectTransactionForm from "@/components/ui/custom/AddProjectTransactionForm";
+import ProjectStats from "@/components/ui/custom/ProjectStats";
 import { buttonVariants } from "@/components/ui/button";
 import LastProjectTransaction from "@/components/ui/custom/LastProjectTransaction";
 
 const ProjectPage: NextPage = () => {
   const router = useRouter();
+  const utils = api.useContext();
 
   const { data: project, isLoading } = api.project.get.useQuery(
     { projectId: router.query.id as string },
@@ -43,6 +56,20 @@ const ProjectPage: NextPage = () => {
     },
   });
 
+  const { mutate: addInterest } = api.transaction.addInterest.useMutation({
+    onSuccess: async () => {
+      await utils.wallet.getUserStats.invalidate();
+      await utils.project.get.invalidate();
+      await utils.transaction.list.invalidate();
+    },
+  });
+
+  const handleAddInterest = () => {
+    if (!project) return;
+
+    addInterest({ projectId: project.id, skip: true });
+  };
+
   if (isLoading) return <div>Loading...</div>;
 
   if (!project) return <div>Project not found</div>;
@@ -53,8 +80,9 @@ const ProjectPage: NextPage = () => {
         <Heading size={"page"} gradient="gold" spacing={"massive"}>
           {project.name}
         </Heading>
-        <p>{project.description}</p>
+        <p className="text-center">{project.description}</p>
       </header>
+      <ProjectStats project={project} />
       <article>
         <header className="flex items-center">
           <Heading as="h2" size="h2">
@@ -65,12 +93,12 @@ const ProjectPage: NextPage = () => {
           </div>
         </header>
 
-        <div className="grid grid-cols-4 gap-3 ">
+        {/* <div className="grid grid-cols-4 gap-3 ">
           <Card>
             <CardHeader>
               <CardDescription>Current Holding</CardDescription>
               <CardTitle>
-                {currencyConverter({ amount: project.currentHolding })}
+                {currencyConverter({ amount: project.deposit })}
               </CardTitle>
             </CardHeader>
           </Card>
@@ -101,7 +129,7 @@ const ProjectPage: NextPage = () => {
               </CardDescription>
             </CardHeader>
           </Card>
-        </div>
+        </div> */}
 
         <LastProjectTransaction className="mb-8 mt-3" project={project} />
 
@@ -110,12 +138,12 @@ const ProjectPage: NextPage = () => {
             Project transactions
           </Heading>
           <div className="ml-auto flex gap-2">
-            <Link
-              className={buttonVariants()}
-              href={`/transaction/add?projectId=${project.id}`}
-            >
-              Add Transaction
-            </Link>
+            <OnlyAdmin>
+              <Button variant="adminOutline" onClick={handleAddInterest}>
+                Add interest
+              </Button>
+            </OnlyAdmin>
+            <AddTransaction project={project} />
             <Button
               variant="ghost-danger"
               onClick={() => deleteProject(project.id)}
@@ -168,3 +196,25 @@ const ProjectPage: NextPage = () => {
 };
 
 export default ProjectPage;
+
+const AddTransaction = ({ project }: { project: Project }) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button className={buttonVariants()}>Add Transaction</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add a transaction</DialogTitle>
+          <DialogDescription>
+            Here you can add your transaction.
+          </DialogDescription>
+        </DialogHeader>
+
+        <AddProjectTransactionForm project={project} setOpen={setOpen} />
+      </DialogContent>
+    </Dialog>
+  );
+};
