@@ -8,7 +8,7 @@ import type { Project } from "@prisma/client";
 // Components
 import { Skeleton } from "@/components/ui/skeleton";
 import Heading from "@/components/ui/heading";
-import { TimerReset, PiggyBank, Eye, BarChart } from "lucide-react";
+import { TimerReset, PiggyBank, Eye, BarChart, Gem } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import {
@@ -22,37 +22,12 @@ const ProjectCard = ({ project }: { project: Project }) => {
   const {
     data: interests,
     isLoading: isInterestLoading,
+    isSuccess: isInterestSuccess,
     isError: isInterestError,
     // error: interestError,
   } = api.transaction.projectInterest.useQuery({
     projectId: project.id,
   });
-
-  if (isInterestLoading)
-    return (
-      <div className="rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg">
-        <header className="flex items-start justify-between gap-6">
-          <Skeleton as="h2" className="h-5 w-32 bg-dog-400" />
-          <Skeleton as="div" className="h-5 w-4 bg-dog-400" />
-        </header>
-
-        <section className="mt-4 flex items-center gap-6">
-          <div className="flex items-center">
-            <Skeleton as="div" className="mr-2 h-6 w-6 bg-dog-500" />
-            <Skeleton as="span" className="h-6 w-20 bg-dog-500" />
-          </div>
-
-          <div className="flex items-center">
-            <Skeleton as="div" className="mr-2 h-4 w-4 bg-dog-500" />
-            <Skeleton as="span" className="h-4 w-12 bg-dog-500" />
-          </div>
-
-          <Skeleton as="a" className="ml-auto h-4 w-6 bg-dog-500" />
-        </section>
-      </div>
-    );
-
-  if (isInterestError) return <div>Error</div>;
 
   return (
     <div className="rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg">
@@ -77,23 +52,82 @@ const ProjectCard = ({ project }: { project: Project }) => {
       </header>
 
       <section className="mt-4 flex items-center gap-6">
-        <div className="flex items-center">
-          <div className="mr-2 rounded-full bg-dog-800 p-2 text-dog-400">
-            <PiggyBank className="h-6 w-6" />
-          </div>
-          <span className="text-4xl font-semibold">
-            {currencyConverter({ amount: project.deposit })}
-          </span>
-        </div>
+        <TooltipProvider delayDuration={300}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex items-center">
+                <div className="mr-2 rounded-full bg-dog-800 p-2 text-dog-400">
+                  <PiggyBank className="h-6 w-6" />
+                </div>
+                <span className="text-4xl font-semibold">
+                  {currencyConverter({ amount: project.exposure })}
+                </span>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent
+              side="bottom"
+              className="border-dog-800 text-center text-dog-500"
+            >
+              <p className="text-base font-semibold">Exposure</p>
+              <p className="mt-1 text-xs text-dog-600">
+                Deposited:{` `}
+                <strong>
+                  {currencyConverter({ amount: project.deposit })}
+                </strong>
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
-        <div className="flex items-center">
-          <div className="mr-2 rounded-full bg-dog-800 p-1 text-dog-400">
-            <BarChart className="h-4 w-4" />
-          </div>
-          <span className="text-dog-300">
-            {currencyConverter({ amount: interests.amount })}
-          </span>
-        </div>
+        <TooltipProvider delayDuration={300}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex items-center">
+                <div className="mr-2 rounded-full bg-dog-800 p-1 text-dog-400">
+                  <BarChart className="h-4 w-4" />
+                </div>
+                <span className="text-dog-300">
+                  {currencyConverter({ amount: project.interest })}
+                </span>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent
+              side="bottom"
+              className="border-dog-800 text-center text-dog-500"
+            >
+              <p className="text-base font-semibold">Available interest</p>
+              {isInterestSuccess && (
+                <p className="mt-1 text-xs text-dog-600">
+                  All Time:{` `}
+                  <strong>
+                    {currencyConverter({ amount: interests?.evaluation })}
+                  </strong>
+                </p>
+              )}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        <TooltipProvider delayDuration={300}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex items-center">
+                <div className="mr-2 rounded-full bg-dog-800 p-1 text-dog-400">
+                  <Gem className="h-4 w-4" />
+                </div>
+                <span className="text-dog-300">
+                  {currencyConverter({ amount: project.profits })}
+                </span>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent
+              side="bottom"
+              className="border-dog-800 text-dog-500"
+            >
+              <p className="text-base font-semibold">Profits</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
         <TooltipProvider>
           <Tooltip>
