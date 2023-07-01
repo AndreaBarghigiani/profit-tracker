@@ -17,7 +17,7 @@ import ProjectCard from "@/components/ui/custom/ProjectCard";
 const Dashboard: NextPage = () => {
   api.wallet.get.useQuery();
   const { data: projects, isSuccess: isProjectsSuccess } =
-    api.project.getByCurrentUser.useQuery();
+    api.project.listByCurrentUser.useQuery();
   const { data: hodls, isSuccess: isHodlsSuccess } =
     api.hodl.getByCurrentUser.useQuery();
 
@@ -45,7 +45,7 @@ const Dashboard: NextPage = () => {
                     size: "sm",
                     className: "ml-4 flex items-center",
                   })}
-                  href="/project/add"
+                  href="/project/create"
                 >
                   <Plus className="mr-2 h-3 w-3" />
                   Add project
