@@ -61,19 +61,15 @@ model VerificationToken {
 }
 
 model Wallet {
-  id                  String    @id @default(cuid())
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
-  lastInterestAccrued DateTime  @default(now())
-  dailyProfit         Float     @default(0)
-  liquidFunds         Float     @default(0) // Total funds available for withdrawal or to invest
-  exposure            Float     @default(0) // How much the user is exposed to the market
-  totalDeposit        Float     @default(0)
-  profits             Float     @default(0)
-  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId              String    @unique
-  project             Project[]
-  hodl                Hodl[]
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  dailyProfit Float     @default(0)
+  liquidFunds Float     @default(0) // Total funds available for withdrawal or to invest
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String    @unique
+  project     Project[]
+  hodl        Hodl[]
 }
 
 model Project {

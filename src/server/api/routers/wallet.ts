@@ -1,15 +1,32 @@
+// Utils
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { weeklyWithdraws } from "./transaction/weeklyWithdraws";
 import { currencyConverter } from "@/utils/string";
 import { sumInterests } from "./transaction/sumInterests";
 
+// Types
+import type { PrismaClient } from "@prisma/client";
+
+export const getWallet = async ({
+  userId,
+  prisma,
+}: {
+  userId: string;
+  prisma: PrismaClient;
+}) => {
+  return await prisma.wallet.findUniqueOrThrow({
+    where: {
+      userId: userId,
+    },
+  });
+};
+
 export const walletRouter = createTRPCRouter({
   get: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.wallet.findUniqueOrThrow({
-      where: {
-        userId: ctx.session.user.id,
-      },
+    return getWallet({
+      userId: ctx.session.user.id,
+      prisma: ctx.prisma,
     });
   }),
   getUserStats: protectedProcedure.query(async ({ ctx }) => {
@@ -34,12 +51,10 @@ export const walletRouter = createTRPCRouter({
       },
     });
 
-    projectTotals;
-
     const totals = {
       exposure:
         (projectTotals._sum.exposure ?? 0) + (hodlTotals._sum.exposure ?? 0),
-      deposit: projectTotals._sum.deposit,
+      deposit: projectTotals._sum.deposit ?? 0,
       profits:
         (projectTotals._sum.profits ?? 0) + (hodlTotals._sum.profits ?? 0),
     };
@@ -56,8 +71,6 @@ export const walletRouter = createTRPCRouter({
       wallet,
       interests,
       totals,
-      projectTotals,
-      hodlTotals,
     };
   }),
   getDailyPassiveResult: protectedProcedure.query(async ({ ctx }) => {
@@ -73,6 +86,16 @@ export const walletRouter = createTRPCRouter({
     const goal = dailyGoal?.dailyProfit ?? 0;
     const weekly = await weeklyWithdraws(ctx.prisma);
     return currencyConverter({ amount: weekly / 7 - goal });
+  }),
+  getWalletProjects: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.wallet.findUnique({
+      where: {
+        userId: ctx.session.user.id,
+      },
+      include: {
+        project: true,
+      },
+    });
   }),
   updateDaily: protectedProcedure
     .input(z.object({ dailyProfit: z.number() }))
