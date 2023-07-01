@@ -14,7 +14,7 @@ const Cards: NextPage = () => {
   const { data: hodls, isSuccess: isHodlsSuccess } =
     api.hodl.getByCurrentUser.useQuery();
   const { data: projects, isSuccess: isProjectsSuccess } =
-    api.project.getByCurrentUser.useQuery();
+    api.project.listByCurrentUser.useQuery();
   const { data: userStats, isSuccess: isUserStatsSuccess } =
     api.wallet.getUserStats.useQuery();
 

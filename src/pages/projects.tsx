@@ -13,7 +13,7 @@ import ProjectCard from "@/components/ui/custom/ProjectCard";
 
 const Projects: NextPage = () => {
   const { data: projects, isSuccess: isProjectsSuccess } =
-    api.project.getByCurrentUser.useQuery();
+    api.project.listByCurrentUser.useQuery();
   return (
     <>
       {isProjectsSuccess ? (

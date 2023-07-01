@@ -199,12 +199,10 @@ export const makeWithdraw = async ({
 };
 
 export const projectRouter = createTRPCRouter({
-  list: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.project.findMany();
-  }),
   get: publicProcedure
     .input(z.object({ projectId: z.string() }))
     .query(({ ctx, input }) => {
+      // evaluate to add sumProjectInterests
       return getProject({
         projectId: input.projectId,
         prisma: ctx.prisma,
@@ -219,7 +217,7 @@ export const projectRouter = createTRPCRouter({
         },
       });
     }),
-  getByCurrentUser: protectedProcedure
+  listByCurrentUser: protectedProcedure
     .input(
       z
         .object({ orderBy: z.union([z.literal("asc"), z.literal("desc")]) })
@@ -289,129 +287,9 @@ export const projectRouter = createTRPCRouter({
           await makeWithdraw({ ctx, input });
       }
     }),
-  // deposit: protectedProcedure
-  //   .input(ProjectTransactionSchema)
-  //   .mutation(async ({ ctx, input }) => {
-  //     await ctx.prisma.wallet.update({
-  //       where: {
-  //         userId: ctx.session.user.id,
-  //       },
-  //       data: {
-  //         exposure: {
-  //           increment: input.evaluation,
-  //         },
-  //         totalDeposit: {
-  //           increment: input.evaluation,
-  //         },
-  //         project: {
-  //           update: [
-  //             {
-  //               where: {
-  //                 id: input.projectId,
-  //               },
-  //               data: {
-  //                 exposure: {
-  //                   increment: input.evaluation,
-  //                 },
-  //                 deposit: {
-  //                   increment: input.evaluation,
-  //                 },
-  //                 transaction: {
-  //                   create: {
-  //                     amount: input.amount,
-  //                     evaluation: input.evaluation,
-  //                     type: input.type,
-  //                   },
-  //                 },
-  //               },
-  //             },
-  //           ],
-  //         },
-  //       },
-  //     });
-  //   }),
-  // withdraw: protectedProcedure
-  //   .input(ProjectTransactionSchema)
-  //   .mutation(async ({ ctx, input }) => {
-  //     await ctx.prisma.wallet.update({
-  //       where: {
-  //         userId: ctx.session.user.id,
-  //       },
-  //       data: {
-  //         exposure: {
-  //           decrement: input.evaluation,
-  //         },
-  //         totalDeposit: {
-  //           decrement: input.evaluation,
-  //         },
-  //         project: {
-  //           update: [
-  //             {
-  //               where: {
-  //                 id: input.projectId,
-  //               },
-  //               data: {
-  //                 exposure: {
-  //                   decrement: input.evaluation,
-  //                 },
-  //                 transaction: {
-  //                   create: {
-  //                     amount: input.amount,
-  //                     evaluation: input.evaluation,
-  //                     type: input.type,
-  //                   },
-  //                 },
-  //               },
-  //             },
-  //           ],
-  //         },
-  //       },
-  //     });
-  //   }),
   delete: protectedProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
-      const allProjectTx = await ctx.prisma.transaction.groupBy({
-        by: ["type"],
-        where: {
-          project: {
-            id: input,
-          },
-        },
-        _sum: {
-          amount: true,
-          evaluation: true,
-        },
-      });
-
-      const sortList = ["WITHDRAW", "DEPOSIT", "INTEREST"];
-
-      const ordered = ensureAllTransactionTypes(allProjectTx).sort(
-        (a, b) => sortList.indexOf(a.type) - sortList.indexOf(b.type)
-      );
-
-      const removeFromWallet = ordered.reduce(
-        (acc, cur) =>
-          cur.type === "WITHDRAW"
-            ? acc - cur._sum.evaluation
-            : acc + cur._sum.evaluation,
-        0
-      );
-
-      await ctx.prisma.wallet.update({
-        where: {
-          userId: ctx.session.user.id,
-        },
-        data: {
-          exposure: {
-            decrement: removeFromWallet,
-          },
-          totalDeposit: {
-            decrement: removeFromWallet,
-          },
-        },
-      });
-
       await ctx.prisma.project.delete({
         where: {
           id: input,
