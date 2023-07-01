@@ -2,13 +2,21 @@
 import { api } from "@/utils/api";
 import { currencyConverter } from "@/utils/string";
 
+import { cn } from "@/lib/utils";
+
 // Types
 import type { Project } from "@prisma/client";
 
 // Components
-import { Skeleton } from "@/components/ui/skeleton";
 import Heading from "@/components/ui/heading";
-import { TimerReset, PiggyBank, Eye, BarChart, Gem } from "lucide-react";
+import {
+  TimerReset,
+  PiggyBank,
+  Eye,
+  BarChart,
+  Gem,
+  type LucideIcon,
+} from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import {
@@ -28,6 +36,9 @@ const ProjectCard = ({ project }: { project: Project }) => {
   } = api.transaction.projectInterest.useQuery({
     projectId: project.id,
   });
+
+  // ProjectData, what changes
+  // icon, size,
 
   return (
     <div className="rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg">
@@ -51,83 +62,44 @@ const ProjectCard = ({ project }: { project: Project }) => {
         </div>
       </header>
 
-      <section className="mt-4 flex items-center gap-6">
-        <TooltipProvider delayDuration={300}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="flex items-center">
-                <div className="mr-2 rounded-full bg-dog-800 p-2 text-dog-400">
-                  <PiggyBank className="h-6 w-6" />
-                </div>
-                <span className="text-4xl font-semibold">
-                  {currencyConverter({ amount: project.exposure })}
-                </span>
-              </div>
-            </TooltipTrigger>
-            <TooltipContent
-              side="bottom"
-              className="border-dog-800 text-center text-dog-500"
-            >
-              <p className="text-base font-semibold">Exposure</p>
-              <p className="mt-1 text-xs text-dog-600">
+      <section className="mt-4 flex items-end gap-6">
+        {/* When exposure goes to 0, switch it with profits  */}
+        <ProjectCardData amount={project.exposure} highlighted Icon={PiggyBank}>
+          <p className="text-base font-semibold">Exposure</p>
+          <p className="mt-1 text-xs text-dog-600">
+            {project.compound ? (
+              <>
+                Money At Work:{` `}
+                <strong>
+                  {currencyConverter({ amount: project.moneyAtWork })}
+                </strong>
+              </>
+            ) : (
+              <>
                 Deposited:{` `}
                 <strong>
                   {currencyConverter({ amount: project.deposit })}
                 </strong>
-              </p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+              </>
+            )}
+          </p>
+        </ProjectCardData>
 
-        <TooltipProvider delayDuration={300}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="flex items-center">
-                <div className="mr-2 rounded-full bg-dog-800 p-1 text-dog-400">
-                  <BarChart className="h-4 w-4" />
-                </div>
-                <span className="text-dog-300">
-                  {currencyConverter({ amount: project.interest })}
-                </span>
-              </div>
-            </TooltipTrigger>
-            <TooltipContent
-              side="bottom"
-              className="border-dog-800 text-center text-dog-500"
-            >
-              <p className="text-base font-semibold">Available interest</p>
-              {isInterestSuccess && (
-                <p className="mt-1 text-xs text-dog-600">
-                  All Time:{` `}
-                  <strong>
-                    {currencyConverter({ amount: interests?.evaluation })}
-                  </strong>
-                </p>
-              )}
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <ProjectCardData amount={project.interest} Icon={BarChart}>
+          <p className="text-base font-semibold">Available interest</p>
+          {isInterestSuccess && (
+            <p className="mt-1 text-xs text-dog-600">
+              All Time:{` `}
+              <strong>
+                {currencyConverter({ amount: interests?.evaluation })}
+              </strong>
+            </p>
+          )}
+        </ProjectCardData>
 
-        <TooltipProvider delayDuration={300}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="flex items-center">
-                <div className="mr-2 rounded-full bg-dog-800 p-1 text-dog-400">
-                  <Gem className="h-4 w-4" />
-                </div>
-                <span className="text-dog-300">
-                  {currencyConverter({ amount: project.profits })}
-                </span>
-              </div>
-            </TooltipTrigger>
-            <TooltipContent
-              side="bottom"
-              className="border-dog-800 text-dog-500"
-            >
-              <p className="text-base font-semibold">Profits</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <ProjectCardData amount={project.profits} Icon={Gem}>
+          <p className="text-base font-semibold">Profits</p>
+        </ProjectCardData>
 
         <TooltipProvider>
           <Tooltip>
@@ -154,3 +126,52 @@ const ProjectCard = ({ project }: { project: Project }) => {
 };
 
 export default ProjectCard;
+
+const ProjectCardData = ({
+  amount,
+  Icon,
+  children,
+  highlighted = false,
+}: {
+  amount: number;
+  Icon: LucideIcon;
+  children: React.ReactNode;
+  highlighted?: boolean;
+}) => {
+  const divIconClasses = cn("mr-2 rounded-full bg-dog-800 text-dog-400", {
+    "p-2": highlighted,
+    "p-1": !highlighted,
+  });
+
+  const iconClasses = cn({
+    "h-6 w-6": highlighted,
+    "h-4 w-4": !highlighted,
+  });
+
+  const textClasses = cn({
+    "text-4xl font-semibold": highlighted,
+    "text-dog-300": !highlighted,
+  });
+  return (
+    <TooltipProvider delayDuration={300}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className="flex items-center">
+            <div className={divIconClasses}>
+              <Icon className={iconClasses} />
+            </div>
+            <span className={textClasses}>
+              {currencyConverter({ amount: amount })}
+            </span>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent
+          side="bottom"
+          className="border-dog-800 text-center text-dog-500"
+        >
+          {children}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+};
