@@ -96,11 +96,19 @@ export const removeDeposit = async ({
   ctx: { prisma: PrismaClient; session: Session };
   input: ProjectTransaction;
 }) => {
+  console.log("removeDeposit", input);
   const isExposed = await isUserExposed({ ctx, input });
 
-  const diff = !!isExposed
+  const expositionDiff = !!isExposed
     ? input.evaluation - isExposed.exposure
     : input.evaluation;
+
+  const depositDiff = !!isExposed
+    ? input.evaluation - isExposed.deposit
+    : input.evaluation;
+
+  const exposure = expositionDiff >= 0 ? 0 : { decrement: input.evaluation };
+  const deposit = depositDiff >= 0 ? 0 : { decrement: input.evaluation };
 
   const transaction = {
     create: {
@@ -110,26 +118,23 @@ export const removeDeposit = async ({
     },
   };
 
-  if (diff > 0) {
-    await ctx.prisma.project.update({
-      where: {
-        id: input.projectId,
+  await ctx.prisma.project.update({
+    where: {
+      id: input.projectId,
+    },
+    data: {
+      exposure,
+      deposit,
+      moneyAtWork: {
+        decrement: input.evaluation,
       },
-      data: {
-        exposure: 0,
-        deposit: {
-          decrement: input.evaluation,
-        },
-        moneyAtWork: {
-          decrement: input.evaluation,
-        },
-        profits: {
-          increment: !!isExposed ? isExposed.exposure : input.evaluation,
-        },
-        transaction,
-      },
-    });
-  }
+      // I souldn't count "taking back my money" as profit
+      // profits: {
+      //   increment: !!isExposed ? isExposed.exposure : input.evaluation,
+      // },
+      transaction,
+    },
+  });
 };
 // This is for TransactionType.WITHDRAW
 export const makeWithdraw = async ({

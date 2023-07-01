@@ -81,7 +81,7 @@ const AddProjectTransactionForm = ({
   };
 
   const maxWithdrawable = {
-    REMOVE: project.deposit,
+    REMOVE: project.moneyAtWork,
     WITHDRAW: project.interest,
   };
 

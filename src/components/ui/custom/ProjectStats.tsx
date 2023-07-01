@@ -46,12 +46,28 @@ const ProjectStats = ({ project }: ProjectStatsCardProps) => {
             className="mt-2 bg-dog-600"
           />
 
-          <Heading size="h4" className="flex items-center text-dog-500">
-            Money At Work
-          </Heading>
-          <p className="text-3xl font-semibold">
-            {currencyConverter({ amount: project.moneyAtWork })}
-          </p>
+          {project.compound ? (
+            <>
+              <Heading size="h4" className="flex items-center text-dog-500">
+                Money At Work
+              </Heading>
+              <p className="text-3xl font-semibold">
+                {currencyConverter({ amount: project.moneyAtWork })}
+              </p>
+            </>
+          ) : (
+            <>
+              <Heading size="h4" className="flex items-center text-dog-500">
+                Deposits
+                <span className="ml-2 text-xs font-light text-dog-400">
+                  {/* (Unlocks in 7 days) */}
+                </span>
+              </Heading>
+              <p className="text-3xl font-semibold">
+                {currencyConverter({ amount: project.deposit })}
+              </p>
+            </>
+          )}
 
           {/* Hide behind "Show more" 
           <Separator
