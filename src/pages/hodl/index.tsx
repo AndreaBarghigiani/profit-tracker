@@ -25,13 +25,15 @@ const Hodl: NextPage = () => {
       </Heading>
 
       <div className="my-4 space-y-3 text-center text-stone-400">
-        {isPositionLoading ? (
+        {isPositionLoading && (
           <>
             <Skeleton as="h1" className="mx-auto h-10 w-64 bg-dog-400" />
             <Skeleton as="p" className="mx-auto h-6 w-144 bg-dog-400 " />
             <Skeleton as="a" className="mx-auto block h-8 w-32 bg-dog-400" />
           </>
-        ) : !!positions ? (
+        )}
+
+        {isPositionsSuccess && positions.length ? (
           <>
             <Heading>Congrats for tracking your positions!</Heading>
             <p className=" text-lg ">

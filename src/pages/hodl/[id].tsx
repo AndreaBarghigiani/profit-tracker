@@ -5,7 +5,6 @@ import { prisma } from "@/server/db";
 import { currencyConverter, formatDate, uppercaseFirst } from "@/utils/string";
 import { getHodl } from "@/server/api/routers/hodl";
 import { getToken } from "@/server/api/routers/token";
-import { buttonVariants } from "@/components/ui/button";
 
 // Types
 import type {
@@ -17,12 +16,13 @@ import type {
 // Components
 import Heading from "@/components/ui/heading";
 import HodlTransactionCard from "@/components/ui/custom/HodlTransactionCard";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import AddTransactionModal from "@/components/ui/custom/AddTransactionModal";
+import AddHodlPositionForm from "@/components/ui/custom/AddHodlPositionForm";
 
 const Hodl: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ hodlId, startDate, amount, total, token }) => {
+> = ({ hodlId, startDate, amount, exposure, token }) => {
   const utils = api.useContext();
   const router = useRouter();
   const { data, isSuccess } = api.hodl.getTransactions.useQuery({
@@ -50,15 +50,17 @@ const Hodl: NextPage<
             <time dateTime={startDate}>{startDate}</time>
           </p>
 
-          <Link
-            className={buttonVariants({ className: "ml-auto mr-3" })}
-            href={`/hodl/add/${hodlId}`}
-          >
-            Add a new position
-          </Link>
-          <Button variant="ghost-danger" onClick={() => deletePosition(hodlId)}>
-            Delete
-          </Button>
+          <div className="ml-auto space-x-2">
+            <AddTransactionModal size="large">
+              <AddHodlPositionForm hodlId={hodlId} token={token} />
+            </AddTransactionModal>
+            <Button
+              variant="ghost-danger"
+              onClick={() => deletePosition(hodlId)}
+            >
+              Delete
+            </Button>
+          </div>
         </section>
       </header>
 
@@ -72,15 +74,21 @@ const Hodl: NextPage<
           </div>
           <div>
             <Heading size="h4">Current Value</Heading>
-            <p>{currencyConverter({ amount: amount * token.price })}</p>
+            <p>
+              {currencyConverter({
+                amount: amount * Number(token.latestPrice),
+              })}
+            </p>
           </div>
           <div>
             <Heading size="h4">Invested</Heading>
-            <p>{currencyConverter({ amount: total })}</p>
+            <p>{currencyConverter({ amount: exposure })}</p>
           </div>
           <div>
             <Heading size="h4">Token current price</Heading>
-            <p>{currencyConverter({ amount: token.price, type: "long" })}</p>
+            <p>
+              {currencyConverter({ amount: token.latestPrice, type: "long" })}
+            </p>
           </div>
         </header>
 
@@ -124,18 +132,15 @@ export async function getServerSideProps(
     prisma,
   });
 
+  const { createdAt, updatedAt, ...curToken } = token;
+
   return {
     props: {
       hodlId: context.params.id,
       startDate,
-      amount: hodl.currentAmount,
-      total: hodl.totalInvested,
-      token: {
-        name: token.name,
-        symbol: token.symbol,
-        icon: token.iconUrl,
-        price: parseFloat(token.latestPrice),
-      },
+      amount: hodl.amount,
+      exposure: hodl.exposure,
+      token: curToken,
     },
   };
 }
