@@ -11,7 +11,7 @@ import type {
 import type { TokenWithoutDates } from "@/server/types";
 
 // Components
-import AddHodlPositionForm from "@/components/addHodlPositionForm";
+import AddHodlPositionForm from "@/components/ui/custom/AddHodlPositionForm";
 import Heading from "@/components/ui/heading";
 
 const AddHodlPosition: NextPage<
@@ -26,7 +26,9 @@ const AddHodlPosition: NextPage<
         Are you buying or selling?
       </p>
 
-      <AddHodlPositionForm hodlId={hodlId} token={token} />
+      <div className="mx-auto w-2/3">
+        <AddHodlPositionForm hodlId={hodlId} token={token} />
+      </div>
     </div>
   );
 };

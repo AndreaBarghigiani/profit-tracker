@@ -15,7 +15,7 @@ import type { TransactionValues, TokenWithoutDates } from "@/server/types";
 // Components
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "./ui/button";
+import { Button } from "../button";
 import { RefreshCcw, Plus } from "lucide-react";
 import { ToggleGroup, ToggleItem } from "@/components/ui/toggle-group";
 import Heading from "@/components/ui/heading";
@@ -57,10 +57,9 @@ const AddHodlPositionForm = ({ token, hodlId }: AddPositionProps) => {
 
   const { mutate: createPosition, isLoading: isCreatingPosition } =
     api.hodl.create.useMutation({
-      onSuccess: async (data) => {
-        if (!data?.id) return;
+      onSuccess: async () => {
         await utils.wallet.get.invalidate().then(async () => {
-          await router.push(`/hodl/${data.id}`);
+          await router.push(`/hodl/`);
         });
       },
     });
@@ -69,8 +68,8 @@ const AddHodlPositionForm = ({ token, hodlId }: AddPositionProps) => {
     api.transaction.create.useMutation({
       onSuccess: async (data) => {
         await utils.wallet.get.invalidate().then(async () => {
-          if (!data?.hodlId) return;
-          await router.push(`/hodl/${data.hodlId}`);
+          if (!data) return;
+          await router.push(`/hodl/${data}`);
         });
       },
     });
@@ -86,9 +85,7 @@ const AddHodlPositionForm = ({ token, hodlId }: AddPositionProps) => {
     });
 
   const [watchAmount, watchTokenPrice] = watch(["amount", "tokenPrice"]);
-  const allowedTypes = Object.values(TransactionType).filter((type) =>
-    ["BUY", "SELL"].includes(type)
-  );
+  const allowedTypes = ["BUY", "SELL"];
 
   const handleAddPosition: SubmitHandler<TransactionValues> = (data) => {
     const massaged: TransactionValues = {
@@ -108,7 +105,7 @@ const AddHodlPositionForm = ({ token, hodlId }: AddPositionProps) => {
 
   return (
     <form
-      className="mx-auto w-2/3 space-y-3"
+      className="space-y-3"
       onSubmit={handleSubmitInvestment(handleAddPosition)}
     >
       <div className="flex items-end justify-between">
@@ -165,18 +162,20 @@ const AddHodlPositionForm = ({ token, hodlId }: AddPositionProps) => {
           control={control}
           name="type"
           render={({ field }) => (
-            <ToggleGroup
-              type="single"
-              value={field.value}
-              className="flex justify-center"
-              onValueChange={field.onChange}
-            >
-              {allowedTypes.map((t) => (
-                <ToggleItem key={t} value={t}>
-                  {uppercaseFirst(t)}
-                </ToggleItem>
-              ))}
-            </ToggleGroup>
+            <>
+              <ToggleGroup
+                type="single"
+                value={field.value}
+                className="flex justify-center"
+                onValueChange={field.onChange}
+              >
+                {allowedTypes.map((t) => (
+                  <ToggleItem key={t} value={t}>
+                    {uppercaseFirst(t)}
+                  </ToggleItem>
+                ))}
+              </ToggleGroup>
+            </>
           )}
         />
       </div>
