@@ -1,16 +1,16 @@
 // Utils
 import { api } from "@/utils/api";
 import clsx from "clsx";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, set } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { currencyConverter, uppercaseFirst } from "@/utils/string";
 import { TransactionType } from "@prisma/client";
-import { TransactionValuesSchema } from "@/server/types";
+import { HodlTransactionSchema } from "@/server/types";
 import { useRouter } from "next/router";
 
 // Types
 import type { SubmitHandler } from "react-hook-form";
-import type { TransactionValues, TokenWithoutDates } from "@/server/types";
+import type { TokenWithoutDates, HodlTransaction } from "@/server/types";
 
 // Components
 import { Input } from "@/components/ui/input";
@@ -29,13 +29,18 @@ import {
 type AddPositionProps = {
   token: TokenWithoutDates;
   hodlId: string | null;
+  closeModal?: () => void | Promise<void>;
 };
 
-type AddPositionFormProps = TransactionValues & {
+type AddPositionFormProps = HodlTransaction & {
   tokenPrice: number;
 };
 
-const AddHodlPositionForm = ({ token, hodlId }: AddPositionProps) => {
+const AddHodlPositionForm = ({
+  token,
+  hodlId,
+  closeModal,
+}: AddPositionProps) => {
   const selectedToken = token;
   const utils = api.useContext();
   const router = useRouter();
@@ -47,11 +52,11 @@ const AddHodlPositionForm = ({ token, hodlId }: AddPositionProps) => {
     setValue,
     // formState: { errors },
   } = useForm<AddPositionFormProps>({
-    resolver: zodResolver(TransactionValuesSchema),
+    resolver: zodResolver(HodlTransactionSchema),
     defaultValues: {
       type: TransactionType.BUY,
       amount: 0,
-      tokenPrice: parseFloat(selectedToken.latestPrice),
+      tokenPrice: selectedToken.latestPrice,
     },
   });
 
@@ -59,15 +64,20 @@ const AddHodlPositionForm = ({ token, hodlId }: AddPositionProps) => {
     api.hodl.create.useMutation({
       onSuccess: async () => {
         await utils.wallet.get.invalidate().then(async () => {
+          if (!!closeModal) await closeModal();
           await router.push(`/hodl/`);
         });
       },
     });
 
   const { mutate: addPosition, isLoading: isAddingPosition } =
-    api.transaction.create.useMutation({
+    api.hodl.transaction.useMutation({
       onSuccess: async (data) => {
-        await utils.wallet.get.invalidate().then(async () => {
+        await utils.hodl.get.invalidate();
+        await utils.hodl.getTransactions.invalidate();
+        await utils.hodl.getAverageBuyPrice.invalidate();
+        await utils.wallet.getUserStats.invalidate().then(async () => {
+          if (!!closeModal) await closeModal();
           if (!data) return;
           await router.push(`/hodl/${data}`);
         });
@@ -80,15 +90,15 @@ const AddHodlPositionForm = ({ token, hodlId }: AddPositionProps) => {
         await utils.token.get.invalidate();
         const token = data.pop();
         if (!token) return;
-        setValue("tokenPrice", parseFloat(token.latestPrice));
+        setValue("tokenPrice", token.latestPrice);
       },
     });
 
   const [watchAmount, watchTokenPrice] = watch(["amount", "tokenPrice"]);
   const allowedTypes = ["BUY", "SELL"];
 
-  const handleAddPosition: SubmitHandler<TransactionValues> = (data) => {
-    const massaged: TransactionValues = {
+  const handleAddPosition: SubmitHandler<HodlTransaction> = (data) => {
+    const massaged: HodlTransaction = {
       type: data.type,
       amount: data.amount,
       evaluation: data.amount * watchTokenPrice,

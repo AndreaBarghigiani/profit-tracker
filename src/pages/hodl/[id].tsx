@@ -5,6 +5,7 @@ import { prisma } from "@/server/db";
 import { currencyConverter, formatDate, uppercaseFirst } from "@/utils/string";
 import { getHodl } from "@/server/api/routers/hodl";
 import { getToken } from "@/server/api/routers/token";
+import { useHodlTransactionModal } from "@/hooks/useTransactionModal";
 
 // Types
 import type {
@@ -19,14 +20,16 @@ import HodlTransactionCard from "@/components/ui/custom/HodlTransactionCard";
 import { Button } from "@/components/ui/button";
 import AddTransactionModal from "@/components/ui/custom/AddTransactionModal";
 import AddHodlPositionForm from "@/components/ui/custom/AddHodlPositionForm";
+import HodlStats from "@/components/ui/custom/HodlStats";
 
 const Hodl: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ hodlId, startDate, amount, exposure, token }) => {
+> = ({ startDate, token, hodl }) => {
+  const transactionModal = useHodlTransactionModal();
   const utils = api.useContext();
   const router = useRouter();
   const { data, isSuccess } = api.hodl.getTransactions.useQuery({
-    hodlId,
+    hodlId: hodl.id,
   });
 
   const { mutate: deletePosition } = api.hodl.delete.useMutation({
@@ -51,12 +54,19 @@ const Hodl: NextPage<
           </p>
 
           <div className="ml-auto space-x-2">
-            <AddTransactionModal size="large">
-              <AddHodlPositionForm hodlId={hodlId} token={token} />
+            <AddTransactionModal
+              size="large"
+              transactionModal={transactionModal}
+            >
+              <AddHodlPositionForm
+                hodlId={hodl.id}
+                token={token}
+                closeModal={() => transactionModal.setOpen(false)}
+              />
             </AddTransactionModal>
             <Button
               variant="ghost-danger"
-              onClick={() => deletePosition(hodlId)}
+              onClick={() => deletePosition(hodl.id)}
             >
               Delete
             </Button>
@@ -64,34 +74,9 @@ const Hodl: NextPage<
         </section>
       </header>
 
-      <section>
-        <header className="my-4 flex justify-between gap-4 rounded-md border border-stone-500 bg-background px-4 py-2">
-          <div>
-            <Heading size="h4">Amount</Heading>
-            <p>
-              {amount} {uppercaseFirst(token.symbol)}
-            </p>
-          </div>
-          <div>
-            <Heading size="h4">Current Value</Heading>
-            <p>
-              {currencyConverter({
-                amount: amount * Number(token.latestPrice),
-              })}
-            </p>
-          </div>
-          <div>
-            <Heading size="h4">Invested</Heading>
-            <p>{currencyConverter({ amount: exposure })}</p>
-          </div>
-          <div>
-            <Heading size="h4">Token current price</Heading>
-            <p>
-              {currencyConverter({ amount: token.latestPrice, type: "long" })}
-            </p>
-          </div>
-        </header>
+      <HodlStats hodl={hodl} token={token} />
 
+      <section>
         {isSuccess && data.transaction ? (
           <div className="space-y-3">
             <div className="grid grid-cols-3 gap-4 rounded-md bg-foreground/30">
@@ -120,26 +105,30 @@ export async function getServerSideProps(
 ) {
   if (!context.params?.id) return;
 
-  const hodl = await getHodl({
+  const fullHodl = await getHodl({
     hodlId: context.params.id,
     prisma,
   });
 
-  const startDate = formatDate(hodl.createdAt);
+  const {
+    createdAt: hodlCreatedAt,
+    updatedAt: hodlUpdatedAt,
+    token,
+    ...hodl
+  } = fullHodl;
 
-  const token = await getToken({
-    tokenId: hodl.tokenId,
-    prisma,
-  });
+  const {
+    createdAt: tokenCreatedAt,
+    updatedAt: tokenUpdatedAt,
+    ...curToken
+  } = token;
 
-  const { createdAt, updatedAt, ...curToken } = token;
+  const startDate = formatDate(hodlCreatedAt);
 
   return {
     props: {
-      hodlId: context.params.id,
       startDate,
-      amount: hodl.amount,
-      exposure: hodl.exposure,
+      hodl,
       token: curToken,
     },
   };
