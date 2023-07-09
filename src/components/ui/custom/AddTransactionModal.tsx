@@ -1,5 +1,4 @@
 // Utils
-import { useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
@@ -7,6 +6,7 @@ import { cn } from "@/lib/utils";
 // Types
 import type { VariantProps } from "class-variance-authority";
 import type { DialogProps } from "@radix-ui/react-dialog";
+import type { useHodlTransactionModal } from "@/hooks/useTransactionModal";
 
 // Components
 import { Button } from "@/components/ui/button";
@@ -33,13 +33,20 @@ const contentVariants = cva("w-full", {
 
 interface AddTransactionModalProps
   extends DialogProps,
-    VariantProps<typeof contentVariants> {}
+    VariantProps<typeof contentVariants> {
+  transactionModal: ReturnType<typeof useHodlTransactionModal>;
+}
 
-const AddTransactionModal = ({ children, size }: AddTransactionModalProps) => {
-  const [open, setOpen] = useState(false);
-
+const AddTransactionModal = ({
+  children,
+  size,
+  transactionModal,
+}: AddTransactionModalProps) => {
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={transactionModal.open}
+      onOpenChange={transactionModal.setOpen}
+    >
       <DialogTrigger asChild>
         <Button className={buttonVariants()}>Add Transaction</Button>
       </DialogTrigger>
