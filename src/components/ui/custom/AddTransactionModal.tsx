@@ -6,10 +6,17 @@ import { cn } from "@/lib/utils";
 // Types
 import type { VariantProps } from "class-variance-authority";
 import type { DialogProps } from "@radix-ui/react-dialog";
+import type { LucideIcon } from "lucide-react";
 import type { useHodlTransactionModal } from "@/hooks/useTransactionModal";
 
 // Components
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipProvider,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 import {
   Dialog,
   DialogContent,
@@ -35,12 +42,18 @@ interface AddTransactionModalProps
   extends DialogProps,
     VariantProps<typeof contentVariants> {
   transactionModal: ReturnType<typeof useHodlTransactionModal>;
+  Icon?: LucideIcon;
+  iconClasses?: string;
+  btnVariants?: VariantProps<typeof buttonVariants>;
 }
 
 const AddTransactionModal = ({
   children,
   size,
   transactionModal,
+  Icon,
+  iconClasses,
+  btnVariants,
 }: AddTransactionModalProps) => {
   return (
     <Dialog
@@ -48,7 +61,22 @@ const AddTransactionModal = ({
       onOpenChange={transactionModal.setOpen}
     >
       <DialogTrigger asChild>
-        <Button className={buttonVariants()}>Add Transaction</Button>
+        <Button {...btnVariants}>
+          {!!Icon ? (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Icon className={cn(iconClasses)} />
+                </TooltipTrigger>
+                <TooltipContent className="border-dog-800 text-dog-500">
+                  <p>Add transaction</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ) : (
+            "Add Transaction"
+          )}
+        </Button>
       </DialogTrigger>
       <DialogContent className={cn(contentVariants({ size }))}>
         <DialogHeader>

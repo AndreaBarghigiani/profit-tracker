@@ -1,6 +1,8 @@
 // Utils
+import { cn } from "@/lib/utils";
 import clsx from "clsx";
 import { currencyConverter } from "@/utils/string";
+import { useHodlTransactionModal } from "@/hooks/useTransactionModal";
 
 // Types
 import type { Hodl, Token } from "@prisma/client";
@@ -13,20 +15,22 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 // import { Skeleton } from "@/components/ui/skeleton";
 // import { Eye, Wallet, Diff, Plus, Trash2, RefreshCcw } from "lucide-react";
-import { Eye, Wallet, Plus } from "lucide-react";
+import { Eye, Wallet, Plus, AlertTriangle } from "lucide-react";
 import {
   Tooltip,
   TooltipTrigger,
   TooltipProvider,
   TooltipContent,
 } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import AddTransactionModal from "./AddTransactionModal";
+import AddHodlPositionForm from "./AddHodlPositionForm";
 
 type HodlCardProps = Hodl & {
   token: Token;
 };
 
 const HodlCard = ({ position }: { position: HodlCardProps }) => {
+  const transactionModal = useHodlTransactionModal();
   const currentEvaluation = position.amount * position.token.latestPrice;
   const diffAmount = currentEvaluation - position.exposure;
   const isDiffPositive = diffAmount >= 0;
@@ -109,6 +113,10 @@ const HodlCard = ({ position }: { position: HodlCardProps }) => {
             </p>
           </HodlCardData>
 
+          <HodlCardData amount={position.exposure} Icon={AlertTriangle}>
+            <p className="text-base font-semibold">Exposure</p>
+          </HodlCardData>
+
           {/* <div className="flex items-center">
             <div className="mr-2 rounded-full bg-dog-800 p-1 text-dog-400">
               <Diff className="h-4 w-4" />
@@ -118,25 +126,24 @@ const HodlCard = ({ position }: { position: HodlCardProps }) => {
             </span>
           </div> */}
 
-          <div className="ml-auto space-x-1 ">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Link
-                    className={buttonVariants({
-                      variant: "ghost",
-                      size: "sm",
-                    })}
-                    href={`/hodl/add/${position.id}`}
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Link>
-                </TooltipTrigger>
-                <TooltipContent className="border-dog-800 text-dog-500">
-                  <p>Add transaction</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+          <div className="ml-auto space-x-2">
+            <AddTransactionModal
+              size="large"
+              Icon={Plus}
+              iconClasses="h-4 w-4"
+              transactionModal={transactionModal}
+              btnVariants={{
+                variant: "ghost",
+                size: "xs",
+                corners: "pill",
+              }}
+            >
+              <AddHodlPositionForm
+                hodlId={position.id}
+                token={position.token}
+                closeModal={() => transactionModal.setOpen(false)}
+              />
+            </AddTransactionModal>
 
             <TooltipProvider>
               <Tooltip>
@@ -146,6 +153,7 @@ const HodlCard = ({ position }: { position: HodlCardProps }) => {
                     className={buttonVariants({
                       variant: "ghost",
                       size: "xs",
+                      corners: "pill",
                       className: "ml-auto",
                     })}
                   >
@@ -200,10 +208,13 @@ const HodlCardData = ({
   children: React.ReactNode;
   highlighted?: boolean;
 }) => {
-  const divIconClasses = cn("mr-2 rounded-full bg-dog-800 text-dog-400", {
-    "p-2": highlighted,
-    "p-1": !highlighted,
-  });
+  const divIconClasses = cn(
+    "mr-2 rounded-full bg-dog-800 text-dog-400 flex items-center justify-center",
+    {
+      "p-2": highlighted,
+      "p-1": !highlighted,
+    }
+  );
 
   const iconClasses = cn({
     "h-6 w-6": highlighted,

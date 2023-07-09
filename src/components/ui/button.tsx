@@ -7,7 +7,6 @@ import type { VariantProps } from "class-variance-authority";
 
 // Components
 import * as React from "react";
-
 const buttonVariants = cva(
   "inline-flex items-center text-sm font-medium transition-colors focus:outline-none focus:z-10 focus:ring-2 focus:ring-main-600 focus:ring-offset-main-700 disabled:opacity-50 disabled:pointer-events-none ",
   {
@@ -62,10 +61,12 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {}
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, ...props }, ref) => {
+  ({ className, variant, size, align, corners, ...props }, ref) => {
     return (
       <button
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(
+          buttonVariants({ variant, size, align, corners, className })
+        )}
         ref={ref}
         {...props}
       />
