@@ -104,14 +104,12 @@ export default AddHodl;
 export async function getServerSideProps() {
   const tokens: TokenWithoutDates[] = await getTokenSamples({ prisma });
 
-  const massaged: TokenWithoutDates[] = tokens.map(
-    (token: TokenWithoutDates) => {
-      delete token.createdAt;
-      delete token.updatedAt;
+  const massaged: TokenWithoutDates[] = tokens.map((token) => {
+    delete token.createdAt;
+    delete token.updatedAt;
 
-      return token;
-    }
-  );
+    return token;
+  });
   return {
     props: {
       tokens: massaged,
