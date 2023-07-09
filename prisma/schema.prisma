@@ -134,7 +134,8 @@ model Token {
   symbol       String
   name         String
   iconUrl      String?
-  latestPrice  String         @default("0")
+  latestPrice  Float          @default(0)
+  change24h    Float          @default(0)
   coingecko_id String         @unique
   platforms    Json
   tracked      Boolean        @default(false)
@@ -149,7 +150,7 @@ model TokenHistory {
   createdAt DateTime @default(now())
   token     Token    @relation(fields: [tokenId], references: [id])
   tokenId   String
-  price     String
+  price     Float
 }
 
 enum Role {

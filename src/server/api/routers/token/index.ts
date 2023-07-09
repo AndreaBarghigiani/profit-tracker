@@ -21,9 +21,11 @@ const sample = [
 export const getToken = async ({
   tokenId,
   prisma,
+  withDates = true,
 }: {
   tokenId: string;
   prisma: PrismaClient;
+  withDates?: boolean;
 }) => {
   return await prisma.token.findFirstOrThrow({
     where: {

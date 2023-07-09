@@ -45,7 +45,8 @@ export const updatePrices = async ({
   const prices = objectKeys(data).map((key) => {
     return {
       coingecko_id: key,
-      latestPrice: data[key]?.usd.toString() ?? "0",
+      latestPrice: data[key]?.usd ?? 0,
+      change24h: data[key]?.usd_24h_change ?? 0,
     };
   });
 
@@ -56,6 +57,7 @@ export const updatePrices = async ({
       },
       data: {
         latestPrice: token.latestPrice,
+        change24h: token.change24h,
         tokenHistory: {
           create: {
             price: token.latestPrice,
