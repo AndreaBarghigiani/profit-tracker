@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // Utils
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
 import { prisma } from "@/server/db";
-import { currencyConverter, formatDate, uppercaseFirst } from "@/utils/string";
+import { formatDate } from "@/utils/string";
 import { getHodl } from "@/server/api/routers/hodl";
-import { getToken } from "@/server/api/routers/token";
 import { useHodlTransactionModal } from "@/hooks/useTransactionModal";
 
 // Types

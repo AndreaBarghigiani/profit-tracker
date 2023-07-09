@@ -2,10 +2,8 @@
 import { api } from "@/utils/api";
 import { useForm, Controller } from "react-hook-form";
 import { uppercaseFirst } from "@/utils/string";
-import { Frequency } from "@prisma/client";
 import { getProject } from "@/server/api/routers/project";
 import { prisma } from "@/server/db";
-import { useRouter } from "next/router";
 
 // Types
 import type {
@@ -31,7 +29,6 @@ import { ToggleGroup, ToggleItem } from "@/components/ui/toggle-group";
 const AddProjectPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ project }) => {
-  const router = useRouter();
   const formOptions = {
     resolver: zodResolver(ProjectTransactionSchema),
     defaultValues: {
@@ -46,8 +43,8 @@ const AddProjectPage: NextPage<
     register,
     handleSubmit,
     control,
-    watch,
-    formState: { errors },
+    // watch,
+    // formState: { errors },
   } = useForm<ProjectTransaction>(formOptions);
 
   const { mutate } = api.project.transaction.useMutation({

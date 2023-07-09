@@ -70,7 +70,7 @@ const NewInvestment: NextPage = () => {
             </CardContent>
             <CardFooter>
               <Link
-                href={`/project/add`}
+                href={`/project/create`}
                 className={buttonVariants({ variant: "secondary", size: "sm" })}
               >
                 Next

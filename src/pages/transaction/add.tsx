@@ -25,7 +25,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useEffect } from "react";
 
 const AddTransaction: NextPage = () => {
   const router = useRouter();
@@ -48,23 +47,14 @@ const AddTransaction: NextPage = () => {
     register,
     handleSubmit,
     control,
-    watch,
-    setValue,
     // formState: { errors },
   } = useForm<TransactionValues>({
     resolver: zodResolver(TransactionValuesSchema),
     defaultValues: {
       type: "DEPOSIT",
-      projectId,
+      evaluation: 1,
     },
   });
-
-  const watchAmount = watch("amount", 0);
-
-  // TODO: find elegant way to do so, maybe just change form types
-  useEffect(() => {
-    setValue("evaluation", watchAmount);
-  }, [watchAmount, setValue]);
 
   const onSubmit: SubmitHandler<TransactionValues> = (data) => {
     mutate(data);

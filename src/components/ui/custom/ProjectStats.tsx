@@ -8,7 +8,7 @@ import type { ReactElement } from "react";
 
 // Components
 import Heading from "@/components/ui/heading";
-import { AlertTriangle, Glasses, Percent, CalendarRange } from "lucide-react";
+// import { AlertTriangle, Glasses } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 type ProjectStatsCardProps = {
@@ -25,12 +25,12 @@ const ProjectStats = ({ project }: ProjectStatsCardProps) => {
   return (
     <div className={wrapperClasses}>
       <div>
-        <header>
+        {/* <header>
           <Heading size="h2" className="mt-0 flex items-center text-dog-400">
             <AlertTriangle className="mr-2 h-4 w-4 flex-shrink-0" />
             General exposures
           </Heading>
-        </header>
+        </header> */}
 
         <section>
           <Heading size="h4" className="flex items-center text-dog-500">
@@ -96,12 +96,12 @@ const ProjectStats = ({ project }: ProjectStatsCardProps) => {
       />
 
       <div>
-        <header>
+        {/* <header>
           <Heading size="h2" className="mt-0 flex items-center text-dog-400">
             <AlertTriangle className="mr-2 h-4 w-4 flex-shrink-0" />
             General exposures
           </Heading>
-        </header>
+        </header> */}
 
         <section>
           <Heading size="h4" className="flex items-center text-dog-500">
@@ -149,12 +149,12 @@ const ProjectStats = ({ project }: ProjectStatsCardProps) => {
       />
 
       <div>
-        <header>
+        {/* <header>
           <Heading size="h2" className="mt-0 flex items-center text-dog-400">
             <Glasses className="mr-2 h-4 w-4 flex-shrink-0" />
             Project details
           </Heading>
-        </header>
+        </header> */}
 
         <section>
           <Heading size="h4" className="flex items-center text-dog-500">
