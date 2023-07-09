@@ -1,9 +1,9 @@
 // Utils
 import { z } from "zod";
-import { Frequency } from "@prisma/client";
+import { Frequency, TransactionType } from "@prisma/client";
 
 // Types
-import { type Token, TransactionType } from "@prisma/client";
+import type { Token, Hodl } from "@prisma/client";
 
 // Wallet types
 
@@ -11,63 +11,16 @@ export const WalletSchema = z.object({
   id: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
-  lastInterestAccrued: z.date(),
   dailyProfit: z.number(),
   liquidFunds: z.number(),
-  exposure: z.number(),
-  totalDeposit: z.number(), // Think this will be removed
-  profits: z.number(),
   userId: z.string(),
 });
-
-// Projects types
-export const ProjectValuesSchema = z.object({
-  name: z.string(),
-  description: z.string(),
-  deposit: z.number(),
-  increaseFrequency: z.nativeEnum(Frequency),
-  increaseAmount: z.number(),
-  compound: z.boolean(),
-  type: z.string().default("project"),
-});
-
-export type ProjectValues = z.infer<typeof ProjectValuesSchema>;
-
-export const EditProjectValuesSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  description: z.string(),
-  increaseFrequency: z.nativeEnum(Frequency),
-  increaseAmount: z.number(),
-  compound: z.boolean(),
-});
-
-export type EditProjectValues = z.infer<typeof EditProjectValuesSchema>;
-
-export const ProjectTransactionSchema = z.object({
-  amount: z.number(),
-  evaluation: z.number(),
-  type: z.nativeEnum(TransactionType),
-  projectId: z.string(),
-});
-
-export type ProjectTransaction = z.infer<typeof ProjectTransactionSchema>;
-
-// Token types
-export type UpdateTokenData = {
-  coingecko_id: string;
-  icon_url?: string;
-  latestPrice: string;
-};
 
 // Transactions types
 export const TransactionValuesSchema = z.object({
   amount: z.number(),
   evaluation: z.number(),
   type: z.nativeEnum(TransactionType),
-  projectId: z.string().nullish(),
-  hodlId: z.string().nullish(),
-  tokenId: z.string().nullish(),
 });
 
 export type TransactionValues = z.infer<typeof TransactionValuesSchema>;
@@ -100,20 +53,46 @@ export type MassagedSumTxItem = {
   profits?: number;
 };
 
-// Hodl types
-export const HodlValuesSchema = z.object({
-  currentAmount: z.number(),
-  currentEvaluation: z.number(),
-  totalInvested: z.number(),
-  tokenId: z.string(),
+// Projects types
+export const ProjectValuesSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  deposit: z.number(),
+  increaseFrequency: z.nativeEnum(Frequency),
+  increaseAmount: z.number(),
+  compound: z.boolean(),
+  type: z.string().default("project"),
 });
 
-export type HodlValues = z.infer<typeof HodlValuesSchema>;
+export type ProjectValues = z.infer<typeof ProjectValuesSchema>;
 
-export type TokenWithoutDates = Partial<
-  Pick<Token, "createdAt" | "updatedAt">
-> &
-  Omit<Token, "createdAt" | "updatedAt">;
+export const EditProjectValuesSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  increaseFrequency: z.nativeEnum(Frequency),
+  increaseAmount: z.number(),
+  compound: z.boolean(),
+});
+
+export type EditProjectValues = z.infer<typeof EditProjectValuesSchema>;
+
+export const ProjectTransactionSchema = TransactionValuesSchema.extend({
+  projectId: z.string(),
+});
+
+export type ProjectTransaction = z.infer<typeof ProjectTransactionSchema>;
+
+// Hodl types
+export type HodlWithoutDates = Partial<Pick<Hodl, "createdAt" | "updatedAt">> &
+  Omit<Hodl, "createdAt" | "updatedAt">;
+
+export const HodlTransactionSchema = TransactionValuesSchema.extend({
+  hodlId: z.string().optional(),
+  tokenId: z.string().optional(),
+});
+
+export type HodlTransaction = z.infer<typeof HodlTransactionSchema>;
 
 // CoinGecko
 export const CoinGeckoCoinsMarketSchema = z.object({
@@ -253,3 +232,16 @@ export const CoinGeckoCoinsMarketSchema = z.object({
 });
 
 export type CoinGeckoCoinsMarkets = z.infer<typeof CoinGeckoCoinsMarketSchema>;
+
+// Token types
+export type UpdateTokenData = {
+  coingecko_id: string;
+  icon_url?: string;
+  latestPrice: number;
+  change24h: number;
+};
+
+export type TokenWithoutDates = Partial<
+  Pick<Token, "createdAt" | "updatedAt">
+> &
+  Omit<Token, "createdAt" | "updatedAt">;

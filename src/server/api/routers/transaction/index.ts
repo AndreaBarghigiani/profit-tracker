@@ -133,18 +133,28 @@ export const transactionRouter = createTRPCRouter({
     return weeklyWithdraws(ctx.prisma);
   }),
   // This runs via cron
-  addInterestToAllProjects: publicProcedure.mutation(async ({ ctx }) => {
-    const projects = await getAllProjectsIds({ prisma: ctx.prisma });
+  addInterestToAllProjects: publicProcedure
+    .input(z.optional(z.object({ skip: z.boolean().default(false) })))
+    .mutation(async ({ ctx, input }) => {
+      const projects = await getAllProjectsIds({ prisma: ctx.prisma });
+      const skip = input?.skip ?? false;
 
-    for (const project of projects) {
-      await addInterest(project.id, ctx.prisma);
-    }
-  }),
+      for (const project of projects) {
+        await addInterest(project.id, ctx.prisma, skip);
+      }
+    }),
   // Per project specific
   addInterest: protectedProcedure
-    .input(z.object({ projectId: z.string() }))
+    .input(
+      z.object({
+        projectId: z.string(),
+        skip: z.boolean().default(false).optional(),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
-      return await addInterest(input.projectId, ctx.prisma);
+      const skip = input?.skip ?? false;
+
+      return await addInterest(input.projectId, ctx.prisma, skip);
     }),
   projectInterest: protectedProcedure
     .input(z.object({ projectId: z.string() }))
@@ -167,107 +177,110 @@ export const transactionRouter = createTRPCRouter({
     return await sumInterests(ctx.session.user.id, ctx.prisma);
   }),
   // Only for manual deposits or withdraws
+  // MOVING THIS LOGIC TO PROJECTS AND HODLS
   create: protectedProcedure
     .input(TransactionValuesSchema)
     .mutation(async ({ ctx, input }) => {
-      const transaction = await ctx.prisma.transaction.create({
-        data: {
+      const transaction = {
+        create: {
           amount: input.amount,
           evaluation: input.evaluation,
           type: input.type,
-          project: input.projectId
-            ? {
-                connect: { id: input.projectId },
-              }
-            : undefined,
-          hodl: input.hodlId
-            ? {
-                connect: { id: input.hodlId },
-              }
-            : undefined,
         },
-      });
+      };
 
-      if (input.projectId) {
-        await ctx.prisma.project.update({
-          where: {
-            id: input.projectId,
-          },
-          data: {
-            currentHolding: {
-              ...(input.type === TxType.WITHDRAW && {
-                decrement: input.amount,
-              }),
-              ...(input.type === TxType.DEPOSIT && {
-                increment: input.amount,
-              }),
-            },
-          },
-        });
-      }
+      // const project = input.projectId
+      //   ? {
+      //       update: [
+      //         {
+      //           where: {
+      //             id: input.projectId,
+      //           },
+      //           data: {
+      //             transaction,
+      //             exposure: {
+      //               ...(input.type === TxType.WITHDRAW && {
+      //                 decrement: input.amount,
+      //               }),
+      //               ...(input.type === TxType.DEPOSIT && {
+      //                 increment: input.amount,
+      //               }),
+      //             },
+      //             deposit: {
+      //               ...(input.type === TxType.WITHDRAW && {
+      //                 decrement: input.amount,
+      //               }),
+      //               ...(input.type === TxType.DEPOSIT && {
+      //                 increment: input.amount,
+      //               }),
+      //             },
+      //           },
+      //         },
+      //       ],
+      //     }
+      //   : null;
 
-      if (input.hodlId) {
-        await ctx.prisma.hodl.update({
-          where: {
-            id: input.hodlId,
-          },
-          data: {
-            currentAmount: {
-              ...(input.type === TxType.SELL && {
-                decrement: input.amount,
-              }),
-              ...(input.type === TxType.BUY && {
-                increment: input.amount,
-              }),
-            },
-            currentEvaluation: {
-              ...(input.type === TxType.SELL && {
-                decrement: input.evaluation,
-              }),
-              ...(input.type === TxType.BUY && {
-                increment: input.evaluation,
-              }),
-            },
-            totalInvested: {
-              ...(input.type === TxType.SELL && {
-                decrement: input.evaluation,
-              }),
-              ...(input.type === TxType.BUY && {
-                increment: input.evaluation,
-              }),
-            },
-          },
-        });
-      }
+      const hodl = input.hodlId
+        ? {
+            update: [
+              {
+                where: {
+                  id: input.hodlId,
+                },
+                data: {
+                  transaction: transaction,
+                  amount: {
+                    ...(input.type === TxType.SELL && {
+                      decrement: input.amount,
+                    }),
+                    ...(input.type === TxType.BUY && {
+                      increment: input.amount,
+                    }),
+                  },
+                  exposure: {
+                    ...(input.type === TxType.SELL && {
+                      decrement: input.evaluation,
+                    }),
+                    ...(input.type === TxType.BUY && {
+                      increment: input.evaluation,
+                    }),
+                  },
+                },
+              },
+            ],
+          }
+        : null;
 
-      // Update the wallet with new project holdings
       await ctx.prisma.wallet.update({
         where: {
           userId: ctx.session.user.id,
         },
         data: {
-          total: {
+          // ...(!!project && { project }),
+          ...(!!hodl && { hodl }),
+          exposure: {
             ...(["WITHDRAW", "SELL"].includes(input.type) && {
-              decrement: input.evaluation,
+              decrement: input.amount * input.evaluation,
             }),
             ...(["DEPOSIT", "BUY"].includes(input.type) && {
-              increment: input.evaluation,
+              increment: input.amount * input.evaluation,
             }),
           },
           ...(["DEPOSIT", "BUY"].includes(input.type) && {
             totalDeposit: {
-              increment: input.evaluation,
+              increment: input.amount * input.evaluation,
             },
           }),
           ...(["WITHDRAW", "SELL"].includes(input.type) && {
-            totalWithdraw: {
-              increment: input.evaluation,
+            profits: {
+              increment: input.amount * input.evaluation,
             },
           }),
         },
       });
 
-      return transaction;
+      // I'll return the ID of the type of investment the transaction is connected to
+      return input.projectId ? input.projectId : input.hodlId;
     }),
   delete: protectedProcedure
     .input(z.object({ transactionId: z.string() }))
@@ -283,7 +296,7 @@ export const transactionRouter = createTRPCRouter({
           userId: ctx.session.user.id,
         },
         data: {
-          total: {
+          exposure: {
             decrement:
               transaction.evaluation > transaction.amount
                 ? transaction.evaluation

@@ -1,12 +1,13 @@
 // Utils
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { TransactionValuesSchema } from "@/server/types";
-import { ensureAllTransactionTypes } from "../transaction/sumTransactions";
+import { HodlTransactionSchema } from "@/server/types";
 import { getWallet } from "../wallet";
 
 // Types
 import { type PrismaClient, TransactionType } from "@prisma/client";
+import type { Session } from "next-auth";
+import type { HodlTransaction } from "@/server/types";
 
 export const getHodl = async ({
   hodlId,
@@ -25,9 +26,123 @@ export const getHodl = async ({
   });
 };
 
+export const isUserExposed = async ({
+  ctx,
+  input,
+}: {
+  ctx: { prisma: PrismaClient; session: Session };
+  input: HodlTransaction;
+}) => {
+  const isExposed = await ctx.prisma.hodl.findFirst({
+    where: {
+      userId: ctx.session.user.id,
+      id: input.hodlId,
+      exposure: {
+        gt: 0,
+      },
+    },
+  });
+
+  return isExposed;
+};
+
+const makeBuy = async ({
+  ctx,
+  input,
+}: {
+  ctx: { prisma: PrismaClient; session: Session };
+  input: HodlTransaction;
+}) => {
+  await ctx.prisma.hodl.update({
+    where: {
+      id: input.hodlId,
+    },
+    data: {
+      amount: {
+        increment: input.amount,
+      },
+      exposure: {
+        increment: input.evaluation,
+      },
+      transaction: {
+        create: {
+          type: TransactionType.BUY,
+          amount: input.amount,
+          evaluation: input.evaluation,
+        },
+      },
+    },
+  });
+};
+
+const makeSell = async ({
+  ctx,
+  input,
+}: {
+  ctx: { prisma: PrismaClient; session: Session };
+  input: HodlTransaction;
+}) => {
+  const isExposed = await isUserExposed({ ctx, input });
+
+  const diff = !!isExposed
+    ? input.evaluation - isExposed.exposure
+    : input.evaluation;
+
+  const exposure = diff >= 0 ? 0 : { decrement: input.evaluation };
+
+  const profits =
+    diff >= 0
+      ? !isExposed
+        ? { increment: input.evaluation }
+        : { increment: diff }
+      : isExposed?.profits;
+
+  const transaction = {
+    create: {
+      type: TransactionType.SELL,
+      amount: input.amount,
+      evaluation: input.evaluation,
+    },
+  };
+
+  const hodl = {
+    update: [
+      {
+        where: {
+          id: input.hodlId,
+        },
+        data: {
+          amount: {
+            decrement: input.amount,
+          },
+          exposure,
+          profits,
+          transaction,
+        },
+      },
+    ],
+  };
+
+  await ctx.prisma.wallet.update({
+    where: {
+      userId: ctx.session.user.id,
+    },
+    data: {
+      liquidFunds: {
+        increment: input.evaluation,
+      },
+      hodl,
+    },
+  });
+  // When I sell a token I need to:
+  // 1. subtract the evaluation from the exposure of said token
+  // 2. add the evaluation to the liquidFunds of the wallet
+  // 3. check if the exposure of the token is 0, if so delete the token from the wallet
+};
+
 export const hodlRouter = createTRPCRouter({
   create: protectedProcedure
-    .input(TransactionValuesSchema)
+    .input(HodlTransactionSchema)
     .mutation(async ({ ctx, input }) => {
       if (!input.tokenId) return;
 
@@ -76,6 +191,19 @@ export const hodlRouter = createTRPCRouter({
 
       return position;
     }),
+  transaction: protectedProcedure
+    .input(HodlTransactionSchema)
+    .mutation(async ({ ctx, input }) => {
+      switch (input.type) {
+        case TransactionType.BUY:
+          await makeBuy({ ctx, input });
+          break;
+        case TransactionType.SELL:
+          await makeSell({ ctx, input });
+          break;
+      }
+      return input.hodlId;
+    }),
   get: protectedProcedure
     .input(z.object({ hodlId: z.string() }))
     .query(({ ctx, input }) => {
@@ -116,6 +244,33 @@ export const hodlRouter = createTRPCRouter({
           },
         },
       });
+    }),
+  getAverageBuyPrice: protectedProcedure
+    .input(z.object({ hodlId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const buys = await ctx.prisma.hodl.findUniqueOrThrow({
+        where: {
+          id: input.hodlId,
+        },
+        select: {
+          transaction: {
+            where: {
+              type: TransactionType.BUY,
+            },
+            select: {
+              amount: true,
+              evaluation: true,
+            },
+          },
+        },
+      });
+
+      const average =
+        buys.transaction.reduce(
+          (acc, curr) => acc + curr.evaluation / curr.amount,
+          0
+        ) / buys.transaction.length;
+      return average;
     }),
   getCardData: protectedProcedure
     .input(z.object({ hodlId: z.string() }))

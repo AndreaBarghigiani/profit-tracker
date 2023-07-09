@@ -16,17 +16,17 @@ export const updateMarketData = async ({
   url.searchParams.set("vs_currency", "usd");
   url.searchParams.set("ids", tokenIds.join(","));
   url.searchParams.set("locale", "en");
+  url.searchParams.set("price_change_percentage", "24h");
 
   const response = await fetch(url);
   const data = z.array(CoinGeckoCoinsMarketSchema).parse(await response.json());
 
-  const massaged: UpdateTokenData[] = data.map((entry) => {
-    return {
-      coingecko_id: entry.id,
-      icon_url: entry.image,
-      latestPrice: entry.current_price.toString(),
-    };
-  });
+  const massaged: UpdateTokenData[] = data.map((entry) => ({
+    coingecko_id: entry.id,
+    icon_url: entry.image,
+    latestPrice: entry.current_price,
+    change24h: entry.price_change_24h,
+  }));
 
   const updateToken = async (token: UpdateTokenData) => {
     return await prisma.token.update({
@@ -36,6 +36,7 @@ export const updateMarketData = async ({
       data: {
         latestPrice: token.latestPrice,
         iconUrl: token.icon_url,
+        change24h: token.change24h,
         tokenHistory: {
           create: {
             price: token.latestPrice,

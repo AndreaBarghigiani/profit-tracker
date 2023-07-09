@@ -5,7 +5,6 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
-import { ensureAllTransactionTypes } from "../transaction/sumTransactions";
 import { getWallet } from "../wallet";
 
 // Types
@@ -96,7 +95,6 @@ export const removeDeposit = async ({
   ctx: { prisma: PrismaClient; session: Session };
   input: ProjectTransaction;
 }) => {
-  console.log("removeDeposit", input);
   const isExposed = await isUserExposed({ ctx, input });
 
   const expositionDiff = !!isExposed
@@ -153,8 +151,8 @@ export const makeWithdraw = async ({
   /*
 		Profits are calculated like so:
 			1. if the difference is greater than 0:
-				a. if the user is not exposed, then increment profits by the evaluation
-				b. if the user is exposed, then increment profits by the difference
+				a. user is not exposed, then increment profits by the evaluation
+				b. user is exposed, then increment profits by the difference
 			2. if the difference is less than 0, then profits are the same as before
 	*/
   const profits =
