@@ -7,7 +7,7 @@ import {
 } from "@/server/api/trpc";
 
 import { TransactionValuesSchema } from "@/server/types";
-import { TransactionType as TxType } from "@prisma/client";
+import type { TransactionType as TxType } from "@prisma/client";
 import { addInterest } from "./addInterest";
 import { getAllProjectsIds } from "../project/getAllProjectsIds";
 import { lastInterestByProjectId } from "./lastInterestByProjectId";
@@ -176,138 +176,16 @@ export const transactionRouter = createTRPCRouter({
   sumInterests: protectedProcedure.query(async ({ ctx }) => {
     return await sumInterests(ctx.session.user.id, ctx.prisma);
   }),
-  // Only for manual deposits or withdraws
-  // MOVING THIS LOGIC TO PROJECTS AND HODLS
-  create: protectedProcedure
-    .input(TransactionValuesSchema)
-    .mutation(async ({ ctx, input }) => {
-      const transaction = {
-        create: {
-          amount: input.amount,
-          evaluation: input.evaluation,
-          type: input.type,
-        },
-      };
-
-      // const project = input.projectId
-      //   ? {
-      //       update: [
-      //         {
-      //           where: {
-      //             id: input.projectId,
-      //           },
-      //           data: {
-      //             transaction,
-      //             exposure: {
-      //               ...(input.type === TxType.WITHDRAW && {
-      //                 decrement: input.amount,
-      //               }),
-      //               ...(input.type === TxType.DEPOSIT && {
-      //                 increment: input.amount,
-      //               }),
-      //             },
-      //             deposit: {
-      //               ...(input.type === TxType.WITHDRAW && {
-      //                 decrement: input.amount,
-      //               }),
-      //               ...(input.type === TxType.DEPOSIT && {
-      //                 increment: input.amount,
-      //               }),
-      //             },
-      //           },
-      //         },
-      //       ],
-      //     }
-      //   : null;
-
-      const hodl = input.hodlId
-        ? {
-            update: [
-              {
-                where: {
-                  id: input.hodlId,
-                },
-                data: {
-                  transaction: transaction,
-                  amount: {
-                    ...(input.type === TxType.SELL && {
-                      decrement: input.amount,
-                    }),
-                    ...(input.type === TxType.BUY && {
-                      increment: input.amount,
-                    }),
-                  },
-                  exposure: {
-                    ...(input.type === TxType.SELL && {
-                      decrement: input.evaluation,
-                    }),
-                    ...(input.type === TxType.BUY && {
-                      increment: input.evaluation,
-                    }),
-                  },
-                },
-              },
-            ],
-          }
-        : null;
-
-      await ctx.prisma.wallet.update({
-        where: {
-          userId: ctx.session.user.id,
-        },
-        data: {
-          // ...(!!project && { project }),
-          ...(!!hodl && { hodl }),
-          exposure: {
-            ...(["WITHDRAW", "SELL"].includes(input.type) && {
-              decrement: input.amount * input.evaluation,
-            }),
-            ...(["DEPOSIT", "BUY"].includes(input.type) && {
-              increment: input.amount * input.evaluation,
-            }),
-          },
-          ...(["DEPOSIT", "BUY"].includes(input.type) && {
-            totalDeposit: {
-              increment: input.amount * input.evaluation,
-            },
-          }),
-          ...(["WITHDRAW", "SELL"].includes(input.type) && {
-            profits: {
-              increment: input.amount * input.evaluation,
-            },
-          }),
-        },
-      });
-
-      // I'll return the ID of the type of investment the transaction is connected to
-      return input.projectId ? input.projectId : input.hodlId;
-    }),
+  create: protectedProcedure.input(TransactionValuesSchema).mutation(({}) => {
+    // Leaving here for historical purposes
+    // Probably will be deleted in the future
+  }),
   delete: protectedProcedure
     .input(z.object({ transactionId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const transaction = await ctx.prisma.transaction.delete({
+      await ctx.prisma.transaction.delete({
         where: {
           id: input.transactionId,
-        },
-      });
-
-      await ctx.prisma.wallet.update({
-        where: {
-          userId: ctx.session.user.id,
-        },
-        data: {
-          exposure: {
-            decrement:
-              transaction.evaluation > transaction.amount
-                ? transaction.evaluation
-                : transaction.amount,
-          },
-          totalDeposit: {
-            decrement:
-              transaction.evaluation > transaction.amount
-                ? transaction.evaluation
-                : transaction.amount,
-          },
         },
       });
     }),

@@ -1,10 +1,10 @@
 // Utils
-// import { api } from "@/utils/api";
 import clsx from "clsx";
 import { currencyConverter } from "@/utils/string";
 
 // Types
 import type { Hodl, Token } from "@prisma/client";
+import type { LucideIcon } from "lucide-react";
 
 // Components
 import Image from "next/image";
@@ -13,7 +13,7 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 // import { Skeleton } from "@/components/ui/skeleton";
 // import { Eye, Wallet, Diff, Plus, Trash2, RefreshCcw } from "lucide-react";
-import { Eye, Wallet, Diff, Plus, LucideIcon } from "lucide-react";
+import { Eye, Wallet, Plus } from "lucide-react";
 import {
   Tooltip,
   TooltipTrigger,

@@ -29,9 +29,9 @@ import {
 const ProjectCard = ({ project }: { project: Project }) => {
   const {
     data: interests,
-    isLoading: isInterestLoading,
+    // isLoading: isInterestLoading,
     isSuccess: isInterestSuccess,
-    isError: isInterestError,
+    // isError: isInterestError,
     // error: interestError,
   } = api.transaction.projectInterest.useQuery({
     projectId: project.id,

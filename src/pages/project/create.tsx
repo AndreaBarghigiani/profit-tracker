@@ -38,7 +38,7 @@ const AddProject: NextPage = () => {
   });
 
   const { mutate } = api.project.create.useMutation({
-    onSuccess: async (data) => {
+    onSuccess: async () => {
       await utils.wallet.getUserStats.invalidate().then(async () => {
         // Momentarly redirect to dashboard
         // I would like to redirect to the project page

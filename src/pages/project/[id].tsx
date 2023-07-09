@@ -1,8 +1,9 @@
 // Utils
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
-import { uppercaseFirst, formatDate, currencyConverter } from "@/utils/string";
+import { uppercaseFirst, formatDate } from "@/utils/string";
 import { useState } from "react";
+import { buttonVariants } from "@/components/ui/button";
 
 // Types
 import type { NextPage } from "next";
@@ -10,15 +11,9 @@ import type { Project } from "@prisma/client";
 
 // Components
 import Heading from "@/components/ui/heading";
-import { ArrowBigDownDash, ArrowBigUpDash, Check, X } from "lucide-react";
+import { ArrowBigDownDash, ArrowBigUpDash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import OnlyAdmin from "@/components/ui/custom/OnlyAdmin";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -29,7 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import AddProjectTransactionForm from "@/components/ui/custom/AddProjectTransactionForm";
 import ProjectStats from "@/components/ui/custom/ProjectStats";
-import { buttonVariants } from "@/components/ui/button";
+
 import LastProjectTransaction from "@/components/ui/custom/LastProjectTransaction";
 
 const ProjectPage: NextPage = () => {
@@ -82,7 +77,6 @@ const ProjectPage: NextPage = () => {
         </Heading>
         <p className="text-center">{project.description}</p>
       </header>
-      <ProjectStats project={project} />
       <article>
         <header className="flex items-center">
           <Heading as="h2" size="h2">
@@ -93,43 +87,7 @@ const ProjectPage: NextPage = () => {
           </div>
         </header>
 
-        {/* <div className="grid grid-cols-4 gap-3 ">
-          <Card>
-            <CardHeader>
-              <CardDescription>Current Holding</CardDescription>
-              <CardTitle>
-                {currencyConverter({ amount: project.deposit })}
-              </CardTitle>
-            </CardHeader>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardDescription>Increase Frequency</CardDescription>
-              <CardTitle>{uppercaseFirst(project.increaseFrequency)}</CardTitle>
-            </CardHeader>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardDescription>Increase Amount</CardDescription>
-              <CardTitle>{project.increaseAmount}%</CardTitle>
-            </CardHeader>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Compounds?</CardTitle>
-              <CardDescription>
-                {project.compound ? (
-                  <Check className="text-green-600" />
-                ) : (
-                  <X className="text-red-500" />
-                )}
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        </div> */}
+        <ProjectStats project={project} />
 
         <LastProjectTransaction className="mb-8 mt-3" project={project} />
 

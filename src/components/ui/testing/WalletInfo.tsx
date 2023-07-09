@@ -35,7 +35,7 @@ const WalletInfo = () => {
               })}
             </li>
             <li>
-              <strong>Total Withdraw:</strong>{" "}
+              <strong>Profits:</strong>{" "}
               {currencyConverter({
                 amount: userStats.totals.profits,
                 showSign: true,
