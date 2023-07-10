@@ -28,3 +28,8 @@ export const currencyConverter = ({
     maximumFractionDigits: type === "long" ? 10 : 2,
   }).format(numeric);
 };
+
+export const formatNumber = (number: number | string) => {
+  const numeric = typeof number === "string" ? parseFloat(number) : number;
+  return new Intl.NumberFormat("en-EN", { style: "decimal" }).format(numeric);
+};
