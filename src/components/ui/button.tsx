@@ -18,6 +18,8 @@ const buttonVariants = cva(
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
           "border border-dog-300 text-dog-300 hover:border-main-600 hover:text-main-600",
+        "outline-danger":
+          "border border-alert-300 text-alert-300 hover:border-alert-400 hover:text-alert-400",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "text-dog-300 hover:text-main-600",

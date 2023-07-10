@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // Utils
 import { api } from "@/utils/api";
+import clsx from "clsx";
 import { useRouter } from "next/router";
 import { prisma } from "@/server/db";
 import { formatDate } from "@/utils/string";
@@ -21,6 +22,13 @@ import { Button } from "@/components/ui/button";
 import AddTransactionModal from "@/components/ui/custom/AddTransactionModal";
 import AddHodlPositionForm from "@/components/ui/custom/AddHodlPositionForm";
 import HodlStats from "@/components/ui/custom/HodlStats";
+import { Trash2, Plus, RefreshCcw } from "lucide-react";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipProvider,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 const Hodl: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -32,6 +40,14 @@ const Hodl: NextPage<
     hodlId: hodl.id,
   });
 
+  const { mutateAsync: updatePrice, isLoading: isPriceLoading } =
+    api.token.updatePrice.useMutation({
+      onSuccess: async () => {
+        await router.replace(router.asPath);
+        await utils.hodl.get.invalidate();
+        await utils.token.get.invalidate();
+      },
+    });
   const { mutate: deletePosition } = api.hodl.delete.useMutation({
     onSuccess: async () => {
       await utils.wallet.get.invalidate().then(async () => {
@@ -40,7 +56,7 @@ const Hodl: NextPage<
     },
   });
   return (
-    <div className="mx-auto max-w-3xl space-y-4">
+    <div className="mx-auto space-y-4">
       <header>
         <Heading size={"page"} gradient="gold" spacing={"massive"}>
           {token.name}{" "}
@@ -57,6 +73,9 @@ const Hodl: NextPage<
             <AddTransactionModal
               size="large"
               transactionModal={transactionModal}
+              Icon={Plus}
+              iconClasses="h-4 w-4"
+              btnVariants={{ size: "sm" }}
             >
               <AddHodlPositionForm
                 hodlId={hodl.id}
@@ -64,11 +83,43 @@ const Hodl: NextPage<
                 closeModal={() => transactionModal.setOpen(false)}
               />
             </AddTransactionModal>
+
             <Button
-              variant="ghost-danger"
+              variant="outline"
+              size="sm"
+              onClick={() => updatePrice({ tokenId: token.coingecko_id })}
+            >
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <RefreshCcw
+                      className={clsx("h-4 w-4", {
+                        "animate-spin": isPriceLoading,
+                      })}
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent className="border-dog-800 text-dog-500">
+                    <p>Update price</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </Button>
+
+            <Button
+              variant="outline-danger"
+              size="sm"
               onClick={() => deletePosition(hodl.id)}
             >
-              Delete
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Trash2 className="h-4 w-4" />
+                  </TooltipTrigger>
+                  <TooltipContent className="border-dog-800 text-dog-500">
+                    <p>Delete</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </Button>
           </div>
         </section>
