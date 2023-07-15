@@ -1,5 +1,6 @@
 //Utils
 import { api } from "@/utils/api";
+import { sortedPositions } from "@/utils/positions";
 
 // Types
 import type { NextPage } from "next";
@@ -24,6 +25,7 @@ const Dashboard: NextPage = () => {
   const { data: userStats, isSuccess: isUserStatsSuccess } =
     api.wallet.getUserStats.useQuery();
 
+  const hodlsSorted = isHodlsSuccess && sortedPositions(hodls);
   return (
     <div>
       <Heading size="page" gradient="gold" spacing="massive">
@@ -77,11 +79,13 @@ const Dashboard: NextPage = () => {
                   Add hodl
                 </Link>
               </Heading>
-              <div className="grid grid-cols-2 gap-4">
-                {hodls.map((hodl) => (
-                  <HodlCard key={hodl.id} position={hodl} />
-                ))}
-              </div>
+              {!!hodlsSorted && (
+                <div className="grid grid-cols-2 gap-4">
+                  {hodlsSorted.map((hodl, index) => (
+                    <HodlCard key={hodl.id} position={hodl} rank={index + 1} />
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </section>

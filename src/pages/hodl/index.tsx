@@ -1,5 +1,6 @@
 // Utils
 import { api } from "@/utils/api";
+import { sortedPositions } from "@/utils/positions";
 
 // Types
 import type { NextPage } from "next";
@@ -17,6 +18,8 @@ const Hodl: NextPage = () => {
     isSuccess: isPositionsSuccess,
     isLoading: isPositionLoading,
   } = api.hodl.getByCurrentUser.useQuery();
+
+  const positionsSorted = isPositionsSuccess && sortedPositions(positions);
 
   return (
     <div>
@@ -61,10 +64,10 @@ const Hodl: NextPage = () => {
         )}
       </div>
 
-      {isPositionsSuccess && (
+      {!!positionsSorted && (
         <div className="grid grid-cols-2 gap-4">
-          {positions.map((position) => (
-            <HodlCard key={position.id} position={position} />
+          {positionsSorted.map((position, index) => (
+            <HodlCard key={position.id} position={position} rank={index + 1} />
           ))}
         </div>
       )}

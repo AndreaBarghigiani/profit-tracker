@@ -1,4 +1,5 @@
 // Utils
+import { api } from "@/utils/api";
 import { cn } from "@/lib/utils";
 import clsx from "clsx";
 import { currencyConverter } from "@/utils/string";
@@ -29,34 +30,33 @@ type HodlCardProps = Hodl & {
   token: Token;
 };
 
-const HodlCard = ({ position }: { position: HodlCardProps }) => {
+const HodlCard = ({
+  position,
+  rank,
+}: {
+  position: HodlCardProps;
+  rank: number;
+}) => {
   const transactionModal = useHodlTransactionModal();
   const currentEvaluation = position.amount * position.token.latestPrice;
-  const diffAmount = currentEvaluation - position.exposure;
-  const isDiffPositive = diffAmount >= 0;
-  /*
-		Diff percentage calculation
-		vecchio valore A
-		nuovo valore B
-
-		[(B/A)-1]x100
-
-		Esempio
-		vecchio valore 1000$
-		nuovo valore 1300$
-		[(1300/1000)-1]x100=
-		=[1,3-1]x100=
-		=0,3x100= 30% 
-	*/
-  const diffPerc =
-    ((currentEvaluation - position.exposure) / position.exposure) * 100;
+  const { data: hodlDiff, isSuccess: isHodlDiffSuccess } =
+    api.hodl.getDiffFromBuyes.useQuery(
+      {
+        hodlId: position.id,
+        hodlAmount: position.amount,
+        tokenLatestPrice: position.token.latestPrice,
+      },
+      {
+        refetchOnWindowFocus: false,
+      }
+    );
 
   // Classes
   const badgeClass = clsx(
     "flex flex-shrink-0 items-center font-semibold rounded-3xl border px-3 py-1 text-xs",
     {
-      "border-success-800 bg-success-900 text-success-600": isDiffPositive,
-      "border-alert-700 bg-alert-900 text-alert-600": !isDiffPositive,
+      "border-success-800 bg-success-900 text-success-600": hodlDiff?.positive,
+      "border-alert-700 bg-alert-900 text-alert-600": !hodlDiff?.positive,
     }
   );
 
@@ -74,7 +74,12 @@ const HodlCard = ({ position }: { position: HodlCardProps }) => {
   // });
 
   return (
-    <div className="flex items-center rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg">
+    <div className="relative flex items-center rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg">
+      {rank && (
+        <div className="absolute left-0 top-0 rounded-br-lg rounded-tl-lg bg-dog-800 px-3 py-1 text-xs text-dog-500">
+          {`#${rank}`}
+        </div>
+      )}
       {!!position.token.iconUrl && (
         <Image
           src={position.token.iconUrl}
@@ -98,7 +103,9 @@ const HodlCard = ({ position }: { position: HodlCardProps }) => {
               {position.token.name}
             </Heading>
           </Link>
-          <p className={badgeClass}>{diffPerc.toFixed(2)}%</p>
+          {isHodlDiffSuccess && (
+            <p className={badgeClass}>{hodlDiff.percentage}%</p>
+          )}
         </header>
 
         <section className="mt-4 flex items-center gap-6">
