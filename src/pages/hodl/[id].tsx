@@ -45,9 +45,12 @@ const Hodl: NextPage<
       onSuccess: async () => {
         await router.replace(router.asPath);
         await utils.hodl.get.invalidate();
+        await utils.hodl.getDiffFromBuyes.invalidate();
         await utils.token.get.invalidate();
+        await utils.token.getChartData.invalidate();
       },
     });
+
   const { mutate: deletePosition } = api.hodl.delete.useMutation({
     onSuccess: async () => {
       await utils.wallet.get.invalidate().then(async () => {
@@ -174,7 +177,7 @@ export async function getServerSideProps(
     ...curToken
   } = token;
 
-  const startDate = formatDate(hodlCreatedAt);
+  const startDate = formatDate(hodlCreatedAt, "medium");
 
   return {
     props: {

@@ -1,9 +1,9 @@
 // Utils
-import { buttonVariants } from "@/components/ui/button";
 import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 // Types
+import type { buttonVariants } from "@/components/ui/button";
 import type { VariantProps } from "class-variance-authority";
 import type { DialogProps } from "@radix-ui/react-dialog";
 import type { LucideIcon } from "lucide-react";

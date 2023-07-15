@@ -75,7 +75,7 @@ const AddHodlPositionForm = ({
       onSuccess: async (data) => {
         await utils.hodl.get.invalidate();
         await utils.hodl.getTransactions.invalidate();
-        await utils.hodl.getAverageBuyPrice.invalidate();
+        await utils.hodl.getDiffFromBuyes.invalidate();
         await utils.wallet.getUserStats.invalidate().then(async () => {
           if (!!closeModal) await closeModal();
           if (!data) return;
