@@ -44,4 +44,5 @@ yarn-error.log*
 
 # notes and others about project
 /api-json
+/src/components/old
 base-idea.afdesign
