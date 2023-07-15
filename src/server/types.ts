@@ -233,12 +233,25 @@ export const CoinGeckoCoinsMarketSchema = z.object({
 
 export type CoinGeckoCoinsMarkets = z.infer<typeof CoinGeckoCoinsMarketSchema>;
 
+export const CoinGeckoChartSchema = z.object({
+  prices: z.array(z.array(z.number())),
+  market_caps: z.array(z.array(z.number())),
+  total_volumes: z.array(z.array(z.number())),
+});
+
+export type CoinGeckoChart = z.infer<typeof CoinGeckoChartSchema>;
+
 // Token types
 export type UpdateTokenData = {
   coingecko_id: string;
   icon_url?: string;
   latestPrice: number;
   change24h: number;
+};
+
+export type ChartTokenData = {
+  index: Date[];
+  prices: number[];
 };
 
 export type TokenWithoutDates = Partial<
