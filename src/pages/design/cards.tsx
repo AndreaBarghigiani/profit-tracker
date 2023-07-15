@@ -43,7 +43,7 @@ const Cards: NextPage = () => {
         {isHodlsSuccess && (
           <div className="grid grid-cols-2 gap-4">
             {hodls.map((hodl) => (
-              <HodlCard key={hodl.id} position={hodl} />
+              <HodlCard key={hodl.id} position={hodl} rank={1} />
             ))}
           </div>
         )}
