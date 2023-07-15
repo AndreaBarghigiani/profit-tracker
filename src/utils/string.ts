@@ -1,11 +1,19 @@
+// Types
+type DateTypes = "long" | "short" | "full" | "medium" | undefined;
+type TimeTypes = "long" | "short" | "full" | "medium" | undefined;
+
 export const uppercaseFirst = (str: string): string => {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
 
-export const formatDate = (date: number | Date | undefined) =>
+export const formatDate = (
+  date: number | Date | undefined,
+  dateType: DateTypes = "long",
+  timeType?: TimeTypes
+) =>
   Intl.DateTimeFormat("en", {
-    dateStyle: "long",
-    timeStyle: "short",
+    dateStyle: dateType,
+    timeStyle: !!timeType ? timeType : undefined,
   }).format(date);
 
 type CurrencyConverterType = {
@@ -31,5 +39,8 @@ export const currencyConverter = ({
 
 export const formatNumber = (number: number | string) => {
   const numeric = typeof number === "string" ? parseFloat(number) : number;
-  return new Intl.NumberFormat("en-EN", { style: "decimal" }).format(numeric);
+  return new Intl.NumberFormat("en-EN", {
+    style: "decimal",
+    notation: "compact",
+  }).format(numeric);
 };
