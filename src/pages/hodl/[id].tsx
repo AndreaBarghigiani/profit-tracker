@@ -117,7 +117,7 @@ const Hodl: NextPage<
             </Button>
 
             <Button
-              variant="outline"
+              variant="outline-success"
               size="sm"
               onClick={() =>
                 closePosition({

@@ -22,6 +22,8 @@ const buttonVariants = cva(
           "border border-dog-300 text-dog-300 hover:border-main-600 hover:text-main-600",
         "outline-danger":
           "border border-alert-300 text-alert-300 hover:border-alert-400 hover:text-alert-400",
+        "outline-success":
+          "border border-success-600 text-success-600 hover:border-success-500 hover:text-success-500",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "text-dog-300 hover:text-main-600",
