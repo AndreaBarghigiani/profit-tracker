@@ -1,8 +1,10 @@
 // Utils
-import { useForm, Controller } from "react-hook-form";
 import { api } from "@/utils/api";
+import clsx from "clsx";
+import { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { uppercaseFirst } from "@/utils/string";
+import { currencyConverter, uppercaseFirst } from "@/utils/string";
 import { Frequency } from "@prisma/client";
 import { useRouter } from "next/router";
 
@@ -25,17 +27,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ToggleGroup, ToggleItem } from "@/components/ui/toggle-group";
 
 const AddProject: NextPage = () => {
   const utils = api.useContext();
   const router = useRouter();
-  const { register, handleSubmit, control } = useForm<ProjectValues>({
-    resolver: zodResolver(ProjectValuesSchema),
-    defaultValues: {
-      increaseFrequency: Frequency.DAILY,
-      compound: false,
-    },
-  });
+  const [useLiquidFunds, setUseLiquidFunds] = useState(false);
+
+  const { data: userWallet, isSuccess: isUserWalletSuccess } =
+    api.wallet.get.useQuery();
+
+  const { register, handleSubmit, control, setValue, watch, error } =
+    useForm<ProjectValues>({
+      resolver: zodResolver(ProjectValuesSchema),
+      defaultValues: {
+        increaseFrequency: Frequency.DAILY,
+        useLiquidFunds: false,
+        deposit: 0,
+        compound: false,
+      },
+    });
 
   const { mutate } = api.project.create.useMutation({
     onSuccess: async () => {
@@ -47,6 +58,13 @@ const AddProject: NextPage = () => {
       });
     },
   });
+
+  const [watchDeposit] = watch(["deposit"]);
+
+  const maxBuy =
+    isUserWalletSuccess && useLiquidFunds ? userWallet?.liquidFunds : -1;
+  const buttonDisabled =
+    watchDeposit === 0 || (maxBuy > 0 ? watchDeposit > maxBuy : false);
 
   const onSubmit: SubmitHandler<ProjectValues> = (data) => {
     data.increaseFrequency = Frequency[data.increaseFrequency] as Frequency;
@@ -79,15 +97,52 @@ const AddProject: NextPage = () => {
           />
         </div>
 
-        <section className="flex items-end gap-5">
+        <section className="flex gap-5">
+          <Controller
+            control={control}
+            name="useLiquidFunds"
+            render={() => (
+              <>
+                <ToggleGroup
+                  type="single"
+                  value={useLiquidFunds.toString()}
+                  className="mt-6 flex justify-center"
+                  onValueChange={(val) => {
+                    setUseLiquidFunds(val === "true");
+                    setValue("useLiquidFunds", val === "true");
+                  }}
+                >
+                  <ToggleItem
+                    className="disabled:cursor-not-allowed"
+                    disabled={!userWallet?.liquidFunds}
+                    value="true"
+                  >
+                    Use liquid funds
+                  </ToggleItem>
+                  <ToggleItem value="false">Fresh capital</ToggleItem>
+                </ToggleGroup>
+              </>
+            )}
+          />
+
           <div>
             <Label htmlFor="deposit">Initial Deposit</Label>
             <Input
               type="number"
               id="deposit"
               step=".01"
+              {...(useLiquidFunds &&
+                isUserWalletSuccess && {
+                  max: userWallet?.liquidFunds,
+                })}
               {...register("deposit", { valueAsNumber: true })}
             />
+            {useLiquidFunds && isUserWalletSuccess ? (
+              <span className="text-xs text-dog-600">
+                You can only buy ~
+                {currencyConverter({ amount: userWallet?.liquidFunds })}
+              </span>
+            ) : null}
           </div>
 
           <div>
@@ -122,8 +177,12 @@ const AddProject: NextPage = () => {
             />
           </div>
 
-          <div className="flex items-center">
-            <Label htmlFor="compound">Does it compound?</Label>
+          <div
+            className={clsx("flex items-center", {
+              "self-center": useLiquidFunds,
+              "mt-6": !useLiquidFunds,
+            })}
+          >
             <Controller
               control={control}
               name="compound"
@@ -132,14 +191,17 @@ const AddProject: NextPage = () => {
                   onCheckedChange={field.onChange}
                   checked={field.value}
                   ref={field.ref}
-                  className="ml-2"
+                  className="mr-2"
                 />
               )}
             />
+            <Label htmlFor="compound">Does it compound?</Label>
           </div>
         </section>
 
-        <Button type="submit">Save Project</Button>
+        <Button disabled={buttonDisabled} type="submit">
+          Save Project
+        </Button>
       </form>
     </main>
   );
