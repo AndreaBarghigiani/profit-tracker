@@ -120,7 +120,7 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
                       "text-red-400": !avgPrice.positive,
                     })}
                   >
-                    ({avgPrice.positive ? "+" : "-"}
+                    ({avgPrice.positive && "+"}
                     {avgPrice.percentage}%)
                   </p>
                 </div>

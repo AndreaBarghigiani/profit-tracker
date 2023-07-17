@@ -64,6 +64,7 @@ const makeBuy = async ({
       exposure: {
         increment: input.evaluation,
       },
+      status: "active",
       transaction: {
         create: {
           type: TransactionType.BUY,
@@ -115,6 +116,7 @@ const makeSell = async ({
           amount: {
             decrement: input.amount,
           },
+          status: input.status,
           exposure,
           profits,
           transaction,
@@ -236,6 +238,7 @@ export const hodlRouter = createTRPCRouter({
     return ctx.prisma.hodl.findMany({
       where: {
         userId: ctx.session.user.id,
+        status: "active",
       },
       include: {
         token: true,
@@ -326,6 +329,21 @@ export const hodlRouter = createTRPCRouter({
   //     },
   //   });
   // }),
+  sellAll: protectedProcedure
+    .input(
+      z.object({ hodlId: z.string(), amount: z.number(), price: z.number() })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const transaction = {
+        type: TransactionType.SELL,
+        amount: input.amount,
+        evaluation: input.amount * input.price,
+        hodlId: input.hodlId,
+        status: "inactive" as const,
+      };
+
+      await makeSell({ ctx, input: transaction });
+    }),
   delete: protectedProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
