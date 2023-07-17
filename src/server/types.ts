@@ -92,6 +92,9 @@ export type HodlWithoutDates = Partial<Pick<Hodl, "createdAt" | "updatedAt">> &
 export const HodlTransactionSchema = TransactionValuesSchema.extend({
   hodlId: z.string().optional(),
   tokenId: z.string().optional(),
+  status: z
+    .union([z.literal("active"), z.literal("inactive")])
+    .default("active"),
 });
 
 export type HodlTransaction = z.infer<typeof HodlTransactionSchema>;

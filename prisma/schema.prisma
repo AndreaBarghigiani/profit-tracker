@@ -105,6 +105,7 @@ model Hodl {
   amount      Float         @default(0) // Total amount of tokens held
   exposure    Float         @default(0) // How much the user is exposed to this token
   profits     Float         @default(0) // Total profits earned from this token, SELL transactions after exposure goes to 0
+  status      String        @default("active")
   token       Token         @relation(fields: [tokenId], references: [id])
   tokenId     String
   user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -121,9 +122,9 @@ model Transaction {
   amount     Float
   evaluation Float           @default(0)
   type       TransactionType @default(DEPOSIT)
-  project    Project?        @relation(fields: [projectId], references: [id])
+  project    Project?        @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId  String?
-  hodl       Hodl?           @relation(fields: [hodlId], references: [id])
+  hodl       Hodl?           @relation(fields: [hodlId], references: [id], onDelete: Cascade)
   hodlId     String?
 }
 
