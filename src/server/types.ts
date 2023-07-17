@@ -21,6 +21,7 @@ export const TransactionValuesSchema = z.object({
   amount: z.number(),
   evaluation: z.number(),
   type: z.nativeEnum(TransactionType),
+  useLiquidFunds: z.boolean().optional(),
 });
 
 export type TransactionValues = z.infer<typeof TransactionValuesSchema>;
@@ -62,6 +63,7 @@ export const ProjectValuesSchema = z.object({
   increaseAmount: z.number(),
   compound: z.boolean(),
   type: z.string().default("project"),
+  useLiquidFunds: z.boolean().optional(),
 });
 
 export type ProjectValues = z.infer<typeof ProjectValuesSchema>;
