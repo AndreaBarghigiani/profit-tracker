@@ -1,6 +1,5 @@
 // Utils
 import { api } from "@/utils/api";
-import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { currencyConverter, uppercaseFirst } from "@/utils/string";
@@ -121,6 +120,7 @@ const AddHodlPositionForm = ({
       amount: data.amount,
       evaluation: data.amount * watchTokenPrice,
       useLiquidFunds: data.useLiquidFunds,
+      status: "active",
     };
 
     if (!hodlId) {
