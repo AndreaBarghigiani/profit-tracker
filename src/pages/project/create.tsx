@@ -37,7 +37,7 @@ const AddProject: NextPage = () => {
   const { data: userWallet, isSuccess: isUserWalletSuccess } =
     api.wallet.get.useQuery();
 
-  const { register, handleSubmit, control, setValue, watch, error } =
+  const { register, handleSubmit, control, setValue, watch } =
     useForm<ProjectValues>({
       resolver: zodResolver(ProjectValuesSchema),
       defaultValues: {
