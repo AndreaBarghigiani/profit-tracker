@@ -8,14 +8,16 @@ import type { VariantProps } from "class-variance-authority";
 // Components
 import * as React from "react";
 const buttonVariants = cva(
-  "inline-flex items-center text-sm font-medium transition-colors focus:outline-none focus:z-10 focus:ring-2 focus:ring-main-600 focus:ring-offset-main-700 disabled:opacity-50 disabled:pointer-events-none ",
+  "inline-flex items-center text-sm font-medium transition-colors focus:outline-none focus:z-10 focus:ring-2 focus:ring-main-600 focus:ring-offset-main-700 disabled:opacity-50 disabled:cursor-not-allowed",
   {
     variants: {
       variant: {
-        default: "bg-dog-200 text-primary-foreground hover:bg-main",
-        active: "bg-accent text-accent-foreground hover:bg-accent/90",
+        default:
+          "bg-dog-200 text-primary-foreground hover:bg-main disabled:hover:bg-dog-200",
+        active:
+          "bg-accent text-accent-foreground hover:bg-accent/90 disabled:hover:bg-accent",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:hover:bg-destructive",
         outline:
           "border border-dog-300 text-dog-300 hover:border-main-600 hover:text-main-600",
         "outline-danger":
