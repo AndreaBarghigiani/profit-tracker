@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import AddTransactionModal from "@/components/ui/custom/AddTransactionModal";
 import AddHodlPositionForm from "@/components/ui/custom/AddHodlPositionForm";
 import HodlStats from "@/components/ui/custom/HodlStats";
-import { Trash2, Plus, RefreshCcw } from "lucide-react";
+import { Trash2, Plus, RefreshCcw, Banknote } from "lucide-react";
 import {
   Tooltip,
   TooltipTrigger,
@@ -50,6 +50,14 @@ const Hodl: NextPage<
         await utils.token.getChartData.invalidate();
       },
     });
+
+  const { mutate: closePosition } = api.hodl.sellAll.useMutation({
+    onSuccess: async () => {
+      await utils.hodl.get.invalidate().then(async () => {
+        await router.push(`/dashboard/`);
+      });
+    },
+  });
 
   const { mutate: deletePosition } = api.hodl.delete.useMutation({
     onSuccess: async () => {
@@ -103,6 +111,29 @@ const Hodl: NextPage<
                   </TooltipTrigger>
                   <TooltipContent className="border-dog-800 text-dog-500">
                     <p>Update price</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                closePosition({
+                  hodlId: hodl.id,
+                  amount: hodl.amount,
+                  price: token.latestPrice,
+                })
+              }
+            >
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Banknote className="h-4 w-4" />
+                  </TooltipTrigger>
+                  <TooltipContent className="border-dog-800 text-dog-500">
+                    <p>Sell & Close</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
