@@ -258,23 +258,39 @@ export const projectRouter = createTRPCRouter({
       const walletId = (
         await getWallet({ userId: ctx.session.user.id, prisma: ctx.prisma })
       ).id;
+
+      const { useLiquidFunds, ...rest } = input;
+
       await ctx.prisma.project.create({
         data: {
-          ...input,
-          exposure: input.deposit,
-          deposit: input.deposit,
-          moneyAtWork: input.deposit,
+          ...rest,
+          exposure: rest.deposit,
+          deposit: rest.deposit,
+          moneyAtWork: rest.deposit,
           userId: ctx.session.user.id,
           walletId,
           transaction: {
             create: {
               type: TransactionType.DEPOSIT,
-              amount: input.deposit,
-              evaluation: input.deposit,
+              amount: rest.deposit,
+              evaluation: rest.deposit,
             },
           },
         },
       });
+
+      if (useLiquidFunds) {
+        await ctx.prisma.wallet.update({
+          where: {
+            id: walletId,
+          },
+          data: {
+            liquidFunds: {
+              decrement: rest.deposit,
+            },
+          },
+        });
+      }
     }),
   transaction: protectedProcedure
     .input(ProjectTransactionSchema)

@@ -22,6 +22,27 @@ export const getWallet = async ({
   });
 };
 
+export const removeFromLiquidFunds = async ({
+  walletId,
+  amount,
+  prisma,
+}: {
+  walletId: string;
+  amount: number;
+  prisma: PrismaClient;
+}) => {
+  return await prisma.wallet.update({
+    where: {
+      id: walletId,
+    },
+    data: {
+      liquidFunds: {
+        decrement: amount,
+      },
+    },
+  });
+};
+
 export const walletRouter = createTRPCRouter({
   get: protectedProcedure.query(({ ctx }) => {
     return getWallet({

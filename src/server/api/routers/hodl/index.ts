@@ -189,6 +189,20 @@ export const hodlRouter = createTRPCRouter({
         },
       });
 
+      // Remove the liquid funds from the wallet
+      if (input.useLiquidFunds) {
+        await ctx.prisma.wallet.update({
+          where: {
+            id: walletId,
+          },
+          data: {
+            liquidFunds: {
+              decrement: input.evaluation,
+            },
+          },
+        });
+      }
+
       return position;
     }),
   transaction: protectedProcedure

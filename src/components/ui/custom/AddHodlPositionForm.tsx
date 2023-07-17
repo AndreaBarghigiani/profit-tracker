@@ -1,9 +1,12 @@
 // Utils
 import { api } from "@/utils/api";
-import clsx from "clsx";
-import { useForm, Controller } from "react-hook-form";
+import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, Controller } from "react-hook-form";
 import { currencyConverter, uppercaseFirst } from "@/utils/string";
+import clsx from "clsx";
+
+import { useState } from "react";
 import { TransactionType } from "@prisma/client";
 import { HodlTransactionSchema } from "@/server/types";
 import { useRouter } from "next/router";
@@ -44,6 +47,7 @@ const AddHodlPositionForm = ({
   const selectedToken = token;
   const utils = api.useContext();
   const router = useRouter();
+  const [useLiquidFunds, setUseLiquidFunds] = useState(false);
   const {
     register: registerInvestment,
     handleSubmit: handleSubmitInvestment,
@@ -55,15 +59,22 @@ const AddHodlPositionForm = ({
     resolver: zodResolver(HodlTransactionSchema),
     defaultValues: {
       type: TransactionType.BUY,
+      useLiquidFunds: false,
       amount: 0,
       tokenPrice: selectedToken.latestPrice,
     },
   });
 
+  const { data: userWallet, isSuccess: isUserWalletSuccess } =
+    api.wallet.get.useQuery();
+
   const { mutate: createPosition, isLoading: isCreatingPosition } =
     api.hodl.create.useMutation({
       onSuccess: async () => {
-        await utils.wallet.get.invalidate().then(async () => {
+        await utils.hodl.get.invalidate();
+        await utils.hodl.getTransactions.invalidate();
+        await utils.hodl.getDiffFromBuyes.invalidate();
+        await utils.wallet.getUserStats.invalidate().then(async () => {
           if (!!closeModal) await closeModal();
           await router.push(`/hodl/`);
         });
@@ -97,11 +108,19 @@ const AddHodlPositionForm = ({
   const [watchAmount, watchTokenPrice] = watch(["amount", "tokenPrice"]);
   const allowedTypes = ["BUY", "SELL"];
 
+  const maxBuy =
+    isUserWalletSuccess && useLiquidFunds
+      ? userWallet?.liquidFunds / token.latestPrice
+      : -1;
+  const buttonDisabled =
+    watchAmount === 0 || (maxBuy > 0 ? watchAmount > maxBuy : false);
+
   const handleAddPosition: SubmitHandler<HodlTransaction> = (data) => {
     const massaged: HodlTransaction = {
       type: data.type,
       amount: data.amount,
       evaluation: data.amount * watchTokenPrice,
+      useLiquidFunds: data.useLiquidFunds,
     };
 
     if (!hodlId) {
@@ -118,17 +137,56 @@ const AddHodlPositionForm = ({
       className="space-y-3"
       onSubmit={handleSubmitInvestment(handleAddPosition)}
     >
-      <div className="flex items-end justify-between">
+      <div className="mb-5 flex items-start justify-between">
+        {!hodlId ? (
+          <Controller
+            control={control}
+            name="useLiquidFunds"
+            render={() => (
+              <>
+                <ToggleGroup
+                  type="single"
+                  value={useLiquidFunds.toString()}
+                  className="mt-6 flex justify-center"
+                  onValueChange={(val) => {
+                    setUseLiquidFunds(val === "true");
+                    setValue("useLiquidFunds", val === "true");
+                  }}
+                >
+                  <ToggleItem
+                    className="disabled:cursor-not-allowed"
+                    disabled={!userWallet?.liquidFunds}
+                    value="true"
+                  >
+                    Use liquid funds
+                  </ToggleItem>
+                  <ToggleItem value="false">Fresh capital</ToggleItem>
+                </ToggleGroup>
+              </>
+            )}
+          />
+        ) : null}
         <div>
           <Label htmlFor="name">Amount</Label>
           <Input
             type="number"
             disabled={isAddingPosition || isCreatingPosition}
             placeholder="0.00"
+            {...(useLiquidFunds &&
+              isUserWalletSuccess && {
+                max: userWallet?.liquidFunds / token.latestPrice,
+              })}
             step="any"
             id="amount"
             {...registerInvestment("amount", { valueAsNumber: true })}
           />
+          {useLiquidFunds && isUserWalletSuccess ? (
+            <span className="text-xs text-dog-600">
+              You can only buy ~
+              {`${(userWallet?.liquidFunds / token.latestPrice).toFixed(2)} 
+              ${token.symbol.toUpperCase()}`}
+            </span>
+          ) : null}
         </div>
 
         <div>
@@ -168,26 +226,28 @@ const AddHodlPositionForm = ({
           </div>
         </div>
 
-        <Controller
-          control={control}
-          name="type"
-          render={({ field }) => (
-            <>
-              <ToggleGroup
-                type="single"
-                value={field.value}
-                className="flex justify-center"
-                onValueChange={field.onChange}
-              >
-                {allowedTypes.map((t) => (
-                  <ToggleItem key={t} value={t}>
-                    {uppercaseFirst(t)}
-                  </ToggleItem>
-                ))}
-              </ToggleGroup>
-            </>
-          )}
-        />
+        {hodlId && (
+          <Controller
+            control={control}
+            name="type"
+            render={({ field }) => (
+              <>
+                <ToggleGroup
+                  type="single"
+                  value={field.value}
+                  className="flex justify-center"
+                  onValueChange={field.onChange}
+                >
+                  {allowedTypes.map((t) => (
+                    <ToggleItem key={t} value={t}>
+                      {uppercaseFirst(t)}
+                    </ToggleItem>
+                  ))}
+                </ToggleGroup>
+              </>
+            )}
+          />
+        )}
       </div>
 
       <Input
@@ -212,7 +272,7 @@ const AddHodlPositionForm = ({
         </p>
       </div>
       <Button
-        disabled={isAddingPosition || isCreatingPosition}
+        disabled={isAddingPosition || isCreatingPosition || buttonDisabled}
         type="submit"
         className="ml-auto"
       >
