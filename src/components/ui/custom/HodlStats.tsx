@@ -69,6 +69,7 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
     plugins: {
       tooltip: {
         callbacks: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           label: function (context: any) {
             if (!!context && typeof context?.raw === "number") {
               return currencyConverter({ amount: context.raw, type: "long" });
