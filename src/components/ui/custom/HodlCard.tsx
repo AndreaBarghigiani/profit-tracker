@@ -2,7 +2,7 @@
 import { api } from "@/utils/api";
 import { cn } from "@/lib/utils";
 import clsx from "clsx";
-import { currencyConverter } from "@/utils/string";
+import { currencyConverter, formatNumber } from "@/utils/string";
 import { useHodlTransactionModal } from "@/hooks/useTransactionModal";
 
 // Types
@@ -84,7 +84,7 @@ const HodlCard = ({
         <Image
           src={position.token.iconUrl}
           alt={position.token.name}
-          className="mr-4 flex-shrink-0 "
+          className="mr-4 flex-shrink-0 rounded-full"
           width={48}
           height={48}
         />
@@ -114,7 +114,7 @@ const HodlCard = ({
             <p className="mt-1 text-xs text-dog-600">
               Token amount:{` `}
               <strong>
-                {position.amount}{" "}
+                {formatNumber(position.amount)}{" "}
                 <span className="uppercase">{position.token.symbol}</span>
               </strong>
             </p>
