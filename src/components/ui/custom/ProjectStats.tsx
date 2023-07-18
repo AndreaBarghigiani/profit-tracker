@@ -206,3 +206,4 @@ const ProjectStatsCol = ({
 };
 
 export default ProjectStats;
+export { ProjectStatsCol };
