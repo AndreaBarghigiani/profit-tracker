@@ -138,7 +138,7 @@ model Token {
   latestPrice  Float          @default(0)
   change24h    Float          @default(0)
   coingecko_id String         @unique
-  platforms    Json
+  platforms    Json?
   tracked      Boolean        @default(false)
   tokenHistory TokenHistory[]
   hodl         Hodl[]
