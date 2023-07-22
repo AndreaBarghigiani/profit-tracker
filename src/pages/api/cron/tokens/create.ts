@@ -3,19 +3,15 @@ import { getHTTPStatusCodeFromError } from "@trpc/server/http";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/server/db";
 
-type CoinGeckoTokenInfo = {
-  id: string;
-  symbol: string;
-  name: string;
-  platforms: object;
-};
+// Types
+import type { CoinGeckoTokenInfo } from "@/server/types";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const result = await fetch(
-    `https://api.coingecko.com/api/v3/coins/list?include_platform=true`
+    `https://api.coingecko.com/api/v3/coins/list?include_platform=true`,
   );
 
   const data = (await result.json()) as CoinGeckoTokenInfo[];
@@ -28,7 +24,7 @@ export default async function handler(
   }));
 
   try {
-    await prisma.token.createMany({ data: massaged });
+    await prisma.token.createMany({ data: massaged, skipDuplicates: true });
     res.status(200).json({ message: "ok", data, massaged });
   } catch (cause) {
     if (cause instanceof TRPCError) {

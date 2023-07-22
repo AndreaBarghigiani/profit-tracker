@@ -12,7 +12,7 @@ import {
   Gauge,
   ArrowUpDown,
   Boxes,
-  // Coins,
+  Calculator,
   PiggyBank,
   ToyBrick,
 } from "lucide-react";
@@ -90,6 +90,19 @@ const Sidebar = () => {
             href={`/hodl`}
           >
             <ToyBrick className="mr-2 h-4 w-4" /> Hodls
+          </Link>
+        </li>
+        <li>
+          <Link
+            className={buttonVariants({
+              variant: "ghost",
+              size: "nav",
+              corners: "square",
+              align: "left",
+            })}
+            href={`/estimator`}
+          >
+            <Calculator className="mr-2 h-4 w-4" /> Estimate
           </Link>
         </li>
       </ul>
