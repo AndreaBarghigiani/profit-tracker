@@ -100,6 +100,15 @@ export const HodlTransactionSchema = TransactionValuesSchema.extend({
 export type HodlTransaction = z.infer<typeof HodlTransactionSchema>;
 
 // CoinGecko
+export const CoinGeckoTokenInfoSchema = z.object({
+  id: z.string(),
+  symbol: z.string(),
+  name: z.string(),
+  platforms: z.object({}).catchall(z.string()).optional(),
+});
+
+export type CoinGeckoTokenInfo = z.infer<typeof CoinGeckoTokenInfoSchema>;
+
 export const CoinGeckoCoinsMarketSchema = z.object({
   id: z.string().min(1),
   symbol: z.string().min(1),
@@ -245,6 +254,26 @@ export const CoinGeckoChartSchema = z.object({
 });
 
 export type CoinGeckoChart = z.infer<typeof CoinGeckoChartSchema>;
+
+export const CoinGeckoSearchSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  api_symbol: z.string(),
+  symbol: z.string(),
+  market_cap_rank: z.number().nullable(),
+  thumb: z.string(),
+  large: z.string(),
+});
+
+export type CoinGeckoSearch = z.infer<typeof CoinGeckoSearchSchema>;
+
+export const CoinGeckoSearchResponseSchema = z.object({
+  coins: z.array(CoinGeckoSearchSchema).optional(),
+});
+
+export type CoinGeckoSearchResponse = z.infer<
+  typeof CoinGeckoSearchResponseSchema
+>;
 
 // Token types
 export type UpdateTokenData = {

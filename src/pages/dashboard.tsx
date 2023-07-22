@@ -16,7 +16,7 @@ import UserStats from "@/components/ui/custom/UserStats";
 import ProjectCard from "@/components/ui/custom/ProjectCard";
 
 const Dashboard: NextPage = () => {
-  api.wallet.get.useQuery();
+  // api.wallet.get.useQuery();
   const { data: projects, isSuccess: isProjectsSuccess } =
     api.project.listByCurrentUser.useQuery();
   const { data: hodls, isSuccess: isHodlsSuccess } =

@@ -33,7 +33,7 @@ const AddHodl: NextPage<
     useForm<TokenSearch>({
       resolver: zodResolver(TokenSearchSchema),
     });
-  const [query, setQuery] = useState<string>("");
+  const [query, setQuery] = useState("");
   const {
     data: searchResults,
     isSuccess: isSearchSuccess,
