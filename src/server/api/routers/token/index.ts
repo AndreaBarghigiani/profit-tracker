@@ -4,6 +4,7 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import type { PrismaClient } from "@prisma/client";
 import { updateMarketData } from "./updateMarketData";
 import { getChartData } from "./getTokenChart";
+import { searchTokens } from "./searchTokens";
 
 const sample = [
   "bitcoin",
@@ -65,7 +66,7 @@ export const tokenRouter = createTRPCRouter({
       const chartData = await getChartData({ tokenId: input.tokenId });
 
       const labels = chartData.index.map((item) =>
-        new Intl.DateTimeFormat("en-EN", { timeStyle: "short" }).format(item)
+        new Intl.DateTimeFormat("en-EN", { timeStyle: "short" }).format(item),
       );
 
       // Maybe we'll need to massage the data a bit more
@@ -120,24 +121,29 @@ export const tokenRouter = createTRPCRouter({
         take: 12,
       });
 
+      // If token info are older than 1 day, update them
       const currentTime = new Date().getTime();
       const oneDay = 24 * 60 * 60 * 1000;
 
-      // Check if I have all the info needed otherwise update the token
-      const tokenToUpdate = tokens.some(
+      const tokenToUpdate = tokens.filter(
         (token) =>
           !token.iconUrl ||
           !token.latestPrice ||
-          currentTime - token.updatedAt.getTime() > oneDay
+          currentTime - token.updatedAt.getTime() > oneDay,
       );
 
-      if (tokenToUpdate) {
-        return await updateMarketData({
-          tokenIds: tokens.map((token) => token.coingecko_id),
+      if (!!tokenToUpdate) {
+        await updateMarketData({
+          tokenIds: tokenToUpdate.map((token) => token.coingecko_id),
         });
       }
 
       return tokens;
+    }),
+  search: protectedProcedure
+    .input(z.object({ query: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await searchTokens(input.query);
     }),
   updatePrice: protectedProcedure
     .input(z.object({ tokenId: z.string() }))
