@@ -27,12 +27,14 @@ import {
 } from "@/components/ui/popover";
 
 const TokenSearchInput = ({
+  selectedToken,
   onTokenSelection,
 }: {
+  selectedToken: Token | null;
   onTokenSelection: (token: Token) => void;
 }) => {
   const [open, setOpen] = useState(false);
-  const [token, setToken] = useState<Token | null>(null);
+  // const [token, setToken] = useState<Token | null>(null);
 
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 500);
@@ -42,15 +44,17 @@ const TokenSearchInput = ({
     isSuccess: isTokensSuccess,
     isFetching: isTokensLoading,
     remove: removeTokens,
-  } = api.token.sample.useQuery(undefined, { enabled: !debouncedQuery });
+  } = api.token.sample.useQuery(undefined, {
+    enabled: !debouncedQuery || open,
+  });
 
   const {
     data: searchResults,
     isSuccess: isSearchSuccess,
     isFetching: isSearchLoading,
-  } = api.token.search.useQuery(
+  } = api.token.find.useQuery(
     { query: debouncedQuery },
-    { enabled: !!debouncedQuery },
+    { enabled: !!debouncedQuery && open },
   );
 
   const handleSearch = (search: string) => {
@@ -62,7 +66,6 @@ const TokenSearchInput = ({
     const selectedToken =
       data.find((token) => token.coingecko_id === value) || null;
     onTokenSelection(selectedToken as Token);
-    setToken(selectedToken);
     setOpen(false);
   };
 
@@ -74,19 +77,19 @@ const TokenSearchInput = ({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="mt-2 w-[200px] items-center justify-start border-dog-600"
+            className="mx-auto mt-2 flex w-[200px] items-center justify-start border-dog-600"
           >
-            {!!token?.iconUrl && (
+            {!!selectedToken?.iconUrl && (
               <Image
-                src={token.iconUrl}
-                alt={token.name}
+                src={selectedToken.iconUrl}
+                alt={selectedToken.name}
                 className="mr-2 flex-shrink-0 rounded-full"
                 width={16}
                 height={16}
               />
             )}
             <p className="-mt-0.5 truncate">
-              {token ? token.name : "Select a token"}
+              {selectedToken ? selectedToken.name : "Select a token"}
             </p>
             <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
           </Button>
@@ -112,6 +115,7 @@ const TokenSearchInput = ({
                   <CommandGroup>
                     {isTokensSuccess &&
                       !isSearchSuccess &&
+                      !isSearchLoading &&
                       tokens.map((token) => (
                         <CommandItem
                           key={token.coingecko_id}

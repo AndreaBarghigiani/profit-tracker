@@ -143,7 +143,7 @@ export const tokenRouter = createTRPCRouter({
   search: protectedProcedure
     .input(z.object({ query: z.string() }))
     .query(async ({ ctx, input }) => {
-      return await searchTokens(input.query);
+      return await searchTokens({ query: input.query, prisma: ctx.prisma });
     }),
   updatePrice: protectedProcedure
     .input(z.object({ tokenId: z.string() }))

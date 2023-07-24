@@ -1,10 +1,16 @@
 // Utils
-import { prisma } from "@/server/db";
 
 // Types
 import { CoinGeckoSearchResponseSchema } from "@/server/types";
+import type { PrismaClient } from "@prisma/client";
 
-export const searchTokens = async (query: string) => {
+export const searchTokens = async ({
+  query,
+  prisma,
+}: {
+  query: string;
+  prisma: PrismaClient;
+}) => {
   const url = new URL("https://api.coingecko.com/api/v3/search");
   url.searchParams.set("query", query);
 
