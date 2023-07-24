@@ -1,5 +1,6 @@
 // Components
 import Layout from "@/components/layout";
+import NextTopLoader from "nextjs-toploader";
 
 // Utils
 import { api } from "@/utils/api";
@@ -32,6 +33,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   return (
     <SessionProvider session={session as Session}>
+      <NextTopLoader color="#ffcd1a" />
       <Layout>{layout}</Layout>
     </SessionProvider>
   );
