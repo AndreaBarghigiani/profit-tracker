@@ -39,7 +39,6 @@ const Estimator = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       amount: 0,
-      estimate: 0,
     },
   });
 
@@ -50,11 +49,15 @@ const Estimator = () => {
   ]);
 
   const tokenAmount = watchAmount / watchEstimate;
+  const profit = tokenAmount * watchSell - watchAmount;
 
   useEffect(() => {
     if (!selectedToken) return;
-    setCurStep(2);
+
     form.setValue("estimate", selectedToken.latestPrice);
+    form.setValue("sell", selectedToken.latestPrice);
+
+    setCurStep(2);
   }, [selectedToken, form]);
 
   const setSellPriceStep = () => {
@@ -112,11 +115,17 @@ const Estimator = () => {
                   <FormField
                     control={form.control}
                     name="estimate"
-                    render={({ field }) => (
+                    render={() => (
                       <FormItem>
                         <FormLabel>At what price?</FormLabel>
                         <FormControl>
-                          <Input {...field} type="number" />
+                          <Input
+                            {...form.register("estimate", {
+                              valueAsNumber: true,
+                            })}
+                            step="any"
+                            type="number"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -129,6 +138,7 @@ const Estimator = () => {
                     className="mx-auto flex"
                     type="button"
                     onClick={setSellPriceStep}
+                    disabled={watchAmount <= 0}
                   >
                     Set sell price
                   </Button>
@@ -140,8 +150,9 @@ const Estimator = () => {
               <div className="grid grid-cols-2 items-center gap-4">
                 <div>
                   <Heading size="h3">You bought</Heading>
-                  <p className="text-xl text-dog-500">
-                    {tokenAmount} {selectedToken?.symbol.toUpperCase()}
+                  <p className="flex w-full pr-5 text-xl text-dog-500">
+                    <span className="mr-3 block truncate">{tokenAmount}</span>{" "}
+                    {selectedToken?.symbol.toUpperCase()}
                   </p>
                 </div>
 
@@ -182,7 +193,7 @@ const Estimator = () => {
         <>
           <div className="mx-auto mb-6 w-fit rounded-lg border border-dog-750 bg-dog-850 px-2 py-5">
             <Heading size="h1" className="mt-0 text-center">
-              You will profit
+              You will {profit > 0 ? "profit" : "lose"}
             </Heading>
 
             <div className="grid grid-cols-3 justify-around gap-6 px-3">
@@ -197,11 +208,12 @@ const Estimator = () => {
 
               <div className="text-center">
                 <Heading size="h4" className="mb-1 text-dog-500">
-                  Profits
+                  {profit > 0 ? "Profits" : "Losses"}
                 </Heading>
                 <p className="text-3xl font-semibold">
                   {currencyConverter({
-                    amount: tokenAmount * watchSell - watchAmount,
+                    amount: profit,
+                    showSign: profit < 0,
                   })}
                 </p>
               </div>
