@@ -44,10 +44,11 @@ const Hodl: NextPage<
     api.token.updatePrice.useMutation({
       onSuccess: async () => {
         await router.replace(router.asPath);
-        await utils.hodl.get.invalidate();
-        await utils.hodl.getDiffFromBuyes.invalidate();
-        await utils.token.get.invalidate();
-        await utils.token.getChartData.invalidate();
+        console.log("router.asPath:", router.asPath);
+        // await utils.hodl.get.invalidate();
+        // await utils.hodl.getDiffFromBuyes.invalidate();
+        // await utils.token.get.invalidate();
+        // await utils.token.getChartData.invalidate();
       },
     });
 
@@ -186,7 +187,7 @@ const Hodl: NextPage<
 export default Hodl;
 
 export async function getServerSideProps(
-  context: GetServerSidePropsContext<{ id: string }>
+  context: GetServerSidePropsContext<{ id: string }>,
 ) {
   if (!context.params?.id) return;
 

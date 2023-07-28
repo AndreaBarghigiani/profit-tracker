@@ -18,7 +18,10 @@ import Heading from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import HodlRow from "@/components/ui/custom/HodlRow";
-import { Search, RefreshCcw } from "lucide-react";
+import { Search, RefreshCcw, ChevronRight } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import Link from "next/link";
+import Image from "next/image";
 
 export const TokenSearchSchema = z.object({
   query: z.string(),
@@ -58,7 +61,7 @@ const AddHodl: NextPage<
         Track your investments in crypto tokens and be sure to sell in profit!
       </p>
 
-      <section className="mx-auto my-4 max-w-lg rounded border border-dog-700 bg-dog-800 p-4">
+      <section className="mx-auto my-4 max-w-lg rounded border border-dog-700 bg-dog-800 p-4 pb-2">
         <>
           <form
             className="mb-2 flex items-center space-x-3"
@@ -92,6 +95,25 @@ const AddHodl: NextPage<
               : tokens.map((token) => (
                   <HodlRow key={token.coingecko_id} token={token} />
                 ))}
+
+            <Separator className="my-2 bg-dog-750" />
+
+            <li className=" rounded-md border-dog-400 px-3 py-2 text-dog-400 hover:bg-main-900">
+              <Link className="flex items-center" href={`/hodl/create/custom`}>
+                <Image
+                  alt={"Custom Token"}
+                  width={40}
+                  height={40}
+                  className="mr-2 h-8 w-8 rounded-full bg-dog-800 object-contain"
+                  src={"/placeholder.png"}
+                />
+                <span className="mr-2 font-semibold text-dog-300">
+                  Add your custom token
+                </span>
+                <span className="mr-2 text-xs">[Custom]</span>
+                <ChevronRight className="ml-auto h-4 w-4" />
+              </Link>
+            </li>
           </ul>
         </>
       </section>

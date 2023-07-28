@@ -5,6 +5,7 @@ import type { PrismaClient } from "@prisma/client";
 import { updateMarketData } from "./updateMarketData";
 import { getChartData } from "./getTokenChart";
 import { searchTokens } from "./searchTokens";
+import { searchDexScreenerTokens } from "./searchDexScreenerTokens";
 
 const sample = [
   "bitcoin",
@@ -144,6 +145,14 @@ export const tokenRouter = createTRPCRouter({
     .input(z.object({ query: z.string() }))
     .query(async ({ ctx, input }) => {
       return await searchTokens({ query: input.query, prisma: ctx.prisma });
+    }),
+  searchDex: protectedProcedure
+    .input(z.object({ query: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await searchDexScreenerTokens({
+        query: input.query,
+        prisma: ctx.prisma,
+      });
     }),
   updatePrice: protectedProcedure
     .input(z.object({ tokenId: z.string() }))

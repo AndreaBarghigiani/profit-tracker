@@ -28,7 +28,7 @@ ChartJS.register(
   PointElement,
   LinearScale,
   ChartTooltip,
-  Filler
+  Filler,
 );
 
 type HodlStatsCardProps = {
@@ -46,7 +46,7 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
       },
       {
         refetchOnWindowFocus: false,
-      }
+      },
     );
 
   const { data: chartData, isSuccess: isChartDataSuccess } =
@@ -57,7 +57,8 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
       },
       {
         refetchOnWindowFocus: false,
-      }
+        enabled: !token.coingecko_id.startsWith("custom-"),
+      },
     );
 
   const chartOptions = {

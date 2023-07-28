@@ -275,6 +275,33 @@ export type CoinGeckoSearchResponse = z.infer<
   typeof CoinGeckoSearchResponseSchema
 >;
 
+// DexScreener
+export const DexTokenSchema = z.object({
+  address: z.string(),
+  name: z.string(),
+  symbol: z.string(),
+});
+
+export const DexScreenerPairSchema = z.object({
+  chainId: z.string(),
+  baseToken: DexTokenSchema,
+  priceChange: z.object({
+    m5: z.number(),
+    h1: z.number(),
+    h6: z.number(),
+    h24: z.number(),
+  }),
+  priceUsd: z.string(),
+});
+
+export type DexScreenerPair = z.infer<typeof DexScreenerPairSchema>;
+
+export const DexSearchSchema = z.object({
+  pairs: z.array(DexScreenerPairSchema),
+});
+
+export type DexSearch = z.infer<typeof DexSearchSchema>;
+
 // Token types
 export type UpdateTokenData = {
   coingecko_id: string;
