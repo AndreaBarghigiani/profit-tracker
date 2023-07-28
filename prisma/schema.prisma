@@ -140,6 +140,7 @@ model Token {
   coingecko_id String         @unique
   platforms    Json?
   tracked      Boolean        @default(false)
+  custom       Boolean        @default(false)
   tokenHistory TokenHistory[]
   hodl         Hodl[]
 

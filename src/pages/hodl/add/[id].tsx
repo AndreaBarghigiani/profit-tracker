@@ -17,14 +17,18 @@ import Heading from "@/components/ui/heading";
 const AddHodlPosition: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ token, hodlId }) => {
+  console.log("hodlId:", hodlId);
   return (
     <div>
       <Heading size="page" gradient="gold" spacing="massive">
         Your positions for {token.name}
       </Heading>
-      <p className="mb-4 text-center text-lg text-stone-400">
-        Are you buying or selling?
-      </p>
+
+      {!!hodlId && (
+        <p className="mb-4 text-center text-lg text-stone-400">
+          Are you buying or selling?
+        </p>
+      )}
 
       <AddHodlPositionForm hodlId={hodlId} token={token} />
     </div>
@@ -34,7 +38,7 @@ const AddHodlPosition: NextPage<
 export default AddHodlPosition;
 
 export async function getServerSideProps(
-  context: GetServerSidePropsContext<{ id: string }>
+  context: GetServerSidePropsContext<{ id: string }>,
 ) {
   if (!context.params?.id) return;
 
