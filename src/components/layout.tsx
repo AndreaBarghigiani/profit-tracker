@@ -3,6 +3,8 @@
 import { buttonVariants } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import clsx from "clsx";
+import { AxiomWebVitals } from "next-axiom";
+
 // import { Role } from "@prisma/client";
 
 // Types
@@ -152,6 +154,7 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
       <main className={mainClass}>
         <div className="mx-auto max-w-7xl">{children}</div>
       </main>
+      <AxiomWebVitals />
     </div>
   );
 };
