@@ -6,11 +6,12 @@ import { currencyConverter, formatNumber } from "@/utils/string";
 import clsx from "clsx";
 
 // Types
-import type { HodlWithoutDates, TokenWithoutDates } from "@/server/types";
+import type { HodlWithoutDates, TokenWithoutDatesZod } from "@/server/types";
 
 // Components
 import Heading from "@/components/ui/heading";
 import { Skeleton } from "../skeleton";
+import Image from "next/image";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -33,7 +34,7 @@ ChartJS.register(
 
 type HodlStatsCardProps = {
   hodl: HodlWithoutDates;
-  token: TokenWithoutDates;
+  token: TokenWithoutDatesZod;
 };
 
 const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
@@ -51,10 +52,7 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
 
   const { data: chartData, isSuccess: isChartDataSuccess } =
     api.token.getChartData.useQuery(
-      {
-        tokenId: token.coingecko_id,
-        tokenName: token.name,
-      },
+      { token },
       {
         refetchOnWindowFocus: false,
         enabled: !token.coingecko_id.startsWith("custom-"),
@@ -137,15 +135,30 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
           </Heading>
           <p className="text-3xl font-semibold">{formatNumber(hodl.amount)}</p>
         </div>
-        {/* Chart token performance */}
         <div className="col-span-4 h-80 rounded-lg border border-dog-800 bg-dog-900 p-5">
           <Heading size="h3" spacing="small" className="text-dog-500">
             Performance
           </Heading>
 
-          {isChartDataSuccess && (
+          {isChartDataSuccess ? (
             <div className="mt-4 h-64 w-full">
               <Line options={chartOptions} data={chartData} />
+            </div>
+          ) : (
+            <div className="relative flex h-full items-center justify-center">
+              <Image
+                alt={token.name || token.symbol || "Token"}
+                width={1000}
+                height={300}
+                className="absolute opacity-25"
+                src={"/no-chart-custom-token.jpg"}
+              />
+              <p className="relative -rotate-3 rounded-full bg-black/25 p-6 text-center text-2xl text-alert-600 shadow-2xl backdrop-blur-sm backdrop-filter">
+                <span className="font-semibold italic">
+                  No chart for custom tokens
+                </span>{" "}
+                😞
+              </p>
             </div>
           )}
         </div>

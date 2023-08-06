@@ -1,5 +1,4 @@
 // Utils
-import { calcAverage } from "@/utils/number";
 import { formatDexPairAsToken } from "@/utils/positions";
 
 // Types
@@ -20,7 +19,7 @@ export const searchDexScreenerTokens = async ({
 
   if (!pairs || pairs.length < 0) throw new Error("No pairs found");
 
-  const token = formatDexPairAsToken({ pairs });
+  const token = formatDexPairAsToken(pairs);
 
   // 1. Check which tokens are already in the database
   const tokenInDatabase = await prisma.token.findUnique({

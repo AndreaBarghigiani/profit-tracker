@@ -137,6 +137,7 @@ model Token {
   iconUrl      String?
   latestPrice  Float          @default(0)
   change24h    Float          @default(0)
+  // Refactor: Rename to sourceId (we pull data from multiple sources)
   coingecko_id String         @unique
   platforms    Json?
   tracked      Boolean        @default(false)

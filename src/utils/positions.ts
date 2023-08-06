@@ -2,7 +2,7 @@
 import { calcAverage } from "@/utils/number";
 
 // Types
-import type { DexSearch } from "@/server/types";
+import type { DexScreenerPair, UpdateTokenData } from "@/server/types";
 import type { Hodl, Token } from "@prisma/client";
 
 type PositionsProps = (Hodl & { token: Token })[];
@@ -15,13 +15,21 @@ export const sortedPositions = (positions: PositionsProps): PositionsProps => {
   return positions;
 };
 
-export const formatDexPairAsToken = (data: DexSearch) => {
-  const { pairs } = data;
-
+/*
+ * This function takes an array of DexScreenerPair objects and returns a single
+ * UpdateTokenData object. The DexScreenerPair objects are the result of a
+ * search query to the DexScreener API. The UpdateTokenData object is the
+ * result of formatting the DexScreenerPair objects into a single object that
+ * can be used to update the database.
+ *
+ */
+export const formatDexPairAsToken = (
+  pairs: DexScreenerPair[],
+): UpdateTokenData => {
   const tokenPrices = pairs.map((pair) => Number(pair.priceUsd));
   const tokenChanges = pairs.map((pair) => Number(pair.priceChange.h24));
   const tokenPriceAvg = calcAverage(tokenPrices);
-  const tokenChangeeAvg = calcAverage(tokenChanges);
+  const tokenChangeAvg = calcAverage(tokenChanges);
   const baseData = pairs.pop();
 
   if (!baseData) throw new Error("No base data found");
@@ -31,7 +39,7 @@ export const formatDexPairAsToken = (data: DexSearch) => {
     name: baseData.baseToken.name,
     coingecko_id: `custom-${baseData.baseToken.address}`,
     latestPrice: tokenPriceAvg,
-    change24h: tokenChangeeAvg,
+    change24h: tokenChangeAvg,
     custom: true,
     platforms: {
       [baseData.chainId]: baseData.baseToken.address,

@@ -305,6 +305,10 @@ export type DexSearch = z.infer<typeof DexSearchSchema>;
 // Token types
 export type UpdateTokenData = {
   coingecko_id: string;
+  symbol: string;
+  name: string;
+  custom?: boolean;
+  platforms?: object;
   icon_url?: string;
   latestPrice: number;
   change24h: number;
@@ -314,6 +318,24 @@ export type ChartTokenData = {
   index: Date[];
   prices: number[];
 };
+
+export const PlatformsSchema = z.record(z.string(), z.string());
+
+export type Platforms = z.infer<typeof PlatformsSchema>;
+
+export const TokenWithoutDatesSchema = z.object({
+  id: z.string(),
+  symbol: z.string(),
+  name: z.string(),
+  iconUrl: z.string().nullable(),
+  latestPrice: z.number(),
+  change24h: z.number(),
+  coingecko_id: z.string(),
+  platforms: PlatformsSchema.optional(),
+  custom: z.boolean().optional(),
+});
+
+export type TokenWithoutDatesZod = z.infer<typeof TokenWithoutDatesSchema>;
 
 export type TokenWithoutDates = Partial<
   Pick<Token, "createdAt" | "updatedAt">
