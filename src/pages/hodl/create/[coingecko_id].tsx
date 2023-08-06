@@ -17,7 +17,6 @@ import Heading from "@/components/ui/heading";
 const AddHodlPosition: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ token, hodlId }) => {
-  console.log("token:", token);
   return (
     <div>
       <Heading size="page" gradient="gold" spacing="massive">

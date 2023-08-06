@@ -44,7 +44,6 @@ const Hodl: NextPage<
     api.token.updatePrice.useMutation({
       onSuccess: async () => {
         await router.replace(router.asPath);
-        console.log("router.asPath:", router.asPath);
         // await utils.hodl.get.invalidate();
         // await utils.hodl.getDiffFromBuyes.invalidate();
         // await utils.token.get.invalidate();

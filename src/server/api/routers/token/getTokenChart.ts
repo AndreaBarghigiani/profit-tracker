@@ -1,12 +1,11 @@
 // Types
 import type { ChartTokenData } from "@/server/types";
-import type { TokenWithoutDatesZod } from "@/server/types";
 import { CoinGeckoChartSchema } from "@/server/types";
 
 export const getChartData = async ({
-  token,
+  tokenId,
 }: {
-  token: TokenWithoutDatesZod;
+  tokenId: string;
 }): Promise<ChartTokenData> => {
   let massaged: ChartTokenData = {
     index: [],
@@ -15,9 +14,9 @@ export const getChartData = async ({
 
   // Unable to find data for custom tokens
   // For now this is good enough
-  if (!token.custom) {
+  if (!tokenId.startsWith("custom-")) {
     const url = new URL(
-      `https://api.coingecko.com/api/v3/coins/${token.coingecko_id}/market_chart`,
+      `https://api.coingecko.com/api/v3/coins/${tokenId}/market_chart`,
     );
     url.searchParams.set("vs_currency", "usd");
     url.searchParams.set("days", "1");

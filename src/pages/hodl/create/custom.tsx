@@ -1,13 +1,6 @@
 // Utils
-import { prisma } from "@/server/db";
-import { getToken } from "@/server/api/routers/token";
 
 // Types
-import type {
-  InferGetServerSidePropsType,
-  GetServerSidePropsContext,
-  NextPage,
-} from "next";
 
 // Components
 import AddCustomTokenForm from "@/components/ui/custom/AddCustomTokenForm";
