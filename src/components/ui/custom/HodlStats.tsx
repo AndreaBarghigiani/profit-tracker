@@ -38,6 +38,7 @@ type HodlStatsCardProps = {
 };
 
 const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
+  console.log("token:", token.custom);
   const { data: avgPrice, isSuccess: isAvgPriceSuccess } =
     api.hodl.getDiffFromBuyes.useQuery(
       {
@@ -55,7 +56,7 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
       { tokenId: token.coingecko_id, tokenName: token.name },
       {
         refetchOnWindowFocus: false,
-        enabled: !token.coingecko_id.startsWith("custom-"),
+        enabled: !token.custom,
       },
     );
 
@@ -140,11 +141,13 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
             Performance
           </Heading>
 
-          {isChartDataSuccess ? (
+          {isChartDataSuccess && (
             <div className="mt-4 h-64 w-full">
               <Line options={chartOptions} data={chartData} />
             </div>
-          ) : (
+          )}
+
+          {token.custom && (
             <div className="relative flex h-full items-center justify-center">
               <Image
                 alt={token.name || token.symbol || "Token"}
