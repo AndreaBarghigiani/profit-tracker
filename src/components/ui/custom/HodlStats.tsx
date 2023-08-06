@@ -6,7 +6,7 @@ import { currencyConverter, formatNumber } from "@/utils/string";
 import clsx from "clsx";
 
 // Types
-import type { HodlWithoutDates, TokenWithoutDatesZod } from "@/server/types";
+import type { HodlWithoutDates, TokenWithoutDates } from "@/server/types";
 
 // Components
 import Heading from "@/components/ui/heading";
@@ -34,7 +34,7 @@ ChartJS.register(
 
 type HodlStatsCardProps = {
   hodl: HodlWithoutDates;
-  token: TokenWithoutDatesZod;
+  token: TokenWithoutDates;
 };
 
 const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
@@ -52,7 +52,7 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
 
   const { data: chartData, isSuccess: isChartDataSuccess } =
     api.token.getChartData.useQuery(
-      { token },
+      { tokenId: token.coingecko_id, tokenName: token.name },
       {
         refetchOnWindowFocus: false,
         enabled: !token.coingecko_id.startsWith("custom-"),

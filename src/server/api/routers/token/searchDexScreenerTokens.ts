@@ -45,8 +45,6 @@ export const searchDexScreenerTokens = async ({
     });
   }
 
-  console.log("not run if token already in database");
-
   // 3. If token is not in the database, create it
   return await prisma.token.create({
     data: {

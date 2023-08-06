@@ -25,6 +25,7 @@ export const updateCoinGeckoTokens = async ({
 
   const CoinGeckoMassaged: UpdateTokenData[] = CoinGeckoData.map((entry) => ({
     symbol: entry.symbol,
+    name: entry.name,
     coingecko_id: entry.id,
     icon_url: entry.image,
     latestPrice: entry.current_price,

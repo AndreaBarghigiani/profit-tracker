@@ -8,7 +8,6 @@ import { searchDexScreenerTokens } from "./searchDexScreenerTokens";
 
 // Types
 import type { PrismaClient, Token } from "@prisma/client";
-import { TokenWithoutDatesSchema } from "@/server/types";
 
 const sample = [
   "bitcoin",
@@ -65,9 +64,11 @@ export const tokenRouter = createTRPCRouter({
     return getSample({ prisma: ctx.prisma });
   }),
   getChartData: protectedProcedure
-    .input(z.object({ token: TokenWithoutDatesSchema }))
+    .input(z.object({ tokenId: z.string(), tokenName: z.string() }))
     .query(async ({ input }) => {
-      const chartData = await getChartData({ token: input.token });
+      const chartData = await getChartData({
+        tokenId: input.tokenId,
+      });
 
       const labels = chartData.index.map((item) =>
         new Intl.DateTimeFormat("en-EN", { timeStyle: "short" }).format(item),
@@ -89,7 +90,7 @@ export const tokenRouter = createTRPCRouter({
         labels,
         datasets: [
           {
-            label: input.token.name,
+            label: input.tokenName,
             borderColor: "#e6b400",
             backgroundColor: "#E6B40026",
             data: chartData.prices,
