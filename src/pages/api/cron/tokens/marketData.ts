@@ -5,7 +5,7 @@ import { updateMarketData } from "@/server/api/routers/token/updateMarketData";
 
 export default async function tokenHistory(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const sample = [
     "bitcoin",
@@ -18,6 +18,13 @@ export default async function tokenHistory(
     "cosmos",
     "arbitrum",
   ];
+
+  // const customSample = [
+  //   "arbitrum",
+  //   "custom-0x3b248cefa87f836a4e6f6d6c9b42991b88dc1d58",
+  //   "custom-0x29abc4d03d133d8fd1f1c54318428353ce08727e",
+  //   "custom-0x6c997a37f5a1dca62b58eeb01041f056942966b3",
+  // ];
 
   try {
     await updateMarketData({

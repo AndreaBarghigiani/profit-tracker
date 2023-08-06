@@ -1,11 +1,14 @@
 // Utils
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import type { PrismaClient } from "@prisma/client";
 import { updateMarketData } from "./updateMarketData";
 import { getChartData } from "./getTokenChart";
 import { searchTokens } from "./searchTokens";
 import { searchDexScreenerTokens } from "./searchDexScreenerTokens";
+
+// Types
+import type { PrismaClient, Token } from "@prisma/client";
+import { TokenWithoutDatesSchema } from "@/server/types";
 
 const sample = [
   "bitcoin",
@@ -62,9 +65,9 @@ export const tokenRouter = createTRPCRouter({
     return getSample({ prisma: ctx.prisma });
   }),
   getChartData: protectedProcedure
-    .input(z.object({ tokenId: z.string(), tokenName: z.string() }))
+    .input(z.object({ token: TokenWithoutDatesSchema }))
     .query(async ({ input }) => {
-      const chartData = await getChartData({ tokenId: input.tokenId });
+      const chartData = await getChartData({ token: input.token });
 
       const labels = chartData.index.map((item) =>
         new Intl.DateTimeFormat("en-EN", { timeStyle: "short" }).format(item),
@@ -86,7 +89,7 @@ export const tokenRouter = createTRPCRouter({
         labels,
         datasets: [
           {
-            label: input.tokenName,
+            label: input.token.name,
             borderColor: "#e6b400",
             backgroundColor: "#E6B40026",
             data: chartData.prices,
@@ -104,6 +107,7 @@ export const tokenRouter = createTRPCRouter({
   find: protectedProcedure
     .input(z.object({ query: z.string() }))
     .query(async ({ ctx, input }) => {
+      let updatedTokens: Token[] = [];
       const tokens = await ctx.prisma.token.findMany({
         where: {
           OR: [
@@ -126,20 +130,21 @@ export const tokenRouter = createTRPCRouter({
       const currentTime = new Date().getTime();
       const oneDay = 24 * 60 * 60 * 1000;
 
+      const tokenUpdated = tokens.filter(
+        (token) => currentTime - token.updatedAt.getTime() < oneDay,
+      );
+
       const tokenToUpdate = tokens.filter(
-        (token) =>
-          !token.iconUrl ||
-          !token.latestPrice ||
-          currentTime - token.updatedAt.getTime() > oneDay,
+        (token) => currentTime - token.updatedAt.getTime() > oneDay,
       );
 
       if (!!tokenToUpdate) {
-        await updateMarketData({
+        updatedTokens = await updateMarketData({
           tokenIds: tokenToUpdate.map((token) => token.coingecko_id),
         });
       }
 
-      return tokens;
+      return [...tokenUpdated, ...updatedTokens];
     }),
   search: protectedProcedure
     .input(z.object({ query: z.string() }))

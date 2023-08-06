@@ -2,14 +2,14 @@
 import { TRPCError } from "@trpc/server";
 import { getHTTPStatusCodeFromError } from "@trpc/server/http";
 import { prisma } from "@/server/db";
-import { updatePrices } from "@/server/api/routers/token/updatePrices";
+import { updateMarketData } from "@/server/api/routers/token/updateMarketData";
 
 // Types
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function tokenHistory(
   _: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const oneDay = Date.now() - 1000 * 60 * 60 * 24;
 
@@ -32,7 +32,10 @@ export default async function tokenHistory(
 
     const tokenIds: string[] = tokens.map((token) => token.coingecko_id);
 
-    await updatePrices({ tokenIds });
+    // Send updatePrices request only if there are tokens to update
+    if (tokenIds.length > 0) {
+      await updateMarketData({ tokenIds });
+    }
 
     res.status(200).json({ message: "ok" });
   } catch (cause) {
