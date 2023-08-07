@@ -26,7 +26,7 @@ const buttonVariants = cva(
           "border border-success-600 text-success-600 hover:border-success-500 hover:text-success-500",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "text-dog-300 hover:text-main-600",
+        ghost: "text-dog-300 hover:text-main-500",
         "ghost-danger":
           "text-alert-300 hover:text-primary-foreground hover:bg-alert-400",
         link: "underline-offset-4 hover:underline hover:text-main-600",
@@ -59,7 +59,7 @@ const buttonVariants = cva(
       align: "center",
       corners: "rounded",
     },
-  }
+  },
 );
 
 export interface ButtonProps
@@ -71,13 +71,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         className={cn(
-          buttonVariants({ variant, size, align, corners, className })
+          buttonVariants({ variant, size, align, corners, className }),
         )}
         ref={ref}
         {...props}
       />
     );
-  }
+  },
 );
 Button.displayName = "Button";
 
