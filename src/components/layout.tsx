@@ -1,15 +1,15 @@
 // Utils & Hooks
-// import { api } from "@/utils/api";
-import { buttonVariants } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import clsx from "clsx";
 import { AxiomWebVitals } from "next-axiom";
+import { useRouter } from "next/router";
 
 // import { Role } from "@prisma/client";
 
 // Types
+
 // Components
-import Link from "next/link";
+import NavLink from "./ui/custom/NavLink";
 import {
   Gauge,
   ArrowUpDown,
@@ -23,90 +23,32 @@ import UserCard from "@/components/userCard";
 import { Separator } from "@/components/ui/separator";
 import WalletInfo from "./ui/testing/WalletInfo";
 
+const paths = [
+  { path: "/dashboard", label: "Dashboard", Icon: Gauge },
+  { path: "/new-investment", label: "New Investment", Icon: PiggyBank },
+  { path: "/transactions", label: "Transactions", Icon: ArrowUpDown },
+  { path: "/projects", label: "Projects", Icon: Boxes },
+  { path: "/hodl", label: "Hodls", Icon: ToyBrick },
+  { path: "/estimator", label: "Estimate", Icon: Calculator },
+];
+
 const Sidebar = () => {
   // const { data: userRole } = api.user.getRole.useQuery();
+  const router = useRouter();
+  const currentRoute = router.pathname;
 
   return (
     <nav>
       <ul>
-        <li>
-          <Link
-            className={buttonVariants({
-              variant: "ghost",
-              size: "nav",
-              corners: "square",
-              align: "left",
-            })}
-            href={`/dashboard`}
-          >
-            <Gauge className="mr-2 h-4 w-4" /> Dashboard
-          </Link>
-        </li>
-        <li>
-          <Link
-            className={buttonVariants({
-              variant: "ghost",
-              size: "nav",
-              corners: "square",
-              align: "left",
-            })}
-            href={`/new-investment`}
-          >
-            <PiggyBank className="mr-2 h-4 w-4" /> New Investment
-          </Link>
-        </li>
-        <li>
-          <Link
-            className={buttonVariants({
-              variant: "ghost",
-              size: "nav",
-              corners: "square",
-              align: "left",
-            })}
-            href={`/transactions`}
-          >
-            <ArrowUpDown className="mr-2 h-4 w-4" /> Transactions
-          </Link>
-        </li>
-        <li>
-          <Link
-            className={buttonVariants({
-              variant: "ghost",
-              size: "nav",
-              corners: "square",
-              align: "left",
-            })}
-            href={`/projects`}
-          >
-            <Boxes className="mr-2 h-4 w-4" /> Projects
-          </Link>
-        </li>
-        <li>
-          <Link
-            className={buttonVariants({
-              variant: "ghost",
-              size: "nav",
-              corners: "square",
-              align: "left",
-            })}
-            href={`/hodl`}
-          >
-            <ToyBrick className="mr-2 h-4 w-4" /> Hodls
-          </Link>
-        </li>
-        <li>
-          <Link
-            className={buttonVariants({
-              variant: "ghost",
-              size: "nav",
-              corners: "square",
-              align: "left",
-            })}
-            href={`/estimator`}
-          >
-            <Calculator className="mr-2 h-4 w-4" /> Estimate
-          </Link>
-        </li>
+        {paths.map(({ path, label, Icon }) => (
+          <NavLink
+            key={path}
+            active={currentRoute === path}
+            path={path}
+            label={label}
+            Icon={Icon}
+          />
+        ))}
       </ul>
 
       <Separator className="my-4 bg-foreground/50" />
