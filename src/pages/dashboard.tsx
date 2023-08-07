@@ -7,6 +7,7 @@ import type { NextPage } from "next";
 import type { Project } from "@prisma/client";
 
 // Components
+import Head from "next/head";
 import Heading from "@/components/ui/heading";
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
@@ -27,70 +28,80 @@ const Dashboard: NextPage = () => {
 
   const hodlsSorted = isHodlsSuccess && sortedPositions(hodls);
   return (
-    <div>
-      <Heading size="page" gradient="gold" spacing="massive">
-        Dashboard
-      </Heading>
+    <>
+      <Head>
+        <title>Dashboard - Underdog Tracker</title>
+      </Head>
 
-      <div className="grid grid-cols-5 gap-4">
-        {isUserStatsSuccess && (
-          <UserStats orientation="vertical" userStats={userStats} />
-        )}
+      <div>
+        <Heading size="page" gradient="gold" spacing="massive">
+          Dashboard
+        </Heading>
 
-        <section className="col-span-4 space-y-12">
-          {isProjectsSuccess ? (
-            <div>
-              <Heading size="h2" spacing="2xl" className="flex items-center">
-                Your projects
-                <Link
-                  className={buttonVariants({
-                    size: "sm",
-                    className: "ml-4 flex items-center",
-                  })}
-                  href="/project/create"
-                >
-                  <Plus className="mr-2 h-3 w-3" />
-                  Add project
-                </Link>
-              </Heading>
-
-              <div className="flex grid-cols-2 flex-col gap-4 lg:grid">
-                {projects.map((project: Project) => (
-                  <ProjectCard key={project.id} project={project} />
-                ))}
-              </div>
-            </div>
-          ) : (
-            <p>Loading...</p>
+        <div className="grid grid-cols-5 gap-4">
+          {isUserStatsSuccess && (
+            <UserStats orientation="vertical" userStats={userStats} />
           )}
 
-          {isHodlsSuccess && (
-            <div>
-              <Heading size="h2" spacing="2xl" className="flex items-center">
-                Your holdings
-                <Link
-                  className={buttonVariants({
-                    size: "sm",
-                    className: "ml-4 flex items-center",
-                  })}
-                  href="/hodl/add"
-                >
-                  <Plus className="mr-2 h-3 w-3" />
-                  Add hodl
-                </Link>
-              </Heading>
-              {!!hodlsSorted && (
-                <div className="grid grid-cols-2 gap-4">
-                  {hodlsSorted.map((hodl, index) => (
-                    <HodlCard key={hodl.id} position={hodl} rank={index + 1} />
+          <section className="col-span-4 space-y-12">
+            {isProjectsSuccess ? (
+              <div>
+                <Heading size="h2" spacing="2xl" className="flex items-center">
+                  Your projects
+                  <Link
+                    className={buttonVariants({
+                      size: "sm",
+                      className: "ml-4 flex items-center",
+                    })}
+                    href="/project/create"
+                  >
+                    <Plus className="mr-2 h-3 w-3" />
+                    Add project
+                  </Link>
+                </Heading>
+
+                <div className="flex grid-cols-2 flex-col gap-4 lg:grid">
+                  {projects.map((project: Project) => (
+                    <ProjectCard key={project.id} project={project} />
                   ))}
                 </div>
-              )}
-            </div>
-          )}
-        </section>
+              </div>
+            ) : (
+              <p>Loading...</p>
+            )}
+
+            {isHodlsSuccess && (
+              <div>
+                <Heading size="h2" spacing="2xl" className="flex items-center">
+                  Your holdings
+                  <Link
+                    className={buttonVariants({
+                      size: "sm",
+                      className: "ml-4 flex items-center",
+                    })}
+                    href="/hodl/add"
+                  >
+                    <Plus className="mr-2 h-3 w-3" />
+                    Add hodl
+                  </Link>
+                </Heading>
+                {!!hodlsSorted && (
+                  <div className="grid grid-cols-2 gap-4">
+                    {hodlsSorted.map((hodl, index) => (
+                      <HodlCard
+                        key={hodl.id}
+                        position={hodl}
+                        rank={index + 1}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </section>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

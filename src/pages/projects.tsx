@@ -6,6 +6,7 @@ import type { NextPage } from "next";
 import type { Project } from "@prisma/client";
 
 // Components
+import Head from "next/head";
 import Heading from "@/components/ui/heading";
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
@@ -16,6 +17,9 @@ const Projects: NextPage = () => {
     api.project.listByCurrentUser.useQuery();
   return (
     <>
+      <Head>
+        <title>Projects - Underdog Tracker</title>
+      </Head>
       {isProjectsSuccess ? (
         <div className="space-y-4">
           <Heading size="page" gradient="gold" spacing={"massive"}>

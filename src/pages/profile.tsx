@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import type { NextPage } from "next";
 
 // Components
+import Head from "next/head";
 import Heading from "@/components/ui/heading";
 import ProfileForm from "@/components/profileForm";
 import { Button } from "@/components/ui/button";
@@ -28,32 +29,38 @@ const Profile: NextPage = () => {
   if (!wallet) return <div>Something wrong.</div>;
 
   return (
-    <div className="space-y-4">
-      <Heading size="page" gradient="gold" spacing="massive">
-        Profile
-      </Heading>
+    <>
+      <Head>
+        <title>Profile - Underdog Tracker</title>
+      </Head>
 
-      <p className="text-center">
-        Here you can customize aspects of your profile, for now we let you
-        update your daily goal.
-      </p>
+      <div className="space-y-4">
+        <Heading size="page" gradient="gold" spacing="massive">
+          Profile
+        </Heading>
 
-      <div className="mx-auto max-w-3xl">
-        {isWalletSuccess && (
-          <ProfileForm profileData={{ dailyProfit: wallet.dailyProfit }} />
-        )}
+        <p className="text-center">
+          Here you can customize aspects of your profile, for now we let you
+          update your daily goal.
+        </p>
 
-        <footer className="flex">
-          <Button
-            variant="ghost-danger"
-            className="ml-auto mt-4"
-            onClick={handleDelete}
-          >
-            Delete
-          </Button>
-        </footer>
+        <div className="mx-auto max-w-3xl">
+          {isWalletSuccess && (
+            <ProfileForm profileData={{ dailyProfit: wallet.dailyProfit }} />
+          )}
+
+          <footer className="flex">
+            <Button
+              variant="ghost-danger"
+              className="ml-auto mt-4"
+              onClick={handleDelete}
+            >
+              Delete
+            </Button>
+          </footer>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
