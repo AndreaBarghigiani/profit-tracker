@@ -2,6 +2,7 @@
 import type { NextPage } from "next";
 
 // Components
+import Head from "next/head";
 import Heading from "@/components/ui/heading";
 import {
   Card,
@@ -18,6 +19,9 @@ import Link from "next/link";
 const NewInvestment: NextPage = () => {
   return (
     <>
+      <Head>
+        <title>Start a new investment - Underdog Tracker</title>
+      </Head>
       <div className="space-y-4">
         <Heading size="page" gradient="gold" spacing={"massive"}>
           New Investment

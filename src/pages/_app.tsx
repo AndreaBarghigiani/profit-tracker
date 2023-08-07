@@ -1,6 +1,7 @@
 // Components
 import Layout from "@/components/layout";
 import NextTopLoader from "nextjs-toploader";
+import Head from "next/head";
 
 // Utils
 import { api } from "@/utils/api";
@@ -33,6 +34,15 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   return (
     <SessionProvider session={session as Session}>
+      <Head>
+        <title>Underdog Tracker - Track your profits like never before</title>
+        <meta
+          name="description"
+          content="Underdog Tracker is a simple app that let's you know all your profits and help you grow your passive income."
+        />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" type="image/png" href="/favicon.png" />
+      </Head>
       <NextTopLoader color="#ffcd1a" />
       <Layout>{layout}</Layout>
     </SessionProvider>
