@@ -3,7 +3,7 @@
 
 const Footer = () => {
   return (
-    <footer className="container mx-auto mb-6 flex items-center">
+    <footer className="container mx-auto mb-6 hidden items-center">
       That&apos;s all
     </footer>
   );

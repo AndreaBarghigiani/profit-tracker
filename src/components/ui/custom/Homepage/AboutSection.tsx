@@ -8,7 +8,7 @@ const AboutSection = () => {
   return (
     <section className="mx-auto my-20 grid max-w-3xl grid-cols-3  items-center gap-6">
       <Image
-        src="/man-front-chart.jpg"
+        src="/people-talking-crypto.jpg"
         alt="Man in front of a chart graph to empower your crypto investment journey"
         className="rounded-full border-4 border-main-500 shadow-inner"
         width={200}

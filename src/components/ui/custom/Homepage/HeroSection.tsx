@@ -12,7 +12,11 @@ const HeroSection = () => {
         Track Your Crypto Investments with Precision
       </Heading>
 
-      <Heading as="h2" size="h2" className="mb-8 text-center italic">
+      <Heading
+        as="h2"
+        size="h2"
+        className="mb-8 text-center italic text-dog-400"
+      >
         Stay on top of your hodl positions and maximize your profits
       </Heading>
 
@@ -20,7 +24,9 @@ const HeroSection = () => {
         Get Started
       </Button>
 
-      <span className="my-1 text-center text-xs">Create your account NOW!</span>
+      <span className="my-1 text-center text-xs text-dog-400">
+        Create your account NOW!
+      </span>
     </div>
   );
 };

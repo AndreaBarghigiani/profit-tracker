@@ -23,7 +23,7 @@ const ProblemSection = () => {
       </div>
 
       <Image
-        src="/people-talking-crypto.jpg"
+        src="/man-front-chart.jpg"
         alt="People talking crypto to solve the challenge of navigating crypto investment complexity"
         className="rounded-full border-4 border-main-500 shadow-inner"
         width={200}

@@ -21,8 +21,6 @@ const CTASection = () => {
       <Button className="mx-auto" variant={"active"} onClick={() => signIn()}>
         Get Started
       </Button>
-
-      <span className="my-1 text-center text-xs">Create your account NOW!</span>
     </section>
   );
 };
