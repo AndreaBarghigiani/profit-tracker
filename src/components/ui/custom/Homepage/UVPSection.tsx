@@ -5,7 +5,7 @@ import Heading from "@/components/ui/heading";
 
 const UVPSection = () => {
   return (
-    <section className="mx-auto my-20 flex justify-around gap-6">
+    <section className="mx-auto my-20 grid grid-cols-3 gap-6">
       <div className="text-center">
         <Heading as="h4" size="h3" className=" text-main-500">
           Crystal-Clear Insights for Confident Decisions
