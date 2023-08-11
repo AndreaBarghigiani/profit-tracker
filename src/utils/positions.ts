@@ -50,3 +50,45 @@ export const formatDexPairAsToken = (
     },
   };
 };
+
+export const hodlSummary = (hodls: FullPosition[]) => {
+  const total = hodls.reduce((acc, position) => {
+    return (acc += position.amount * position.token.latestPrice);
+  }, 0);
+
+  const diffs = hodls.map((position) => {
+    const { data: hodlDiff } = api.hodl.getDiffFromBuyes.useQuery(
+      {
+        hodlId: position.id,
+        hodlAmount: position.amount,
+        tokenLatestPrice: position.token.latestPrice,
+      },
+      {
+        refetchOnWindowFocus: false,
+      },
+    );
+
+    return hodlDiff;
+  });
+
+  const topPerformer = diffs.reduce(
+    (acc, diff) => {
+      if (!diff) return acc;
+
+      return Number(diff.percentage) > Number(acc.percentage) ? diff : acc;
+    },
+    { tokenId: "", percentage: "0" },
+  );
+
+  const reduced = diffs.reduce((acc, diff) => {
+    if (!diff) return acc;
+
+    return (acc += Number(diff.percentage));
+  }, 0);
+
+  return {
+    total,
+    change: reduced,
+    topPerformer,
+  };
+};

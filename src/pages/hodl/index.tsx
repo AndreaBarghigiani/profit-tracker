@@ -1,17 +1,19 @@
 // Utils
 import { api } from "@/utils/api";
-import { sortedPositions } from "@/utils/positions";
+import { sortedPositionsByPrice } from "@/utils/positions";
 
 // Types
 import type { NextPage } from "next";
 
 // Components
-import Head from "next/head";
-import Heading from "@/components/ui/heading";
-import HodlCard from "@/components/ui/custom/HodlCard";
 import { buttonVariants } from "@/components/ui/button";
+import Head from "next/head";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import Heading from "@/components/ui/heading";
+import HodlCard from "@/components/ui/custom/HodlCard";
+import HodlBar from "@/components/ui/custom/HodlBar";
+import HodlSummary from "@/components/ui/custom/Hodl/HodlSummary";
 
 const Hodl: NextPage = () => {
   const {
@@ -20,7 +22,8 @@ const Hodl: NextPage = () => {
     isLoading: isPositionLoading,
   } = api.hodl.getByCurrentUser.useQuery();
 
-  const positionsSorted = isPositionsSuccess && sortedPositions(positions);
+  const positionsSorted =
+    isPositionsSuccess && sortedPositionsByPrice(positions);
 
   return (
     <>
@@ -73,15 +76,23 @@ const Hodl: NextPage = () => {
         </div>
 
         {!!positionsSorted && (
-          <div className="grid grid-cols-2 gap-4">
-            {positionsSorted.map((position, index) => (
-              <HodlCard
-                key={position.id}
-                position={position}
-                rank={index + 1}
-              />
-            ))}
-          </div>
+          <>
+            <Heading>Hodl at a glance:</Heading>
+            <div className="mb-4 grid grid-cols-2 gap-4">
+              <HodlSummary hodls={positionsSorted} />
+              <HodlBar hodls={positionsSorted} />
+            </div>
+            <Heading>Hodl Positions:</Heading>
+            <div className="grid grid-cols-2 gap-4">
+              {positionsSorted.map((position, index) => (
+                <HodlCard
+                  key={position.id}
+                  position={position}
+                  rank={index + 1}
+                />
+              ))}
+            </div>
+          </>
         )}
       </div>
     </>

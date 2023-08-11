@@ -1,6 +1,6 @@
 //Utils
 import { api } from "@/utils/api";
-import { sortedPositions } from "@/utils/positions";
+import { sortedPositionsByPrice } from "@/utils/positions";
 
 // Types
 import type { NextPage } from "next";
@@ -26,7 +26,7 @@ const Dashboard: NextPage = () => {
   const { data: userStats, isSuccess: isUserStatsSuccess } =
     api.wallet.getUserStats.useQuery();
 
-  const hodlsSorted = isHodlsSuccess && sortedPositions(hodls);
+  const hodlsSorted = isHodlsSuccess && sortedPositionsByPrice(hodls);
   return (
     <>
       <Head>

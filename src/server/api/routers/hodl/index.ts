@@ -268,7 +268,7 @@ export const hodlRouter = createTRPCRouter({
         hodlId: z.string(),
         hodlAmount: z.number(),
         tokenLatestPrice: z.number(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const buys = await ctx.prisma.hodl.findUniqueOrThrow({
@@ -276,6 +276,11 @@ export const hodlRouter = createTRPCRouter({
           id: input.hodlId,
         },
         select: {
+          token: {
+            select: {
+              id: true,
+            },
+          },
           transaction: {
             where: {
               type: TransactionType.BUY,
@@ -291,13 +296,14 @@ export const hodlRouter = createTRPCRouter({
       const average =
         buys.transaction.reduce(
           (acc, curr) => acc + curr.evaluation / curr.amount,
-          0
+          0,
         ) / buys.transaction.length;
 
       const currentHodlValue = input.hodlAmount * input.tokenLatestPrice;
       const averagedHodlValue = input.hodlAmount * average;
 
       return {
+        tokenId: buys.token.id,
         diff: currentHodlValue - averagedHodlValue,
         percentage: (
           ((currentHodlValue - averagedHodlValue) / averagedHodlValue) *
@@ -331,7 +337,7 @@ export const hodlRouter = createTRPCRouter({
   // }),
   sellAll: protectedProcedure
     .input(
-      z.object({ hodlId: z.string(), amount: z.number(), price: z.number() })
+      z.object({ hodlId: z.string(), amount: z.number(), price: z.number() }),
     )
     .mutation(async ({ ctx, input }) => {
       const transaction = {
