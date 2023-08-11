@@ -100,6 +100,7 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
           <UserCard />
         </aside>
       ) : null}
+
       <main className={mainClass}>
         <div className="mx-auto max-w-7xl">{children}</div>
       </main>

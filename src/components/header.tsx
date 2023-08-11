@@ -32,15 +32,21 @@ const Header = () => {
           />
         </svg>
 
-        <h1 className="bg-gradient-to-r from-main-500 to-main-300 bg-clip-text text-2xl font-extrabold tracking-tight text-transparent">
-          Underdog Tracker
-        </h1>
+        <div className="flex items-center">
+          <h1 className="bg-gradient-to-r from-main-500 to-main-300 bg-clip-text text-2xl font-extrabold tracking-tight text-transparent">
+            Underdog Tracker
+          </h1>
+
+          <span className="-translate-x-4 -translate-y-5 rotate-12 scale-75 rounded-3xl border border-main-500 px-2 py-1 text-xs text-main-600">
+            beta
+          </span>
+        </div>
       </div>
 
       <nav className="ml-auto flex gap-4">
         <Button
           variant={"active"}
-          onClick={sessionData ? () => void signOut() : () => void signIn()}
+          onClick={sessionData ? () => signOut() : () => signIn()}
         >
           {sessionData ? "Sign out" : "Sign in"}
         </Button>
