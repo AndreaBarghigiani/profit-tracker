@@ -1,10 +1,12 @@
 // Types
 import type { NextPageWithLayout } from "./_app";
+import type { IncomingMessage, ServerResponse } from "http";
 
 // Components
 import LayoutMarketing from "@/components/layoutMarketing";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { getServerAuthSession } from "@/server/auth";
 
 const Home: NextPageWithLayout = () => {
   return (
@@ -50,6 +52,28 @@ Home.getLayout = function getLayout(page: React.ReactElement) {
 };
 
 export default Home;
+
+export async function getServerSideProps(context: {
+  req: IncomingMessage & {
+    cookies: Partial<{ [key: string]: string }>;
+  };
+  res: ServerResponse<IncomingMessage>;
+}) {
+  const session = await getServerAuthSession(context);
+
+  if (session) {
+    return {
+      redirect: {
+        destination: "/dashboard",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}
 
 const AuthShowcase: React.FC = () => {
   const { data: sessionData } = useSession();
