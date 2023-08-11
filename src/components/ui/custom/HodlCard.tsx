@@ -80,6 +80,7 @@ const HodlCard = ({
           {`#${rank}`}
         </div>
       )}
+
       <Image
         src={position.token.iconUrl ?? "/placeholder.png"}
         alt={position.token.name}
