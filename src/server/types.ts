@@ -303,6 +303,8 @@ export const DexSearchSchema = z.object({
 export type DexSearch = z.infer<typeof DexSearchSchema>;
 
 // Token types
+export type FullPosition = Hodl & { token: Token };
+
 export type UpdateTokenData = {
   coingecko_id: string;
   symbol: string;

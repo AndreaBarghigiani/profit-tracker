@@ -1,13 +1,17 @@
 // Utils
+import { api } from "@/utils/api";
 import { calcAverage } from "@/utils/number";
 
 // Types
-import type { DexScreenerPair, UpdateTokenData } from "@/server/types";
-import type { Hodl, Token } from "@prisma/client";
+import type {
+  DexScreenerPair,
+  UpdateTokenData,
+  FullPosition,
+} from "@/server/types";
 
-type PositionsProps = (Hodl & { token: Token })[];
-
-export const sortedPositions = (positions: PositionsProps): PositionsProps => {
+export const sortedPositionsByPrice = (
+  positions: FullPosition[],
+): FullPosition[] => {
   positions.sort(
     (a, b) => b.amount * b.token.latestPrice - a.amount * a.token.latestPrice,
   );
