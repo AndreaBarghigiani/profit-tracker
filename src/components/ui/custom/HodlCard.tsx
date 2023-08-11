@@ -48,7 +48,7 @@ const HodlCard = ({
       },
       {
         refetchOnWindowFocus: false,
-      }
+      },
     );
 
   // Classes
@@ -57,7 +57,7 @@ const HodlCard = ({
     {
       "border-success-800 bg-success-900 text-success-600": hodlDiff?.positive,
       "border-alert-700 bg-alert-900 text-alert-600": !hodlDiff?.positive,
-    }
+    },
   );
 
   // Keeping for now, in case I want to add delete functionality
@@ -80,15 +80,13 @@ const HodlCard = ({
           {`#${rank}`}
         </div>
       )}
-      {!!position.token.iconUrl && (
-        <Image
-          src={position.token.iconUrl}
-          alt={position.token.name}
-          className="mr-4 flex-shrink-0 rounded-full"
-          width={48}
-          height={48}
-        />
-      )}
+      <Image
+        src={position.token.iconUrl ?? "/placeholder.png"}
+        alt={position.token.name}
+        className="mr-4 flex-shrink-0 rounded-full"
+        width={48}
+        height={48}
+      />
 
       <div className="w-full">
         <header className="flex items-start justify-between gap-6">
@@ -220,7 +218,7 @@ const HodlCardData = ({
     {
       "p-2": highlighted,
       "p-1": !highlighted,
-    }
+    },
   );
 
   const iconClasses = cn({
