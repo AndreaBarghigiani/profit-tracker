@@ -66,57 +66,83 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
     <>
       <div className="grid grid-cols-5 gap-4">
         {/* Overview box */}
-        <div className="rounded-lg border border-dog-800 bg-dog-900 p-5">
-          <Heading
-            size="h3"
-            spacing="small"
-            className="flex justify-between text-dog-500"
-          >
-            Overview
-          </Heading>
-          <div className="flex flex-col space-y-2">
-            <Heading size="h1" className="flex flex-col text-dog-500">
-              <p className="text-dog-200">
-                {currencyConverter({ amount: hodl.amount * token.latestPrice })}
-              </p>
-
-              {isAvgPriceSuccess ? (
-                <div className="flex items-center">
-                  <p
-                    className={clsx("text-sm font-normal", {
-                      "text-success-700": avgPrice.positive,
-                      "text-red-400": !avgPrice.positive,
-                    })}
-                  >
-                    {currencyConverter({
-                      amount: avgPrice.diff,
-                      showSign: true,
-                    })}
-                  </p>
-                  <p
-                    className={clsx("ml-2 text-xs font-semibold", {
-                      "text-success-700": avgPrice.positive,
-                      "text-red-400": !avgPrice.positive,
-                    })}
-                  >
-                    ({avgPrice.positive && "+"}
-                    {avgPrice.percentage}%)
-                  </p>
-                </div>
-              ) : (
-                <Skeleton as="p" className=" h-[20px] w-1/2 bg-foreground/50" />
-              )}
+        <div className="flex flex-col justify-between rounded-lg border border-dog-800 bg-dog-900 p-5">
+          <div>
+            <Heading
+              size="h3"
+              spacing="small"
+              className="flex justify-between text-dog-500"
+            >
+              Overview
             </Heading>
+
+            <Heading
+              size="h1"
+              spacing="none"
+              className="flex flex-col text-dog-200"
+            >
+              {currencyConverter({ amount: hodl.amount * token.latestPrice })}
+            </Heading>
+
+            {isAvgPriceSuccess ? (
+              <div className="flex items-center">
+                <p
+                  className={clsx("text-sm font-normal", {
+                    "text-success-700": avgPrice.positive,
+                    "text-red-400": !avgPrice.positive,
+                  })}
+                >
+                  {currencyConverter({
+                    amount: avgPrice.diff,
+                    showSign: true,
+                  })}
+                </p>
+                <p
+                  className={clsx("ml-2 text-xs font-semibold", {
+                    "text-success-700": avgPrice.positive,
+                    "text-red-400": !avgPrice.positive,
+                  })}
+                >
+                  ({avgPrice.positive && "+"}
+                  {avgPrice.percentage}%)
+                </p>
+              </div>
+            ) : (
+              <Skeleton as="p" className=" h-[20px] w-1/2 bg-foreground/50" />
+            )}
           </div>
 
-          <Heading size="h4" className="flex items-center text-dog-500">
-            Available
-          </Heading>
-          <p className="text-3xl font-semibold">{formatNumber(hodl.amount)}</p>
+          {isAvgPriceSuccess && (
+            <div>
+              <Heading
+                size="h4"
+                spacing="small"
+                className="flex items-center text-dog-500"
+              >
+                Average Buy Price
+              </Heading>
+              <p className="text-3xl font-semibold">
+                {currencyConverter({ amount: avgPrice.average })}
+              </p>
+            </div>
+          )}
+
+          <div>
+            <Heading
+              size="h4"
+              spacing="small"
+              className="flex items-center text-dog-500"
+            >
+              Tokens Available
+            </Heading>
+            <p className="text-3xl font-semibold">
+              {formatNumber(hodl.amount)}
+            </p>
+          </div>
         </div>
         <div className="col-span-4 h-80 rounded-lg border border-dog-800 bg-dog-900 p-5">
           <Heading size="h3" spacing="small" className="text-dog-500">
-            Performance
+            24h Performance
           </Heading>
 
           {isChartDataSuccess && (
