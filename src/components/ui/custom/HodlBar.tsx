@@ -1,5 +1,6 @@
 // Utils
 import { useState } from "react";
+import { useRouter } from "next/router";
 import { currencyConverter, formatNumber } from "@/utils/string";
 
 // Types
@@ -24,12 +25,14 @@ const massageData = (positions: FullPosition[]) => {
 const barColors = ["#ffcd1a", "#e6b400", "#b38c00", "#806400", "#4d3c00"];
 
 const HodlBar = ({ hodls }: { hodls: FullPosition[] }) => {
+  const router = useRouter();
   const data = massageData(hodls);
   const tokens = hodls.map((hodl) => hodl.token.symbol).slice(0, 5);
   const [hoveredToken, setHoveredToken] = useState<string | null>(null);
 
   const hoveredTokenInfo = (token: string) => {
     const tokenInfo = hodls.filter((hodl) => hodl.token.symbol === token).pop();
+
     if (!tokenInfo) return null;
 
     return (
@@ -45,6 +48,15 @@ const HodlBar = ({ hodls }: { hodls: FullPosition[] }) => {
     );
   };
 
+  const handleBarClick = async (token: string) => {
+    const tokenId = hodls.filter((hodl) => hodl.token.symbol === token).pop()
+      ?.id;
+
+    if (!tokenId) return;
+
+    await router.push(`hodl/${tokenId}`);
+  };
+
   return (
     <div className="relative rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg">
       <Heading size="h2">Your top 5 bags</Heading>
@@ -58,7 +70,7 @@ const HodlBar = ({ hodls }: { hodls: FullPosition[] }) => {
       <div className="h-24 w-full">
         <ResponsiveContainer width="100%">
           <BarChart className="mx-auto" layout="vertical" data={data}>
-            <XAxis type="number" hide={true} />
+            <XAxis type="number" hide={true} domain={["dataMin", "dataMax"]} />
             <YAxis type="category" dataKey="name" hide={true} />
 
             {tokens.map((token, index) => (
@@ -73,6 +85,9 @@ const HodlBar = ({ hodls }: { hodls: FullPosition[] }) => {
                 }}
                 onMouseOut={() => {
                   setHoveredToken(null);
+                }}
+                onClick={() => {
+                  void handleBarClick(token);
                 }}
               />
             ))}
