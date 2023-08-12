@@ -316,10 +316,11 @@ export type UpdateTokenData = {
   change24h: number;
 };
 
-export type ChartTokenData = {
-  index: Date[];
-  prices: number[];
-};
+export const ChartTokenDataSchema = z.array(
+  z.object({ date: z.string(), price: z.number() }),
+);
+
+export type ChartTokenData = z.infer<typeof ChartTokenDataSchema>;
 
 export const PlatformsSchema = z.record(z.string(), z.string());
 

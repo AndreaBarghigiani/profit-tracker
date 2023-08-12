@@ -2,16 +2,7 @@
 import type { ChartTokenData } from "@/server/types";
 import { CoinGeckoChartSchema } from "@/server/types";
 
-export const getChartData = async ({
-  tokenId,
-}: {
-  tokenId: string;
-}): Promise<ChartTokenData> => {
-  let massaged: ChartTokenData = {
-    index: [],
-    prices: [],
-  };
-
+export const getReChartData = async ({ tokenId }: { tokenId: string }) => {
   // Unable to find data for custom tokens
   // For now this is good enough
   if (!tokenId.startsWith("custom-")) {
@@ -24,19 +15,24 @@ export const getChartData = async ({
     const response = await fetch(url);
     const data = CoinGeckoChartSchema.parse(await response.json());
 
-    const initialReduce: ChartTokenData = { index: [], prices: [] };
-
     function reducer(acc: ChartTokenData, cur: number[], index: number) {
       if (cur.length < 2 || index % 6) return acc;
 
-      acc.index.push(new Date(cur[0] as number));
-      acc.prices.push(cur[1] as number);
+      const date = new Date(cur[0] as number);
+      const formatDate = Intl.DateTimeFormat("en-EN", {
+        timeStyle: "short",
+      }).format(date);
+
+      acc.push({
+        date: formatDate,
+        price: cur[1] as number,
+      });
 
       return acc;
     }
 
-    massaged = data.prices.reduce(reducer, initialReduce);
+    return data.prices.reduce(reducer, []);
   }
 
-  return massaged;
+  return [];
 };

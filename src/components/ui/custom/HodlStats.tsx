@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 // Utils
 import { api } from "@/utils/api";
 import { currencyConverter, formatNumber } from "@/utils/string";
@@ -7,30 +5,26 @@ import clsx from "clsx";
 
 // Types
 import type { HodlWithoutDates, TokenWithoutDates } from "@/server/types";
+import type { AxisDomain } from "recharts/types/util/types";
+import type { TooltipProps } from "recharts";
+import type {
+  NameType,
+  ValueType,
+} from "recharts/types/component/DefaultTooltipContent";
 
 // Components
 import Heading from "@/components/ui/heading";
 import { Skeleton } from "../skeleton";
 import Image from "next/image";
+import { Clock } from "lucide-react";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LineElement,
-  PointElement,
-  LinearScale,
-  Filler,
-  Tooltip as ChartTooltip,
-} from "chart.js";
-import { Line } from "react-chartjs-2";
-
-ChartJS.register(
-  CategoryScale,
-  LineElement,
-  PointElement,
-  LinearScale,
-  ChartTooltip,
-  Filler,
-);
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
 
 type HodlStatsCardProps = {
   hodl: HodlWithoutDates;
@@ -38,7 +32,6 @@ type HodlStatsCardProps = {
 };
 
 const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
-  console.log("token:", token.custom);
   const { data: avgPrice, isSuccess: isAvgPriceSuccess } =
     api.hodl.getDiffFromBuyes.useQuery(
       {
@@ -51,8 +44,8 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
       },
     );
 
-  const { data: chartData, isSuccess: isChartDataSuccess } =
-    api.token.getChartData.useQuery(
+  const { data: reChartData, isSuccess: isReChartDataSuccess } =
+    api.token.getReChartData.useQuery(
       { tokenId: token.coingecko_id, tokenName: token.name },
       {
         refetchOnWindowFocus: false,
@@ -60,28 +53,13 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
       },
     );
 
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    interaction: {
-      intersect: false,
-    },
-    plugins: {
-      tooltip: {
-        callbacks: {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          label: function (context: any) {
-            if (!!context && typeof context?.raw === "number") {
-              return currencyConverter({ amount: context.raw, type: "long" });
-            }
-          },
-        },
-      },
-    },
-    scales: {
-      x: { border: { color: "#7b7e68" }, grid: { color: "#292a23" } },
-      y: { border: { color: "#7b7e68" }, grid: { color: "#292a23" } },
-    },
+  const setDomain = (data: AxisDomain): [number, number] => {
+    const min = Number(data[0]);
+    const max = Number(data[1]);
+    const buildMin = min - (min * 1) / 100;
+    const buildMax = max + (max * 1) / 100;
+
+    return [buildMin, buildMax];
   };
 
   return (
@@ -141,12 +119,53 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
             Performance
           </Heading>
 
-          {isChartDataSuccess && (
-            <div className="mt-4 h-64 w-full">
-              <Line options={chartOptions} data={chartData} />
-            </div>
+          {isReChartDataSuccess && (
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart
+                width={800}
+                height={200}
+                data={reChartData}
+                margin={{
+                  top: 5,
+                  right: 10,
+                  left: 10,
+                  bottom: 50,
+                }}
+              >
+                <defs>
+                  <linearGradient id="colorChart" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#b38c00" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="#b38c00" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <XAxis className="text-xs" dataKey="date" hide />
+                <YAxis dataKey="price" domain={setDomain} hide />
+                <Tooltip
+                  cursor={{ stroke: "#4d3c00", strokeWidth: 1 }}
+                  content={<CustomTooltip />}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="price"
+                  dot={false}
+                  stroke="#ffcd1a"
+                  strokeWidth={1.2}
+                  fillOpacity={1}
+                  fill="url(#colorChart)"
+                  activeDot={{
+                    r: 4,
+                    style: {
+                      fill: "#ffcd1a",
+                      stroke: "#b38c00",
+                      strokeWidth: 2,
+                      strokeOpacity: 0.8,
+                    },
+                  }}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
           )}
-
+          <CustomTooltip />
           {token.custom && (
             <div className="relative flex h-full items-center justify-center">
               <Image
@@ -171,3 +190,38 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
 };
 
 export default HodlStats;
+
+type PayloadProps = {
+  price: number;
+  date: string;
+};
+const CustomTooltip = ({
+  active,
+  payload,
+}: TooltipProps<ValueType, NameType>) => {
+  if (active && payload && payload.length) {
+    const data = payload[0]?.payload as PayloadProps;
+
+    if (!data) return null;
+
+    return (
+      <div className="rounded-lg border border-main-800 bg-main-900 p-2 text-center shadow-sm">
+        <div className="flex items-center justify-center">
+          <span className="font-semibold text-dog-400">
+            {currencyConverter({
+              amount: data?.price,
+              type: "long",
+            })}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-center">
+          <Clock className="mr-2 h-4 w-4 text-dog-300" />
+          <span className="text-dog-500">{data.date}</span>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+};
