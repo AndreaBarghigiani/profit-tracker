@@ -37,6 +37,7 @@ const Hodl: NextPage<
   const transactionModal = useHodlTransactionModal();
   const utils = api.useContext();
   const router = useRouter();
+  const pageTitle = `Token ${token.name} Hodl page - Underdog Tracker`;
   const { data, isSuccess } = api.hodl.getTransactions.useQuery({
     hodlId: hodl.id,
   });
@@ -48,7 +49,6 @@ const Hodl: NextPage<
         // await utils.hodl.get.invalidate();
         // await utils.hodl.getDiffFromBuyes.invalidate();
         // await utils.token.get.invalidate();
-        // await utils.token.getChartData.invalidate();
       },
     });
 
@@ -67,10 +67,11 @@ const Hodl: NextPage<
       });
     },
   });
+
   return (
     <>
       <Head>
-        <title>{token.name} Hodl page - Underdog Tracker</title>
+        <title>{pageTitle}</title>
       </Head>
       <div className="mx-auto space-y-4">
         <header>
