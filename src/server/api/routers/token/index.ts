@@ -2,7 +2,7 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { updateMarketData } from "./updateMarketData";
-import { getReChartData } from "./getTokenChart";
+import { getChartData } from "./getTokenChart";
 import { searchTokens } from "./searchTokens";
 import { searchDexScreenerTokens } from "./searchDexScreenerTokens";
 
@@ -63,52 +63,10 @@ export const tokenRouter = createTRPCRouter({
   sample: protectedProcedure.query(({ ctx }) => {
     return getSample({ prisma: ctx.prisma });
   }),
-  // getChartData: protectedProcedure
-  //   .input(z.object({ tokenId: z.string(), tokenName: z.string() }))
-  //   .query(async ({ input }) => {
-  //     const chartData = await getChartData({
-  //       tokenId: input.tokenId,
-  //     });
-
-  //     const labels = chartData.index.map((item) =>
-  //       new Intl.DateTimeFormat("en-EN", { timeStyle: "short" }).format(item),
-  //     );
-
-  //     // Maybe we'll need to massage the data a bit more
-  //     // const dataset = isChartDataSuccess
-  //     //   ? chartData.prices.map((item) =>
-  //     //       new Intl.NumberFormat("en-EN", {
-  //     //         style: "currency",
-  //     //         currency: "USD",
-  //     //         minimumFractionDigits: 2,
-  //     //         maximumFractionDigits: 2,
-  //     //       }).format(item)
-  //     //     )
-  //     //   : null;
-
-  //     const data = {
-  //       labels,
-  //       datasets: [
-  //         {
-  //           label: input.tokenName,
-  //           borderColor: "#e6b400",
-  //           backgroundColor: "#E6B40026",
-  //           data: chartData.prices,
-  //           fill: true,
-  //           pointBackgroundColor: "#e6b400",
-  //           pointHoverRadius: 5,
-  //           pointRadius: 1,
-  //           tension: 0.5,
-  //         },
-  //       ],
-  //     };
-
-  //     return data;
-  //   }),
-  getReChartData: protectedProcedure
+  getChartData: protectedProcedure
     .input(z.object({ tokenId: z.string(), tokenName: z.string() }))
     .query(async ({ input }) => {
-      return await getReChartData({
+      return await getChartData({
         tokenId: input.tokenId,
       });
     }),

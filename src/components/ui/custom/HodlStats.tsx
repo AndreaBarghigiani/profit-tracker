@@ -44,8 +44,8 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
       },
     );
 
-  const { data: reChartData, isSuccess: isReChartDataSuccess } =
-    api.token.getReChartData.useQuery(
+  const { data: chartData, isSuccess: isChartDataSuccess } =
+    api.token.getChartData.useQuery(
       { tokenId: token.coingecko_id, tokenName: token.name },
       {
         refetchOnWindowFocus: false,
@@ -119,12 +119,12 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
             Performance
           </Heading>
 
-          {isReChartDataSuccess && (
+          {isChartDataSuccess && (
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart
                 width={800}
                 height={200}
-                data={reChartData}
+                data={chartData}
                 margin={{
                   top: 5,
                   right: 10,
@@ -216,7 +216,7 @@ const CustomTooltip = ({
         </div>
 
         <div className="flex items-center justify-center">
-          <Clock className="mr-2 h-4 w-4 text-dog-300" />
+          <Clock className="mr-1 h-3 w-3 text-dog-300" />
           <span className="text-dog-500">{data.date}</span>
         </div>
       </div>
