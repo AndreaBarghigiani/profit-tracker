@@ -2,7 +2,7 @@
 import type { ChartTokenData } from "@/server/types";
 import { CoinGeckoChartSchema } from "@/server/types";
 
-export const getReChartData = async ({ tokenId }: { tokenId: string }) => {
+export const getChartData = async ({ tokenId }: { tokenId: string }) => {
   // Unable to find data for custom tokens
   // For now this is good enough
   if (!tokenId.startsWith("custom-")) {
