@@ -25,6 +25,7 @@ const headingVariants = cva("font-semibold", {
       gold: "bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-accent via-yellow-500 to-accent text-transparent bg-clip-text",
     },
     spacing: {
+      none: "my-0",
       small: "my-1",
       normal: "my-2",
       large: "my-4",

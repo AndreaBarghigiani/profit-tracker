@@ -304,6 +304,7 @@ export const hodlRouter = createTRPCRouter({
 
       return {
         tokenId: buys.token.id,
+        average: averagedHodlValue,
         diff: currentHodlValue - averagedHodlValue,
         percentage: (
           ((currentHodlValue - averagedHodlValue) / averagedHodlValue) *
