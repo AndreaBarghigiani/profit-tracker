@@ -6,7 +6,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 // Components
-import { Button } from "../button";
+import { Button } from "@/components/ui/button";
+import Heading from "@/components/ui/heading";
 import AddHodlPositionForm from "@/components/ui/custom/AddHodlPositionForm";
 import {
   Form,
@@ -18,7 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 
 const AddCustomTokenFormSchema = z.object({
-  address: z.string().min(42).max(42),
+  address: z.string(),
 });
 
 const AddCustomTokenForm = () => {
@@ -66,7 +67,11 @@ const AddCustomTokenForm = () => {
       </Form>
 
       {!!token && (
-        <div>
+        <div className="my-10">
+          <Heading className="text-main-500">
+            {token.name} <span className="text-sm">[{token.symbol}]</span>
+          </Heading>
+
           <AddHodlPositionForm hodlId={null} token={token} />
         </div>
       )}

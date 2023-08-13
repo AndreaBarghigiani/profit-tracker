@@ -12,14 +12,22 @@ export const searchDexScreenerTokens = async ({
   query: string;
   prisma: PrismaClient;
 }) => {
-  const url = new URL(`https://api.dexscreener.com/latest/dex/tokens/${query}`);
+  const encodedQuery = encodeURIComponent(query);
+  const url = new URL(
+    `https://api.dexscreener.com/latest/dex/tokens/${encodedQuery}`,
+  );
 
   const response = await fetch(url);
   const { pairs } = DexSearchSchema.parse(await response.json());
 
-  if (!pairs || pairs.length < 0) throw new Error("No pairs found");
+  const filteredPairs = pairs.filter(
+    (pair) => pair.baseToken.address === query,
+  );
 
-  const token = formatDexPairAsToken(pairs);
+  if (!filteredPairs || filteredPairs.length < 0)
+    throw new Error("No pairs found");
+
+  const token = formatDexPairAsToken(filteredPairs);
 
   // 1. Check which tokens are already in the database
   const tokenInDatabase = await prisma.token.findUnique({
