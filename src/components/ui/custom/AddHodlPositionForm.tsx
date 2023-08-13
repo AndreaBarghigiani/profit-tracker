@@ -98,6 +98,7 @@ const AddHodlPositionForm = ({
     api.token.updatePrice.useMutation({
       onSuccess: async (data) => {
         await utils.token.get.invalidate();
+
         const token = data.pop();
         if (!token) return;
         setValue("tokenPrice", token.latestPrice);
@@ -270,6 +271,7 @@ const AddHodlPositionForm = ({
             : "$0"}
         </p>
       </div>
+
       <Button
         disabled={isAddingPosition || isCreatingPosition || buttonDisabled}
         type="submit"
