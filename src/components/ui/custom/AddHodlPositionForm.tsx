@@ -17,10 +17,10 @@ import type { TokenWithoutDates, HodlTransaction } from "@/server/types";
 // Components
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "../button";
-import { RefreshCcw, Plus } from "lucide-react";
-import { ToggleGroup, ToggleItem } from "@/components/ui/toggle-group";
+import { Button } from "@/components/ui/button";
 import Heading from "@/components/ui/heading";
+import { ToggleGroup, ToggleItem } from "@/components/ui/toggle-group";
+import { RefreshCcw, Plus } from "lucide-react";
 import {
   Tooltip,
   TooltipTrigger,
@@ -169,6 +169,7 @@ const AddHodlPositionForm = ({
         ) : null}
         <div>
           <Label htmlFor="name">Amount</Label>
+
           <Input
             type="number"
             disabled={isAddingPosition || isCreatingPosition}
@@ -181,6 +182,7 @@ const AddHodlPositionForm = ({
             id="amount"
             {...registerInvestment("amount", { valueAsNumber: true })}
           />
+
           {useLiquidFunds && isUserWalletSuccess ? (
             <span className="text-xs text-dog-600">
               You can only buy ~
