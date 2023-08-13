@@ -191,7 +191,7 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
               </AreaChart>
             </ResponsiveContainer>
           )}
-          <CustomTooltip />
+
           {token.custom && (
             <div className="relative flex h-full items-center justify-center">
               <Image
@@ -235,8 +235,7 @@ const CustomTooltip = ({
         <div className="flex items-center justify-center">
           <span className="font-semibold text-dog-400">
             {currencyConverter({
-              amount: data?.price,
-              type: "long",
+              amount: data.price,
             })}
           </span>
         </div>

@@ -9,31 +9,41 @@ export const uppercaseFirst = (str: string): string => {
 export const formatDate = (
   date: number | Date | undefined,
   dateType: DateTypes = "long",
-  timeType?: TimeTypes
+  timeType?: TimeTypes,
 ) =>
   Intl.DateTimeFormat("en", {
     dateStyle: dateType,
     timeStyle: !!timeType ? timeType : undefined,
   }).format(date);
 
+const maxSignificantDigits = (num: number, count: number = 0): number => {
+  if (num) {
+    return maxSignificantDigits(Math.floor(num / 10), ++count);
+  }
+  return count;
+};
+
 type CurrencyConverterType = {
   amount: number | string;
-  type?: "short" | "long";
   showSign?: boolean;
 };
+
 export const currencyConverter = ({
   amount,
-  type = "short",
   showSign = false,
 }: CurrencyConverterType) => {
   const numeric = typeof amount === "string" ? parseFloat(amount) : amount;
+  const numUnits = maxSignificantDigits(numeric);
+  const maxSign = numUnits >= 1 ? numUnits + 2 : 2;
 
   return new Intl.NumberFormat("en-EN", {
     style: "currency",
     currency: "USD",
-    minimumFractionDigits: 2,
+    // minimumFractionDigits: 2,
+    maximumFractionDigits: 3,
     signDisplay: showSign ? "always" : "never",
-    maximumFractionDigits: type === "long" ? 10 : 2,
+    minimumSignificantDigits: 2,
+    maximumSignificantDigits: maxSign,
   }).format(numeric);
 };
 
