@@ -21,7 +21,7 @@ export const searchDexScreenerTokens = async ({
   const { pairs } = DexSearchSchema.parse(await response.json());
 
   const filteredPairs = pairs.filter(
-    (pair) => pair.baseToken.address === query,
+    (pair) => pair.baseToken.address.toLowerCase() === query.toLowerCase(),
   );
 
   if (!filteredPairs || filteredPairs.length < 0)

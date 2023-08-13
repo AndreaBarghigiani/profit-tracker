@@ -13,7 +13,7 @@ const AddHodlPosition = () => {
         Custom Token
       </Heading>
 
-      <section className="mx-auto max-w-4xl space-y-2 text-center">
+      <section className="mx-auto max-w-4xl space-y-2 text-center text-dog-300">
         <p>
           We would like to track &apos;em all but we&apos;re using the great{" "}
           <a

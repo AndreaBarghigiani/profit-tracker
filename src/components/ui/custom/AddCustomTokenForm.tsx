@@ -8,6 +8,8 @@ import { useForm } from "react-hook-form";
 // Components
 import { Button } from "@/components/ui/button";
 import Heading from "@/components/ui/heading";
+import { Input } from "@/components/ui/input";
+import { Search, RefreshCcw } from "lucide-react";
 import AddHodlPositionForm from "@/components/ui/custom/AddHodlPositionForm";
 import {
   Form,
@@ -16,7 +18,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 
 const AddCustomTokenFormSchema = z.object({
   address: z.string(),
@@ -32,13 +33,14 @@ const AddCustomTokenForm = () => {
 
   const [query, setQuery] = useState("");
 
-  const { data: token } = api.token.searchDex.useQuery(
-    { query },
-    {
-      enabled: !!query,
-      refetchOnWindowFocus: false,
-    },
-  );
+  const { data: token, isFetching: isTokenFetching } =
+    api.token.searchDex.useQuery(
+      { query },
+      {
+        enabled: !!query,
+        refetchOnWindowFocus: false,
+      },
+    );
 
   const onSubmit = (values: z.infer<typeof AddCustomTokenFormSchema>) => {
     setQuery(values.address);
@@ -47,7 +49,10 @@ const AddCustomTokenForm = () => {
   return (
     <div>
       <Form {...form}>
-        <form className="flex items-end" onSubmit={form.handleSubmit(onSubmit)}>
+        <form
+          className="flex items-end gap-6"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
           <FormField
             control={form.control}
             name="address"
@@ -60,8 +65,18 @@ const AddCustomTokenForm = () => {
             )}
           />
 
-          <Button className="ml-auto" type="submit">
-            Search Token
+          <Button type="submit" disabled={isTokenFetching}>
+            {isTokenFetching ? (
+              <>
+                <RefreshCcw className="mr-2 h-4 w-4 animate-spin" />
+                Loading
+              </>
+            ) : (
+              <>
+                <Search className="mr-2 h-4 w-4" />
+                Search Token
+              </>
+            )}
           </Button>
         </form>
       </Form>
