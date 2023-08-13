@@ -1,12 +1,14 @@
 // Utils
 import { api } from "@/utils/api";
+import clsx from "clsx";
 import { sortedPositionsByPrice } from "@/utils/positions";
 
 // Types
 import type { NextPage } from "next";
 
 // Components
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { RefreshCcw } from "lucide-react";
 import Head from "next/head";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -16,14 +18,30 @@ import HodlBar from "@/components/ui/custom/HodlBar";
 import HodlSummary from "@/components/ui/custom/Hodl/HodlSummary";
 
 const Hodl: NextPage = () => {
+  const utils = api.useContext();
+
   const {
     data: positions,
     isSuccess: isPositionsSuccess,
     isLoading: isPositionLoading,
   } = api.hodl.getByCurrentUser.useQuery();
 
+  const { mutateAsync: updatePrices, isLoading: isPricesLoading } =
+    api.token.updatePrices.useMutation({
+      onSuccess: async () => {
+        await utils.hodl.getByCurrentUser.invalidate();
+      },
+    });
+
   const positionsSorted =
     isPositionsSuccess && sortedPositionsByPrice(positions);
+
+  const handleRefresh = async () => {
+    if (!positions) return;
+
+    const tokenIds = positions.map((position) => position.token.coingecko_id);
+    await updatePrices({ tokenIds });
+  };
 
   return (
     <>
@@ -82,7 +100,18 @@ const Hodl: NextPage = () => {
               <HodlSummary hodls={positionsSorted} />
               <HodlBar hodls={positionsSorted} />
             </div>
-            <Heading>Hodl Positions:</Heading>
+
+            <header className="flex">
+              <Heading>Hodl Positions:</Heading>
+              <Button className="ml-auto" size="sm" onClick={handleRefresh}>
+                <RefreshCcw
+                  className={clsx("mr-2 h-4 w-4", {
+                    "animate-spin": isPricesLoading,
+                  })}
+                />
+                Refresh all
+              </Button>
+            </header>
             <div className="grid grid-cols-2 gap-4">
               {positionsSorted.map((position, index) => (
                 <HodlCard
