@@ -22,9 +22,9 @@ const HodlSummary = ({ hodls }: { hodls: FullPosition[] }) => {
     "flex flex-shrink-0 items-center font-semibold rounded-3xl border px-3 py-1 ml-4 text-xs",
     {
       "border-success-800 bg-success-900 text-success-600":
-        Number(summary.topPerformer.percentage) > 0,
+        Number(summary.change) > 0,
       "border-alert-700 bg-alert-900 text-alert-600":
-        Number(summary.topPerformer.percentage) < 0,
+        Number(summary.change) < 0,
     },
   );
 
@@ -38,7 +38,6 @@ const HodlSummary = ({ hodls }: { hodls: FullPosition[] }) => {
     },
   );
 
-  console.log("summary:", summary);
   return (
     <div className="relative rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg">
       <Heading
