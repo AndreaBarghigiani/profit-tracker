@@ -17,7 +17,7 @@ export const formatDate = (
   }).format(date);
 
 const maxSignificantDigits = (num: number, count: number = 0): number => {
-  if (num) {
+  if (num > 0) {
     return maxSignificantDigits(Math.floor(num / 10), ++count);
   }
   return count;
@@ -39,10 +39,8 @@ export const currencyConverter = ({
   return new Intl.NumberFormat("en-EN", {
     style: "currency",
     currency: "USD",
-    // minimumFractionDigits: 2,
-    maximumFractionDigits: 3,
     signDisplay: showSign ? "always" : "never",
-    minimumSignificantDigits: 2,
+    minimumSignificantDigits: numUnits === 1 ? 3 : 2,
     maximumSignificantDigits: maxSign,
   }).format(numeric);
 };
