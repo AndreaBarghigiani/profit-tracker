@@ -266,7 +266,6 @@ const AddHodlPositionForm = ({
           {watchAmount
             ? currencyConverter({
                 amount: watchAmount * watchTokenPrice,
-                type: "long",
               })
             : "$0"}
         </p>
