@@ -1,7 +1,6 @@
 // Utils & Hooks
 import { useSession } from "next-auth/react";
 import clsx from "clsx";
-import { AxiomWebVitals } from "next-axiom";
 import { useRouter } from "next/router";
 
 // import { Role } from "@prisma/client";
@@ -104,7 +103,6 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
       <main className={mainClass}>
         <div className="mx-auto max-w-7xl">{children}</div>
       </main>
-      <AxiomWebVitals />
     </div>
   );
 };
