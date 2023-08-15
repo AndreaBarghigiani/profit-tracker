@@ -22,6 +22,7 @@ import Heading from "@/components/ui/heading";
 import HodlCard from "@/components/ui/custom/HodlCard";
 import HodlBar from "@/components/ui/custom/HodlBar";
 import HodlSummary from "@/components/ui/custom/Hodl/HodlSummary";
+import { getServerAuthSession } from "@/server/auth";
 
 const Hodl: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -132,7 +133,8 @@ const Hodl: NextPage<
 export default Hodl;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getSession(context);
+  const session = await getServerAuthSession(context);
+  console.log("session from hodl Page:", session);
   if (!session) return { props: {} };
 
   const positions = await getByCurrentUser({ ctx: { prisma, session } });
