@@ -23,10 +23,12 @@ import { Plus, RefreshCcw } from "lucide-react";
 import HodlCard from "@/components/ui/custom/HodlCard";
 import UserStats from "@/components/ui/custom/UserStats";
 import ProjectCard from "@/components/ui/custom/ProjectCard";
+import { getServerAuthSession } from "@/server/auth";
 
 const Dashboard: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ hodls }) => {
+  console.log("hodls:", hodls);
   const utils = api.useContext();
 
   const { data: projects, isSuccess: isProjectsSuccess } =
@@ -139,7 +141,9 @@ const Dashboard: NextPage<
 export default Dashboard;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getSession(context);
+  const session = await getServerAuthSession(context);
+  console.log("-------- Andrea --------");
+  console.log("session from Dashboard:", session);
   if (!session) return { props: {} };
 
   const positions = await getByCurrentUser({ ctx: { prisma, session } });

@@ -51,7 +51,6 @@ export const getDiffFromBuyes = async ({
   ctx: { prisma: PrismaClient; session: Session };
   input: CalcDiffs;
 }) => {
-  console.log("calling exported getDiffFromBuyes with input: ", input);
   const buys = await ctx.prisma.hodl.findUniqueOrThrow({
     where: {
       id: input.hodlId,
