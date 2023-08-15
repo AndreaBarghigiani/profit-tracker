@@ -2,9 +2,16 @@
 import { api } from "@/utils/api";
 import clsx from "clsx";
 import { sortedPositionsByPrice } from "@/utils/positions";
+import { prisma } from "@/server/db";
+import { getSession } from "next-auth/react";
+import { getByCurrentUser } from "@/server/api/routers/hodl";
 
 // Types
-import type { NextPage } from "next";
+import type {
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+  NextPage,
+} from "next";
 import type { Project } from "@prisma/client";
 
 // Components
@@ -17,13 +24,13 @@ import HodlCard from "@/components/ui/custom/HodlCard";
 import UserStats from "@/components/ui/custom/UserStats";
 import ProjectCard from "@/components/ui/custom/ProjectCard";
 
-const Dashboard: NextPage = () => {
+const Dashboard: NextPage<
+  InferGetServerSidePropsType<typeof getServerSideProps>
+> = ({ hodls }) => {
   const utils = api.useContext();
 
   const { data: projects, isSuccess: isProjectsSuccess } =
     api.project.listByCurrentUser.useQuery();
-  const { data: hodls, isSuccess: isHodlsSuccess } =
-    api.hodl.getByCurrentUser.useQuery();
 
   const { data: userStats, isSuccess: isUserStatsSuccess } =
     api.wallet.getUserStats.useQuery();
@@ -43,7 +50,7 @@ const Dashboard: NextPage = () => {
     console.log("updates:", updates);
   };
 
-  const hodlsSorted = isHodlsSuccess && sortedPositionsByPrice(hodls);
+  const hodlsSorted = !!hodls && sortedPositionsByPrice(hodls);
   return (
     <>
       <Head>
@@ -89,45 +96,39 @@ const Dashboard: NextPage = () => {
               <p>Loading...</p>
             )}
 
-            {isHodlsSuccess && (
-              <div>
-                <header className="flex items-center">
-                  <Heading size="h2" spacing="2xl">
-                    Your holdings
-                  </Heading>
-                  <Link
-                    className={buttonVariants({
-                      size: "sm",
-                      className: "ml-auto flex items-center",
-                    })}
-                    href="/hodl/add"
-                  >
-                    <Plus className="mr-2 h-3 w-3" />
-                    Add hodl
-                  </Link>
+            <div>
+              <header className="flex items-center">
+                <Heading size="h2" spacing="2xl">
+                  Your holdings
+                </Heading>
+                <Link
+                  className={buttonVariants({
+                    size: "sm",
+                    className: "ml-auto flex items-center",
+                  })}
+                  href="/hodl/add"
+                >
+                  <Plus className="mr-2 h-3 w-3" />
+                  Add hodl
+                </Link>
 
-                  <Button className="ml-4" size="sm" onClick={handleRefresh}>
-                    <RefreshCcw
-                      className={clsx("mr-2 h-4 w-4", {
-                        "animate-spin": isPricesLoading,
-                      })}
-                    />
-                    Refresh all
-                  </Button>
-                </header>
-                {!!hodlsSorted && (
-                  <div className="grid grid-cols-2 gap-4">
-                    {hodlsSorted.map((hodl, index) => (
-                      <HodlCard
-                        key={hodl.id}
-                        position={hodl}
-                        rank={index + 1}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
+                <Button className="ml-4" size="sm" onClick={handleRefresh}>
+                  <RefreshCcw
+                    className={clsx("mr-2 h-4 w-4", {
+                      "animate-spin": isPricesLoading,
+                    })}
+                  />
+                  Refresh all
+                </Button>
+              </header>
+              {!!hodlsSorted && (
+                <div className="grid grid-cols-2 gap-4">
+                  {hodlsSorted.map((hodl, index) => (
+                    <HodlCard key={hodl.id} position={hodl} rank={index + 1} />
+                  ))}
+                </div>
+              )}
+            </div>
           </section>
         </div>
       </div>
@@ -136,3 +137,28 @@ const Dashboard: NextPage = () => {
 };
 
 export default Dashboard;
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getSession(context);
+  if (!session) return { props: {} };
+
+  const positions = await getByCurrentUser({ ctx: { prisma, session } });
+
+  const formattedPositions = positions.map((position) => ({
+    ...position,
+    createdAt: position.createdAt.toISOString(),
+    updatedAt: position.updatedAt.toISOString(),
+    token: {
+      ...position.token,
+      createdAt: position.token.createdAt.toISOString(),
+      updatedAt: position.token.updatedAt.toISOString(),
+      platforms: {},
+    },
+  }));
+
+  return {
+    props: {
+      hodls: formattedPositions,
+    },
+  };
+}

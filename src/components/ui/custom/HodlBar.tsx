@@ -4,13 +4,13 @@ import { useRouter } from "next/router";
 import { currencyConverter, formatNumber } from "@/utils/string";
 
 // Types
-import type { FullPosition } from "@/server/types";
+import type { FullPositionZod } from "@/server/types";
 
 // Components
 import Heading from "@/components/ui/heading";
 import { BarChart, ResponsiveContainer, XAxis, YAxis, Bar } from "recharts";
 
-const massageData = (positions: FullPosition[]) => {
+const massageData = (positions: FullPositionZod[]) => {
   const data = positions.reduce(
     (acc, position) => ({
       ...acc,
@@ -24,7 +24,7 @@ const massageData = (positions: FullPosition[]) => {
 
 const barColors = ["#ffcd1a", "#e6b400", "#b38c00", "#806400", "#4d3c00"];
 
-const HodlBar = ({ hodls }: { hodls: FullPosition[] }) => {
+const HodlBar = ({ hodls }: { hodls: FullPositionZod[] }) => {
   const router = useRouter();
   const data = massageData(hodls);
   const tokens = hodls.map((hodl) => hodl.token.symbol).slice(0, 5);

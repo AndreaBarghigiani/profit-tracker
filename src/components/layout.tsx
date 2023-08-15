@@ -16,6 +16,7 @@ import {
   Calculator,
   PiggyBank,
   ToyBrick,
+  Gift,
 } from "lucide-react";
 import Heading from "@/components/ui/heading";
 import UserCard from "@/components/userCard";
@@ -29,6 +30,7 @@ const paths = [
   { path: "/projects", label: "Projects", Icon: Boxes },
   { path: "/hodl", label: "Hodls", Icon: ToyBrick },
   { path: "/estimator", label: "Estimate", Icon: Calculator },
+  { path: "/airdrop", label: "Airdrop", Icon: Gift },
 ];
 
 const Sidebar = () => {
