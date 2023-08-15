@@ -3,7 +3,7 @@ import { api } from "@/utils/api";
 import clsx from "clsx";
 import { sortedPositionsByPrice } from "@/utils/positions";
 import { prisma } from "@/server/db";
-import { getSession } from "next-auth/react";
+import { getServerAuthSession } from "@/server/auth";
 import { getByCurrentUser } from "@/server/api/routers/hodl";
 
 // Types
@@ -22,7 +22,6 @@ import Heading from "@/components/ui/heading";
 import HodlCard from "@/components/ui/custom/HodlCard";
 import HodlBar from "@/components/ui/custom/HodlBar";
 import HodlSummary from "@/components/ui/custom/Hodl/HodlSummary";
-import { getServerAuthSession } from "@/server/auth";
 
 const Hodl: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
