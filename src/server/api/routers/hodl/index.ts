@@ -329,63 +329,6 @@ export const hodlRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       return await getDiffFromBuyes({ ctx, input });
     }),
-  getSummary: protectedProcedure
-    .input(
-      z.array(
-        z.object({
-          hodlId: z.string(),
-          hodlAmount: z.number(),
-          tokenLatestPrice: z.number(),
-        }),
-      ),
-    )
-    .query(async ({ ctx, input }) => {
-      const holdIds = input.map((hodl) => hodl.hodlId);
-      const buys = await ctx.prisma.hodl.findMany({
-        where: {
-          id: { in: holdIds },
-        },
-        select: {
-          token: {
-            select: {
-              id: true,
-            },
-          },
-          transaction: {
-            where: {
-              type: TransactionType.BUY,
-            },
-            select: {
-              amount: true,
-              evaluation: true,
-            },
-          },
-        },
-      });
-
-      console.log("buys", buys);
-      // const average =
-      //   buys.transaction.reduce(
-      //     (acc, curr) => acc + curr.evaluation / curr.amount,
-      //     0,
-      //   ) / buys.transaction.length;
-
-      // const currentHodlValue = input.hodlAmount * input.tokenLatestPrice;
-      // const averagedHodlValue = input.hodlAmount * average;
-
-      // return {
-      //   tokenId: buys.token.id,
-      //   average: averagedHodlValue,
-      //   diff: currentHodlValue - averagedHodlValue,
-      //   percentage: (
-      //     ((currentHodlValue - averagedHodlValue) / averagedHodlValue) *
-      //     100
-      //   ).toFixed(2),
-      //   positive: currentHodlValue > averagedHodlValue,
-      // };
-
-      return null;
-    }),
   getCardData: protectedProcedure
     .input(z.object({ hodlId: z.string() }))
     .query(({ ctx, input }) => {
