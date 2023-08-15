@@ -3,7 +3,7 @@ import { api } from "@/utils/api";
 import clsx from "clsx";
 import { sortedPositionsByPrice } from "@/utils/positions";
 import { prisma } from "@/server/db";
-import { getSession } from "next-auth/react";
+import { getServerAuthSession } from "@/server/auth";
 import { getByCurrentUser } from "@/server/api/routers/hodl";
 
 // Types
@@ -23,7 +23,6 @@ import { Plus, RefreshCcw } from "lucide-react";
 import HodlCard from "@/components/ui/custom/HodlCard";
 import UserStats from "@/components/ui/custom/UserStats";
 import ProjectCard from "@/components/ui/custom/ProjectCard";
-import { getServerAuthSession } from "@/server/auth";
 
 const Dashboard: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
