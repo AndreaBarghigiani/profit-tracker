@@ -7,7 +7,7 @@ import { getWallet } from "../wallet";
 // Types
 import { type PrismaClient, TransactionType } from "@prisma/client";
 import type { Session } from "next-auth";
-import type { HodlTransaction } from "@/server/types";
+import type { HodlTransaction, CalcDiffs } from "@/server/types";
 
 export const getHodl = async ({
   hodlId,
@@ -33,7 +33,7 @@ export const isUserExposed = async ({
   ctx: { prisma: PrismaClient; session: Session };
   input: HodlTransaction;
 }) => {
-  const isExposed = await ctx.prisma.hodl.findFirst({
+  return await ctx.prisma.hodl.findFirst({
     where: {
       userId: ctx.session.user.id,
       id: input.hodlId,
@@ -42,8 +42,73 @@ export const isUserExposed = async ({
       },
     },
   });
+};
 
-  return isExposed;
+export const getDiffFromBuyes = async ({
+  ctx,
+  input,
+}: {
+  ctx: { prisma: PrismaClient; session: Session };
+  input: CalcDiffs;
+}) => {
+  console.log("calling exported getDiffFromBuyes with input: ", input);
+  const buys = await ctx.prisma.hodl.findUniqueOrThrow({
+    where: {
+      id: input.hodlId,
+    },
+    select: {
+      token: {
+        select: {
+          id: true,
+        },
+      },
+      transaction: {
+        where: {
+          type: TransactionType.BUY,
+        },
+        select: {
+          amount: true,
+          evaluation: true,
+        },
+      },
+    },
+  });
+
+  const average =
+    buys.transaction.reduce(
+      (acc, curr) => acc + curr.evaluation / curr.amount,
+      0,
+    ) / buys.transaction.length;
+
+  const currentHodlValue = input.hodlAmount * input.tokenLatestPrice;
+  const averagedHodlValue = input.hodlAmount * average;
+
+  return {
+    tokenId: buys.token.id,
+    average: averagedHodlValue,
+    diff: currentHodlValue - averagedHodlValue,
+    percentage: (
+      ((currentHodlValue - averagedHodlValue) / averagedHodlValue) *
+      100
+    ).toFixed(2),
+    positive: currentHodlValue > averagedHodlValue,
+  };
+};
+
+export const getByCurrentUser = async ({
+  ctx,
+}: {
+  ctx: { prisma: PrismaClient; session: Session };
+}) => {
+  return await ctx.prisma.hodl.findMany({
+    where: {
+      userId: ctx.session.user.id,
+      status: "active",
+    },
+    include: {
+      token: true,
+    },
+  });
 };
 
 const makeBuy = async ({
@@ -155,7 +220,7 @@ export const hodlRouter = createTRPCRouter({
       const position = await ctx.prisma.hodl.create({
         data: {
           amount: input.amount,
-          exposure: input.evaluation,
+          exposure: input.airdrop ? 0 : input.evaluation,
           user: {
             connect: {
               id: ctx.session.user.id,
@@ -234,16 +299,8 @@ export const hodlRouter = createTRPCRouter({
       take: 1,
     });
   }),
-  getByCurrentUser: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.hodl.findMany({
-      where: {
-        userId: ctx.session.user.id,
-        status: "active",
-      },
-      include: {
-        token: true,
-      },
-    });
+  getByCurrentUser: protectedProcedure.query(async ({ ctx }) => {
+    return await getByCurrentUser({ ctx });
   }),
   getTransactions: protectedProcedure
     .input(z.object({ hodlId: z.string() }))
@@ -271,9 +328,23 @@ export const hodlRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const buys = await ctx.prisma.hodl.findUniqueOrThrow({
+      return await getDiffFromBuyes({ ctx, input });
+    }),
+  getSummary: protectedProcedure
+    .input(
+      z.array(
+        z.object({
+          hodlId: z.string(),
+          hodlAmount: z.number(),
+          tokenLatestPrice: z.number(),
+        }),
+      ),
+    )
+    .query(async ({ ctx, input }) => {
+      const holdIds = input.map((hodl) => hodl.hodlId);
+      const buys = await ctx.prisma.hodl.findMany({
         where: {
-          id: input.hodlId,
+          id: { in: holdIds },
         },
         select: {
           token: {
@@ -293,25 +364,28 @@ export const hodlRouter = createTRPCRouter({
         },
       });
 
-      const average =
-        buys.transaction.reduce(
-          (acc, curr) => acc + curr.evaluation / curr.amount,
-          0,
-        ) / buys.transaction.length;
+      console.log("buys", buys);
+      // const average =
+      //   buys.transaction.reduce(
+      //     (acc, curr) => acc + curr.evaluation / curr.amount,
+      //     0,
+      //   ) / buys.transaction.length;
 
-      const currentHodlValue = input.hodlAmount * input.tokenLatestPrice;
-      const averagedHodlValue = input.hodlAmount * average;
+      // const currentHodlValue = input.hodlAmount * input.tokenLatestPrice;
+      // const averagedHodlValue = input.hodlAmount * average;
 
-      return {
-        tokenId: buys.token.id,
-        average: averagedHodlValue,
-        diff: currentHodlValue - averagedHodlValue,
-        percentage: (
-          ((currentHodlValue - averagedHodlValue) / averagedHodlValue) *
-          100
-        ).toFixed(2),
-        positive: currentHodlValue > averagedHodlValue,
-      };
+      // return {
+      //   tokenId: buys.token.id,
+      //   average: averagedHodlValue,
+      //   diff: currentHodlValue - averagedHodlValue,
+      //   percentage: (
+      //     ((currentHodlValue - averagedHodlValue) / averagedHodlValue) *
+      //     100
+      //   ).toFixed(2),
+      //   positive: currentHodlValue > averagedHodlValue,
+      // };
+
+      return null;
     }),
   getCardData: protectedProcedure
     .input(z.object({ hodlId: z.string() }))

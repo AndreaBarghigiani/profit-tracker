@@ -92,6 +92,7 @@ export type HodlWithoutDates = Partial<Pick<Hodl, "createdAt" | "updatedAt">> &
 export const HodlTransactionSchema = TransactionValuesSchema.extend({
   hodlId: z.string().optional(),
   tokenId: z.string().optional(),
+  airdrop: z.boolean().optional(),
   status: z
     .union([z.literal("active"), z.literal("inactive")])
     .default("active"),
@@ -303,7 +304,52 @@ export const DexSearchSchema = z.object({
 export type DexSearch = z.infer<typeof DexSearchSchema>;
 
 // Token types
+export const PlatformsSchema = z.record(z.string(), z.string());
+
+export type Platforms = z.infer<typeof PlatformsSchema>;
+
+export const TokenSchema = z.object({
+  id: z.string(),
+  createdAt: z.date().or(z.string()),
+  updatedAt: z.date().or(z.string()),
+  symbol: z.string(),
+  name: z.string(),
+  iconUrl: z.string().nullable(),
+  latestPrice: z.number(),
+  change24h: z.number(),
+  coingecko_id: z.string(),
+  platforms: PlatformsSchema.optional(),
+  tracked: z.boolean(),
+  custom: z.boolean(),
+});
+
+export type TokenZod = z.infer<typeof TokenSchema>;
+
+export const FullPositionSchema = z.object({
+  id: z.string(),
+  createdAt: z.date().or(z.string()),
+  updatedAt: z.date().or(z.string()),
+  amount: z.number(),
+  exposure: z.number(),
+  profits: z.number(),
+  status: z.string(),
+  tokenId: z.string(),
+  userId: z.string(),
+  walletId: z.string(),
+  token: TokenSchema,
+});
+
+export type FullPositionZod = z.infer<typeof FullPositionSchema>;
+
 export type FullPosition = Hodl & { token: Token };
+
+export const CalcDiffsSchema = z.object({
+  hodlId: z.string(),
+  hodlAmount: z.number(),
+  tokenLatestPrice: z.number(),
+});
+
+export type CalcDiffs = z.infer<typeof CalcDiffsSchema>;
 
 export type UpdateTokenData = {
   coingecko_id: string;
@@ -321,10 +367,6 @@ export const ChartTokenDataSchema = z.array(
 );
 
 export type ChartTokenData = z.infer<typeof ChartTokenDataSchema>;
-
-export const PlatformsSchema = z.record(z.string(), z.string());
-
-export type Platforms = z.infer<typeof PlatformsSchema>;
 
 export const TokenWithoutDatesSchema = z.object({
   id: z.string(),

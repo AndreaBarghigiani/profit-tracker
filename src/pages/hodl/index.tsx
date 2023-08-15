@@ -2,29 +2,31 @@
 import { api } from "@/utils/api";
 import clsx from "clsx";
 import { sortedPositionsByPrice } from "@/utils/positions";
+import { prisma } from "@/server/db";
+import { getSession } from "next-auth/react";
+import { getByCurrentUser } from "@/server/api/routers/hodl";
 
 // Types
-import type { NextPage } from "next";
+import type {
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+  NextPage,
+} from "next";
 
 // Components
 import { Button, buttonVariants } from "@/components/ui/button";
 import { RefreshCcw } from "lucide-react";
 import Head from "next/head";
 import Link from "next/link";
-import { Skeleton } from "@/components/ui/skeleton";
 import Heading from "@/components/ui/heading";
 import HodlCard from "@/components/ui/custom/HodlCard";
 import HodlBar from "@/components/ui/custom/HodlBar";
 import HodlSummary from "@/components/ui/custom/Hodl/HodlSummary";
 
-const Hodl: NextPage = () => {
+const Hodl: NextPage<
+  InferGetServerSidePropsType<typeof getServerSideProps>
+> = ({ positions }) => {
   const utils = api.useContext();
-
-  const {
-    data: positions,
-    isSuccess: isPositionsSuccess,
-    isLoading: isPositionLoading,
-  } = api.hodl.getByCurrentUser.useQuery();
 
   const { mutateAsync: updatePrices, isLoading: isPricesLoading } =
     api.token.updatePrices.useMutation({
@@ -33,8 +35,7 @@ const Hodl: NextPage = () => {
       },
     });
 
-  const positionsSorted =
-    isPositionsSuccess && sortedPositionsByPrice(positions);
+  const positionsSorted = !!positions ? sortedPositionsByPrice(positions) : [];
 
   const handleRefresh = async () => {
     if (!positions) return;
@@ -55,15 +56,15 @@ const Hodl: NextPage = () => {
         </Heading>
 
         <div className="my-4 space-y-3 text-center text-stone-400">
-          {isPositionLoading && (
+          {/* {isPositionLoading && (
             <>
               <Skeleton as="h1" className="mx-auto h-10 w-64 bg-dog-400" />
               <Skeleton as="p" className="mx-auto h-6 w-144 bg-dog-400 " />
               <Skeleton as="a" className="mx-auto block h-8 w-32 bg-dog-400" />
             </>
-          )}
+          )} */}
 
-          {isPositionsSuccess && positions.length ? (
+          {!!positions && positions.length ? (
             <>
               <Heading>Congrats for tracking your positions!</Heading>
               <p className=" text-lg ">
@@ -129,3 +130,28 @@ const Hodl: NextPage = () => {
 };
 
 export default Hodl;
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getSession(context);
+  if (!session) return { props: {} };
+
+  const positions = await getByCurrentUser({ ctx: { prisma, session } });
+
+  const formattedPositions = positions.map((position) => ({
+    ...position,
+    createdAt: position.createdAt.toISOString(),
+    updatedAt: position.updatedAt.toISOString(),
+    token: {
+      ...position.token,
+      createdAt: position.token.createdAt.toISOString(),
+      updatedAt: position.token.updatedAt.toISOString(),
+      platforms: {},
+    },
+  }));
+
+  return {
+    props: {
+      positions: formattedPositions,
+    },
+  };
+}

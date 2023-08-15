@@ -1,9 +1,9 @@
 // Utils
 import { api } from "@/utils/api";
+import clsx from "clsx";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { currencyConverter, uppercaseFirst } from "@/utils/string";
-import clsx from "clsx";
 
 import { useState } from "react";
 import { TransactionType } from "@prisma/client";
@@ -12,7 +12,11 @@ import { useRouter } from "next/router";
 
 // Types
 import type { SubmitHandler } from "react-hook-form";
-import type { TokenWithoutDates, HodlTransaction } from "@/server/types";
+import type {
+  TokenZod,
+  HodlTransaction,
+  TokenWithoutDates,
+} from "@/server/types";
 
 // Components
 import { Input } from "@/components/ui/input";
@@ -29,8 +33,9 @@ import {
 } from "@/components/ui/tooltip";
 
 type AddPositionProps = {
-  token: TokenWithoutDates;
+  token: TokenWithoutDates | TokenZod;
   hodlId: string | null;
+  airdrop?: boolean;
   closeModal?: () => void | Promise<void>;
 };
 
@@ -41,6 +46,7 @@ type AddPositionFormProps = HodlTransaction & {
 const AddHodlPositionForm = ({
   token,
   hodlId,
+  airdrop = false,
   closeModal,
 }: AddPositionProps) => {
   const selectedToken = token;
@@ -70,27 +76,27 @@ const AddHodlPositionForm = ({
   const { mutate: createPosition, isLoading: isCreatingPosition } =
     api.hodl.create.useMutation({
       onSuccess: async () => {
-        await utils.hodl.get.invalidate();
-        await utils.hodl.getTransactions.invalidate();
-        await utils.hodl.getDiffFromBuyes.invalidate();
-        await utils.wallet.getUserStats.invalidate().then(async () => {
+        await utils.hodl.getByCurrentUser.invalidate().then(async () => {
           if (!!closeModal) await closeModal();
           await router.push(`/hodl/`);
         });
+        await utils.hodl.getTransactions.invalidate();
+        await utils.hodl.getDiffFromBuyes.invalidate();
+        await utils.wallet.getUserStats.invalidate();
       },
     });
 
   const { mutate: addPosition, isLoading: isAddingPosition } =
     api.hodl.transaction.useMutation({
       onSuccess: async (data) => {
-        await utils.hodl.get.invalidate();
-        await utils.hodl.getTransactions.invalidate();
-        await utils.hodl.getDiffFromBuyes.invalidate();
-        await utils.wallet.getUserStats.invalidate().then(async () => {
+        await utils.hodl.getByCurrentUser.invalidate().then(async () => {
           if (!!closeModal) await closeModal();
           if (!data) return;
           await router.push(`/hodl/${data}`);
         });
+        await utils.hodl.getTransactions.invalidate();
+        await utils.hodl.getDiffFromBuyes.invalidate();
+        await utils.wallet.getUserStats.invalidate();
       },
     });
 
@@ -119,6 +125,7 @@ const AddHodlPositionForm = ({
     const massaged: HodlTransaction = {
       type: data.type,
       amount: data.amount,
+      airdrop,
       evaluation: data.amount * watchTokenPrice,
       useLiquidFunds: data.useLiquidFunds,
       status: "active",
@@ -138,8 +145,12 @@ const AddHodlPositionForm = ({
       className="space-y-3"
       onSubmit={handleSubmitInvestment(handleAddPosition)}
     >
-      <div className="mb-5 flex items-start justify-between">
-        {!hodlId ? (
+      <div
+        className={clsx("mb-5 flex items-start gap-6", {
+          "justify-between": !hodlId && !airdrop,
+        })}
+      >
+        {!hodlId && !airdrop ? (
           <Controller
             control={control}
             name="useLiquidFunds"

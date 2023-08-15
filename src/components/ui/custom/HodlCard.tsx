@@ -6,8 +6,8 @@ import { currencyConverter, formatNumber } from "@/utils/string";
 import { useHodlTransactionModal } from "@/hooks/useTransactionModal";
 
 // Types
-import type { Hodl, Token } from "@prisma/client";
 import type { LucideIcon } from "lucide-react";
+import type { FullPositionZod } from "@/server/types";
 
 // Components
 import Image from "next/image";
@@ -26,15 +26,11 @@ import {
 import AddTransactionModal from "./AddTransactionModal";
 import AddHodlPositionForm from "./AddHodlPositionForm";
 
-type HodlCardProps = Hodl & {
-  token: Token;
-};
-
 const HodlCard = ({
   position,
   rank,
 }: {
-  position: HodlCardProps;
+  position: FullPositionZod;
   rank: number;
 }) => {
   const transactionModal = useHodlTransactionModal();

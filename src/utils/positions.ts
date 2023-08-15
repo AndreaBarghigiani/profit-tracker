@@ -6,12 +6,12 @@ import { calcAverage } from "@/utils/number";
 import type {
   DexScreenerPair,
   UpdateTokenData,
-  FullPosition,
+  FullPositionZod,
 } from "@/server/types";
 
 export const sortedPositionsByPrice = (
-  positions: FullPosition[],
-): FullPosition[] => {
+  positions: FullPositionZod[],
+): FullPositionZod[] => {
   positions.sort(
     (a, b) => b.amount * b.token.latestPrice - a.amount * a.token.latestPrice,
   );
@@ -51,7 +51,7 @@ export const formatDexPairAsToken = (
   };
 };
 
-export const hodlSummary = (hodls: FullPosition[]) => {
+export const hodlSummary = (hodls: FullPositionZod[]) => {
   const total = hodls.reduce((acc, position) => {
     return (acc += position.amount * position.token.latestPrice);
   }, 0);

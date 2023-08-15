@@ -64,7 +64,9 @@ const TokenSearchInput = ({
 
   const handleSelection = (value: string, data: Token[]) => {
     const selectedToken =
-      data.find((token) => token.coingecko_id === value) || null;
+      data.find(
+        (token) => token.coingecko_id.toLowerCase() === value.toLowerCase(),
+      ) || null;
     onTokenSelection(selectedToken as Token);
     setOpen(false);
   };
@@ -79,17 +81,27 @@ const TokenSearchInput = ({
             aria-expanded={open}
             className="mx-auto mt-2 flex w-[200px] items-center justify-start border-dog-600"
           >
-            {!!selectedToken?.iconUrl && (
+            {selectedToken && (
               <Image
-                src={selectedToken.iconUrl}
-                alt={selectedToken.name}
+                src={selectedToken.iconUrl ?? "/placeholder.png"}
+                alt={
+                  selectedToken.custom
+                    ? `${selectedToken.name} [Custom]`
+                    : `${selectedToken.name} [${selectedToken.symbol}]`
+                }
                 className="mr-2 flex-shrink-0 rounded-full"
                 width={16}
                 height={16}
               />
             )}
             <p className="-mt-0.5 truncate">
-              {selectedToken ? selectedToken.name : "Select a token"}
+              {selectedToken
+                ? selectedToken.custom
+                  ? `${selectedToken.name} [Custom]`
+                  : `${
+                      selectedToken.name
+                    } [${selectedToken.symbol.toUpperCase()}]`
+                : "Select a token"}
             </p>
             <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
           </Button>
@@ -120,20 +132,24 @@ const TokenSearchInput = ({
                         <CommandItem
                           key={token.coingecko_id}
                           value={token.coingecko_id}
+                          className="group"
                           onSelect={(value) => {
                             handleSelection(value, tokens);
                           }}
                         >
-                          {!!token.iconUrl && (
-                            <Image
-                              src={token.iconUrl}
-                              alt={token.name}
-                              className="mr-4 flex-shrink-0 rounded-full"
-                              width={18}
-                              height={18}
-                            />
-                          )}
-                          {token.name}
+                          <Image
+                            src={token.iconUrl ?? "/placeholder.png"}
+                            alt={token.name}
+                            className="mr-4 flex-shrink-0 rounded-full group-hover:bg-dog-800"
+                            width={18}
+                            height={18}
+                          />
+                          <p className="flex gap-2">
+                            <span className="truncate">{token.name}</span>{" "}
+                            <span className="ml-2 text-xs text-dog-500">
+                              [{token.symbol.toUpperCase()}]
+                            </span>
+                          </p>
                         </CommandItem>
                       ))}
 
@@ -142,20 +158,24 @@ const TokenSearchInput = ({
                         <CommandItem
                           key={token.coingecko_id}
                           value={token.coingecko_id}
+                          className="group"
                           onSelect={(value) => {
                             handleSelection(value, searchResults);
                           }}
                         >
-                          {!!token.iconUrl && (
-                            <Image
-                              src={token.iconUrl}
-                              alt={token.name}
-                              className="mr-4 flex-shrink-0 rounded-full"
-                              width={18}
-                              height={18}
-                            />
-                          )}
-                          {token.name}
+                          <Image
+                            src={token.iconUrl ?? "/placeholder.png"}
+                            alt={token.name}
+                            className="mr-4 flex-shrink-0 rounded-full group-hover:bg-dog-800"
+                            width={18}
+                            height={18}
+                          />
+                          <p className="flex max-w-[140px] items-center gap-2">
+                            <span className="truncate">{token.name}</span>{" "}
+                            <span className="ml-2 text-xs text-dog-500">
+                              [{token.symbol.toUpperCase()}]
+                            </span>
+                          </p>
                         </CommandItem>
                       ))}
                   </CommandGroup>

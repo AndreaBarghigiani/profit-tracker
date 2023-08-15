@@ -5,14 +5,14 @@ import { hodlSummary } from "@/utils/positions";
 import { buttonVariants } from "../../button";
 
 // Types
-import type { FullPosition } from "@/server/types";
+import type { FullPositionZod } from "@/server/types";
 
 // Components
 import Image from "next/image";
 import Link from "next/link";
 import Heading from "@/components/ui/heading";
 
-const HodlSummary = ({ hodls }: { hodls: FullPosition[] }) => {
+const HodlSummary = ({ hodls }: { hodls: FullPositionZod[] }) => {
   const summary = hodlSummary(hodls);
   const topPerformer = hodls
     .filter((hodl) => hodl.token.id === summary.topPerformer.tokenId)
