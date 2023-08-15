@@ -27,7 +27,6 @@ import ProjectCard from "@/components/ui/custom/ProjectCard";
 const Dashboard: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ hodls }) => {
-  console.log("hodls:", hodls);
   const utils = api.useContext();
 
   const { data: projects, isSuccess: isProjectsSuccess } =
@@ -47,8 +46,7 @@ const Dashboard: NextPage<
     if (!hodls) return;
 
     const tokenIds = hodls.map((position) => position.token.coingecko_id);
-    const updates = await updatePrices({ tokenIds });
-    console.log("updates:", updates);
+    await updatePrices({ tokenIds });
   };
 
   const hodlsSorted = !!hodls && sortedPositionsByPrice(hodls);
@@ -141,8 +139,7 @@ export default Dashboard;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerAuthSession(context);
-  console.log("-------- Andrea --------");
-  console.log("session from Dashboard:", session);
+
   if (!session) return { props: {} };
 
   const positions = await getByCurrentUser({ ctx: { prisma, session } });
@@ -159,6 +156,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     },
   }));
 
+  // TODO: Add projects and UserStats
   return {
     props: {
       hodls: formattedPositions,

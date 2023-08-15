@@ -55,44 +55,32 @@ const Hodl: NextPage<
           Your positions
         </Heading>
 
-        <div className="my-4 space-y-3 text-center text-stone-400">
-          {/* {isPositionLoading && (
-            <>
-              <Skeleton as="h1" className="mx-auto h-10 w-64 bg-dog-400" />
-              <Skeleton as="p" className="mx-auto h-6 w-144 bg-dog-400 " />
-              <Skeleton as="a" className="mx-auto block h-8 w-32 bg-dog-400" />
-            </>
-          )} */}
-
-          {!!positions && positions.length ? (
-            <>
-              <Heading>Congrats for tracking your positions!</Heading>
-              <p className=" text-lg ">
-                Here you can have a feeling on how your investments are going,
-                or create a new one.
-              </p>
-              <Link
-                className={buttonVariants({ className: "ml-auto" })}
-                href="/hodl/add"
-              >
-                New position
-              </Link>
-            </>
-          ) : (
-            <>
-              <Heading>Looks like you have no positions open, yet!</Heading>
-              <p>
-                Just click the button below and start track your investments.
-              </p>
-              <Link
-                className={buttonVariants({ className: "ml-auto" })}
-                href="/hodl/add"
-              >
-                Create one
-              </Link>
-            </>
-          )}
-        </div>
+        {!!positions && positions.length ? (
+          <div className="my-4 space-y-3 text-center text-stone-400">
+            <Heading>Congrats for tracking your positions!</Heading>
+            <p className=" text-lg ">
+              Here you can have a feeling on how your investments are going, or
+              create a new one.
+            </p>
+            <Link
+              className={buttonVariants({ className: "ml-auto" })}
+              href="/hodl/add"
+            >
+              New position
+            </Link>
+          </div>
+        ) : (
+          <div className="my-4 space-y-3 text-center text-stone-400">
+            <Heading>Looks like you have no positions open, yet!</Heading>
+            <p>Just click the button below and start track your investments.</p>
+            <Link
+              className={buttonVariants({ className: "ml-auto" })}
+              href="/hodl/add"
+            >
+              Create one
+            </Link>
+          </div>
+        )}
 
         {!!positionsSorted && (
           <>
@@ -133,7 +121,7 @@ export default Hodl;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerAuthSession(context);
-  console.log("session from hodl Page:", session);
+
   if (!session) return { props: {} };
 
   const positions = await getByCurrentUser({ ctx: { prisma, session } });
