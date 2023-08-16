@@ -34,14 +34,15 @@ export const currencyConverter = ({
 }: CurrencyConverterType) => {
   const numeric = typeof amount === "string" ? parseFloat(amount) : amount;
   const numUnits = maxSignificantDigits(numeric);
-  const maxSign = numUnits >= 1 ? numUnits + 2 : 2;
+  const minSignificant = numUnits === 1 ? 3 : 2;
+  const maxSignifican = numUnits >= 1 ? numUnits + 2 : 2;
 
   return new Intl.NumberFormat("en-EN", {
     style: "currency",
     currency: "USD",
     signDisplay: showSign ? "always" : "never",
-    minimumSignificantDigits: numUnits === 1 ? 3 : 2,
-    maximumSignificantDigits: maxSign,
+    minimumSignificantDigits: minSignificant,
+    maximumSignificantDigits: maxSignifican,
   }).format(numeric);
 };
 
