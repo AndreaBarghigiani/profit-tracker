@@ -1,18 +1,14 @@
 // Utils
-import { useState } from "react";
 
 // Types
 import type { NextPage } from "next";
-import type { Token } from "@prisma/client";
 
 // Components
 import Head from "next/head";
 import Heading from "@/components/ui/heading";
-import TokenSearchInput from "@/components/ui/custom/TokenSearchInput";
-import AddHodlPositionForm from "@/components/ui/custom/AddHodlPositionForm";
+import AddAirdropForm from "@/components/ui/custom/AddAirdropForm";
 
 const Airdrop: NextPage = () => {
-  const [selectedToken, setSelectedToken] = useState<Token | null>(null);
   return (
     <>
       <Head>
@@ -42,22 +38,9 @@ const Airdrop: NextPage = () => {
           </p>
         </section>
 
-        <div className="mx-auto my-10 w-2/3 text-center">
-          <p className="mx-auto w-3/6 text-xs text-dog-500">
-            For now you can only select CoinGecko traked tokens or custom ones
-            already tracked by the system. More will be added...
-          </p>
-
-          <TokenSearchInput
-            selectedToken={selectedToken}
-            onTokenSelection={setSelectedToken}
-          />
+        <div className="mx-auto my-10 w-2/3 space-y-10 text-center">
+          <AddAirdropForm />
         </div>
-        {!!selectedToken && (
-          <div className="mx-auto my-10 w-2/3">
-            <AddHodlPositionForm hodlId={null} token={selectedToken} airdrop />
-          </div>
-        )}
       </div>
     </>
   );
