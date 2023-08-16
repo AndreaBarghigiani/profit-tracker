@@ -23,18 +23,20 @@ import { Button } from "@/components/ui/button";
 import AddTransactionModal from "@/components/ui/custom/AddTransactionModal";
 import AddHodlPositionForm from "@/components/ui/custom/AddHodlPositionForm";
 import HodlStats from "@/components/ui/custom/HodlStats";
-import { Trash2, Plus, RefreshCcw, Banknote } from "lucide-react";
+import { Trash2, Plus, RefreshCcw, Banknote, Gift } from "lucide-react";
 import {
   Tooltip,
   TooltipTrigger,
   TooltipProvider,
   TooltipContent,
 } from "@/components/ui/tooltip";
+import AddAirdropForm from "@/components/ui/custom/AddAirdropForm";
 
 const Hodl: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ startDate, token, hodl }) => {
   const transactionModal = useHodlTransactionModal();
+  const airdropModal = useHodlTransactionModal();
   const utils = api.useContext();
   const router = useRouter();
   const pageTitle = `Token ${token.name} Hodl page - Underdog Tracker`;
@@ -92,7 +94,7 @@ const Hodl: NextPage<
                 transactionModal={transactionModal}
                 Icon={Plus}
                 iconClasses="h-4 w-4"
-                btnVariants={{ size: "sm" }}
+                btnVariants={{ size: "link" }}
               >
                 <AddHodlPositionForm
                   hodlId={hodl.id}
@@ -101,19 +103,41 @@ const Hodl: NextPage<
                 />
               </AddTransactionModal>
 
+              <AddTransactionModal
+                size="large"
+                transactionModal={airdropModal}
+                Icon={Gift}
+                iconClasses="h-4 w-4"
+                btnVariants={{ size: "link", variant: "outline" }}
+                modalContent={{
+                  title: "Add airdrop",
+                  description:
+                    "Many projects reward their holders with tokens, and you're one of the lucky ones.",
+                  tooltip: "Reward",
+                }}
+              >
+                <div className="space-y-4">
+                  <AddAirdropForm
+                    closeModal={() => airdropModal.setOpen(false)}
+                  />
+                </div>
+              </AddTransactionModal>
+
               <Button
                 variant="outline"
-                size="sm"
+                size="link"
                 onClick={() => updatePrice({ tokenId: token.coingecko_id })}
               >
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <RefreshCcw
-                        className={clsx("h-4 w-4", {
-                          "animate-spin": isPriceLoading,
-                        })}
-                      />
+                      <span className="flex h-9 items-center justify-center px-3">
+                        <RefreshCcw
+                          className={clsx(" h-4 w-4", {
+                            "animate-spin": isPriceLoading,
+                          })}
+                        />
+                      </span>
                     </TooltipTrigger>
                     <TooltipContent className="border-dog-800 text-dog-500">
                       <p>Update price</p>
@@ -124,7 +148,7 @@ const Hodl: NextPage<
 
               <Button
                 variant="outline-success"
-                size="sm"
+                size="link"
                 onClick={() =>
                   closePosition({
                     hodlId: hodl.id,
@@ -136,7 +160,9 @@ const Hodl: NextPage<
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Banknote className="h-4 w-4" />
+                      <span className="flex h-9 items-center justify-center px-3">
+                        <Banknote className="h-4 w-4" />
+                      </span>
                     </TooltipTrigger>
                     <TooltipContent className="border-dog-800 text-dog-500">
                       <p>Sell & Close</p>
@@ -147,13 +173,15 @@ const Hodl: NextPage<
 
               <Button
                 variant="outline-danger"
-                size="sm"
+                size="link"
                 onClick={() => deletePosition(hodl.id)}
               >
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Trash2 className="h-4 w-4" />
+                      <span className="flex h-9 items-center justify-center px-3">
+                        <Trash2 className="h-4 w-4" />
+                      </span>
                     </TooltipTrigger>
                     <TooltipContent className="border-dog-800 text-dog-500">
                       <p>Delete</p>
