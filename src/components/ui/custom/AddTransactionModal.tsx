@@ -45,6 +45,11 @@ interface AddTransactionModalProps
   Icon?: LucideIcon;
   iconClasses?: string;
   btnVariants?: VariantProps<typeof buttonVariants>;
+  modalContent?: {
+    title: string;
+    description: string;
+    tooltip: string;
+  };
 }
 
 const AddTransactionModal = ({
@@ -54,6 +59,11 @@ const AddTransactionModal = ({
   Icon,
   iconClasses,
   btnVariants,
+  modalContent = {
+    title: "Add a transaction",
+    description: "Here you can add your transaction.",
+    tooltip: "Add transaction",
+  },
 }: AddTransactionModalProps) => {
   return (
     <Dialog
@@ -66,10 +76,12 @@ const AddTransactionModal = ({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Icon className={cn(iconClasses)} />
+                  <span className="flex h-9 items-center justify-center px-3">
+                    <Icon className={cn(iconClasses)} />
+                  </span>
                 </TooltipTrigger>
                 <TooltipContent className="border-dog-800 text-dog-500">
-                  <p>Add transaction</p>
+                  <p>{modalContent.tooltip}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -80,10 +92,8 @@ const AddTransactionModal = ({
       </DialogTrigger>
       <DialogContent className={cn(contentVariants({ size }))}>
         <DialogHeader>
-          <DialogTitle>Add a transaction</DialogTitle>
-          <DialogDescription>
-            Here you can add your transaction.
-          </DialogDescription>
+          <DialogTitle>{modalContent.title}</DialogTitle>
+          <DialogDescription>{modalContent.description}</DialogDescription>
         </DialogHeader>
 
         {children}
