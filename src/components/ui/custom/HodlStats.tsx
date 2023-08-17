@@ -122,7 +122,10 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
                 Average Buy Price
               </Heading>
               <p className="text-3xl font-semibold">
-                {currencyConverter({ amount: avgPrice.average })}
+                {currencyConverter({
+                  amount: avgPrice.average,
+                  removeZeros: true,
+                })}
               </p>
             </div>
           )}
