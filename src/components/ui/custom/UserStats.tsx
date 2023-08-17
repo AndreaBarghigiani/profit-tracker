@@ -36,7 +36,7 @@ const UserStats = ({ userStats, orientation }: UserStatsCardProps) => {
     {
       "h-28 items-center": orientation !== "vertical",
       "flex-col h-128 w-56": orientation === "vertical",
-    }
+    },
   );
 
   const separatorOrientation =

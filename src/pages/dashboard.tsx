@@ -1,6 +1,7 @@
 //Utils
 import { api } from "@/utils/api";
 import clsx from "clsx";
+import { useRouter } from "next/router";
 import { sortedPositionsByPrice } from "@/utils/positions";
 import { prisma } from "@/server/db";
 import { getServerAuthSession } from "@/server/auth";
@@ -28,6 +29,7 @@ const Dashboard: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ hodls }) => {
   const utils = api.useContext();
+  const router = useRouter();
 
   const { data: projects, isSuccess: isProjectsSuccess } =
     api.project.listByCurrentUser.useQuery();
@@ -39,6 +41,7 @@ const Dashboard: NextPage<
     api.token.updatePrices.useMutation({
       onSuccess: async () => {
         await utils.hodl.getByCurrentUser.invalidate();
+        await router.replace(router.asPath);
       },
     });
 
