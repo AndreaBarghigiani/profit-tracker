@@ -1,30 +1,28 @@
 // Utils
+import { useState, cloneElement, isValidElement } from "react";
 import { api } from "@/utils/api";
 import { cn } from "@/lib/utils";
 import clsx from "clsx";
 import { currencyConverter, formatNumber } from "@/utils/string";
-import { useHodlTransactionModal } from "@/hooks/useTransactionModal";
 
 // Types
 import type { LucideIcon } from "lucide-react";
 import type { FullPositionZod } from "@/server/types";
+import type { MouseEvent, ReactElement } from "react";
+import type { ClassValue } from "clsx";
 
 // Components
 import Image from "next/image";
 import Heading from "@/components/ui/heading";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
-// import { Skeleton } from "@/components/ui/skeleton";
-// import { Eye, Wallet, Diff, Plus, Trash2, RefreshCcw } from "lucide-react";
-import { Eye, Wallet, Plus, AlertTriangle } from "lucide-react";
+import { Wallet, AlertTriangle } from "lucide-react";
 import {
   Tooltip,
   TooltipTrigger,
   TooltipProvider,
   TooltipContent,
 } from "@/components/ui/tooltip";
-import AddTransactionModal from "./AddTransactionModal";
-import AddHodlPositionForm from "./AddHodlPositionForm";
 
 const HodlCard = ({
   position,
@@ -33,7 +31,6 @@ const HodlCard = ({
   position: FullPositionZod;
   rank: number;
 }) => {
-  const transactionModal = useHodlTransactionModal();
   const currentEvaluation = position.amount * position.token.latestPrice;
   const { data: hodlDiff, isSuccess: isHodlDiffSuccess } =
     api.hodl.getDiffFromBuyes.useQuery(
@@ -70,56 +67,64 @@ const HodlCard = ({
   // });
 
   return (
-    <div className="relative flex items-center rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg">
+    <div className="relative rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg">
       {rank && (
         <div className="absolute left-0 top-0 rounded-br-lg rounded-tl-lg bg-dog-800 px-3 py-1 text-xs text-dog-500">
           {`#${rank}`}
         </div>
       )}
+      <div className="flex items-center">
+        <Image
+          src={position.token.iconUrl ?? "/placeholder.png"}
+          alt={position.token.name}
+          className="mr-4 flex-shrink-0 rounded-full"
+          width={48}
+          height={48}
+        />
 
-      <Image
-        src={position.token.iconUrl ?? "/placeholder.png"}
-        alt={position.token.name}
-        className="mr-4 flex-shrink-0 rounded-full"
-        width={48}
-        height={48}
-      />
+        <div className="w-full grow-0">
+          <header className="flex items-start justify-between gap-6">
+            <Link
+              href={`/hodl/${position.id}`}
+              className={buttonVariants({
+                variant: "link",
+                size: "link",
+              })}
+            >
+              <Heading size="h2" className="my-0">
+                {position.token.name}
+              </Heading>
+            </Link>
+            {isHodlDiffSuccess && (
+              <p className={badgeClass}>{hodlDiff.percentage}%</p>
+            )}
+          </header>
 
-      <div className="w-full">
-        <header className="flex items-start justify-between gap-6">
-          <Link
-            href={`/hodl/${position.id}`}
-            className={buttonVariants({
-              variant: "link",
-              size: "link",
-            })}
-          >
-            <Heading size="h2" className="my-0">
-              {position.token.name}
-            </Heading>
-          </Link>
-          {isHodlDiffSuccess && (
-            <p className={badgeClass}>{hodlDiff.percentage}%</p>
-          )}
-        </header>
+          <section className="mt-4 flex items-center justify-between">
+            <HodlCardData amount={currentEvaluation} Icon={Wallet} highlighted>
+              <p className="text-base font-semibold">Evaluation</p>
 
-        <section className="mt-4 flex items-center gap-6">
-          <HodlCardData amount={currentEvaluation} Icon={Wallet} highlighted>
-            <p className="text-base font-semibold">Evaluation</p>
-            <p className="mt-1 text-xs text-dog-600">
-              Token amount:{` `}
-              <strong>
-                {formatNumber(position.amount)}{" "}
-                <span className="uppercase">{position.token.symbol}</span>
-              </strong>
-            </p>
-          </HodlCardData>
+              <p className="mt-1 text-xs text-dog-600">
+                Token amount:{` `}
+                <strong>
+                  {formatNumber(position.amount)}{" "}
+                  <span className="uppercase">{position.token.symbol}</span>
+                </strong>
+              </p>
 
-          <HodlCardData amount={position.exposure} Icon={AlertTriangle}>
-            <p className="text-base font-semibold">Exposure</p>
-          </HodlCardData>
+              <p className="mt-1 hidden text-xs text-dog-600">
+                Position evaluation:{` `}
+                <strong>
+                  {currencyConverter({ amount: currentEvaluation })}
+                </strong>
+              </p>
+            </HodlCardData>
 
-          {/* <div className="flex items-center">
+            <HodlCardData amount={position.exposure} Icon={AlertTriangle}>
+              <p className="text-base font-semibold">Exposure</p>
+            </HodlCardData>
+
+            {/* <div className="flex items-center">
             <div className="mr-2 rounded-full bg-dog-800 p-1 text-dog-400">
               <Diff className="h-4 w-4" />
             </div>
@@ -127,77 +132,19 @@ const HodlCard = ({
               {currencyConverter({ amount: diffAmount, showSign: true })}
             </span>
           </div> */}
-
-          <div className="ml-auto space-x-2">
-            <AddTransactionModal
-              size="large"
-              Icon={Plus}
-              iconClasses="h-4 w-4"
-              transactionModal={transactionModal}
-              btnVariants={{
-                variant: "ghost",
-                size: "xs",
-                corners: "pill",
-              }}
-            >
-              <AddHodlPositionForm
-                hodlId={position.id}
-                token={position.token}
-                closeModal={() => transactionModal.setOpen(false)}
-              />
-            </AddTransactionModal>
-
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Link
-                    href={`/hodl/${position.id}`}
-                    className={buttonVariants({
-                      variant: "ghost",
-                      size: "xs",
-                      corners: "pill",
-                      className: "ml-auto",
-                    })}
-                  >
-                    <Eye className="h-4 w-4" />
-                  </Link>
-                </TooltipTrigger>
-                <TooltipContent className="border-dog-800 text-dog-500">
-                  <p>Check details</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-
-            {/* 
-										Not show single icon button for the moment
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="xs"
-                    onClick={() => deletePosition(position.id)}
-                  >
-                    {isDeletingPosition ? (
-                      <RefreshCcw className={deleteIconClass} />
-                    ) : (
-                      <Trash2 className={deleteIconClass} />
-                    )}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent className="border-dog-800 text-dog-500">
-                  <p>Delete position</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider> */}
-          </div>
-        </section>
+          </section>
+        </div>
       </div>
     </div>
   );
 };
 
 export default HodlCard;
+
+// Made in order to solve some issues with `cloneElement`
+type ChildrenProps = {
+  className?: string;
+};
 
 const HodlCardData = ({
   amount,
@@ -210,6 +157,11 @@ const HodlCardData = ({
   children: React.ReactNode;
   highlighted?: boolean;
 }) => {
+  const triggerClasses = cn("flex items-center min-w-0", {
+    "max-w-[50%]": highlighted,
+    "max-w-[40%]": !highlighted,
+  });
+
   const divIconClasses = cn(
     "mr-2 rounded-full bg-dog-800 text-dog-400 flex items-center justify-center",
     {
@@ -223,19 +175,40 @@ const HodlCardData = ({
     "h-4 w-4": !highlighted,
   });
 
-  const textClasses = cn({
+  const textClasses = cn("truncate", {
     "text-4xl font-semibold": highlighted,
     "text-dog-300": !highlighted,
   });
+
+  // Calculate Text Overflow
+  const [isOverflowing, setIsOverflowing] = useState(false);
+
+  const handleOverflow = ({ currentTarget }: MouseEvent<Element>) => {
+    const { scrollWidth, clientWidth } = currentTarget;
+    setIsOverflowing(scrollWidth > clientWidth);
+  };
+
+  const massagedChildren = Array.isArray(children)
+    ? children.map((child: ReactElement<ChildrenProps>) => {
+        if (!isValidElement(child)) return child;
+
+        return cloneElement(child as ReactElement, {
+          className: cn(child.props.className as ClassValue, {
+            block: isOverflowing,
+          }),
+        });
+      })
+    : children;
+
   return (
     <TooltipProvider delayDuration={300}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <div className="flex items-center">
+          <div className={triggerClasses}>
             <div className={divIconClasses}>
               <Icon className={iconClasses} />
             </div>
-            <span className={textClasses}>
+            <span className={textClasses} onMouseEnter={handleOverflow}>
               {currencyConverter({ amount: amount })}
             </span>
           </div>
@@ -244,7 +217,7 @@ const HodlCardData = ({
           side="bottom"
           className="border-dog-800 text-center text-dog-500"
         >
-          {children}
+          {massagedChildren}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
