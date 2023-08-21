@@ -53,12 +53,17 @@ type AddDcaProps = {
 
 const AddDcaForm = ({ token, hodl, dcaStrategy, closeModal }: AddDcaProps) => {
   let defaultValues: Partial<AddDcaFormProps> = {
-    steps: [
-      {
-        percentage: 10,
-        price: token.latestPrice,
-      },
-    ],
+    steps: !!dcaStrategy?.dcaSteps
+      ? dcaStrategy.dcaSteps.map((step) => ({
+          percentage: step.percentage,
+          price: step.price,
+        }))
+      : [
+          {
+            percentage: 10,
+            price: token.latestPrice,
+          },
+        ],
   };
 
   const form = useForm<AddDcaFormProps>({
