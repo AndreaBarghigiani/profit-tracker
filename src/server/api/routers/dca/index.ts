@@ -2,12 +2,8 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { DcaStrategySchema } from "@/server/types";
-import { getWallet } from "../wallet";
 
 // Types
-import { type PrismaClient, TransactionType } from "@prisma/client";
-import type { Session } from "next-auth";
-import type { HodlTransaction, CalcDiffs } from "@/server/types";
 
 export const dcaRouter = createTRPCRouter({
   get: protectedProcedure
