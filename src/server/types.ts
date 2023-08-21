@@ -100,6 +100,16 @@ export const HodlTransactionSchema = TransactionValuesSchema.extend({
 
 export type HodlTransaction = z.infer<typeof HodlTransactionSchema>;
 
+export const DcaStrategyStep = z.object({
+  percentage: z.number().positive().max(100),
+  price: z.number().positive(),
+});
+
+export const DcaStrategySchema = z.object({
+  hodlId: z.string(),
+  steps: z.array(DcaStrategyStep),
+});
+
 // CoinGecko
 export const CoinGeckoTokenInfoSchema = z.object({
   id: z.string(),

@@ -5,3 +5,7 @@ export const calcPercentageVariance = (oldValue: number, newValue: number) => {
 export const calcAverage = (values: number[]) => {
   return values.reduce((a, b) => a + b, 0) / values.length;
 };
+
+export const percentageOf = (number: number, percentage: number) => {
+  return (percentage / 100) * number;
+};

@@ -22,27 +22,33 @@ import HodlTransactionCard from "@/components/ui/custom/HodlTransactionCard";
 import { Button } from "@/components/ui/button";
 import AddTransactionModal from "@/components/ui/custom/AddTransactionModal";
 import AddHodlPositionForm from "@/components/ui/custom/AddHodlPositionForm";
+import AddAirdropForm from "@/components/ui/custom/AddAirdropForm";
+import AddDcaForm from "@/components/ui/custom/AddDcaForm";
 import HodlStats from "@/components/ui/custom/HodlStats";
-import { Trash2, Plus, RefreshCcw, Banknote, Gift } from "lucide-react";
+import { Trash2, Plus, RefreshCcw, Banknote, Gift, Coins } from "lucide-react";
 import {
   Tooltip,
   TooltipTrigger,
   TooltipProvider,
   TooltipContent,
 } from "@/components/ui/tooltip";
-import AddAirdropForm from "@/components/ui/custom/AddAirdropForm";
 
 const Hodl: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ startDate, token, hodl }) => {
   const transactionModal = useHodlTransactionModal();
   const airdropModal = useHodlTransactionModal();
+  const dcaModal = useHodlTransactionModal();
+
   const utils = api.useContext();
   const router = useRouter();
   const pageTitle = `Token ${token.name} Hodl page - Underdog Tracker`;
+
   const { data, isSuccess } = api.hodl.getTransactions.useQuery({
     hodlId: hodl.id,
   });
+
+  const { data: dcaStrategy } = api.dca.get.useQuery({ hodlId: hodl.id });
 
   const { mutateAsync: updatePrice, isLoading: isPriceLoading } =
     api.token.updatePrice.useMutation({
@@ -100,6 +106,29 @@ const Hodl: NextPage<
                   hodlId={hodl.id}
                   token={token}
                   closeModal={() => transactionModal.setOpen(false)}
+                />
+              </AddTransactionModal>
+
+              <AddTransactionModal
+                size="large"
+                transactionModal={dcaModal}
+                Icon={Coins}
+                iconClasses="h-4 w-4"
+                btnVariants={{
+                  size: "link",
+                  variant: dcaStrategy ? "orange" : "outline-orange",
+                }}
+                modalContent={{
+                  title: "Add your DCA Out Strategy",
+                  description: `You can add your DCA Out strategy for ${token.name} to see how much you will earn if you sell your tokens at a specific price.`,
+                  tooltip: "DCA Out",
+                }}
+              >
+                <AddDcaForm
+                  hodl={hodl}
+                  token={token}
+                  dcaStrategy={dcaStrategy}
+                  closeModal={() => dcaModal.setOpen(false)}
                 />
               </AddTransactionModal>
 
@@ -233,15 +262,15 @@ export async function getServerSideProps(
   const {
     createdAt: hodlCreatedAt,
     updatedAt: hodlUpdatedAt,
-    token,
+    token: fullToken,
     ...hodl
   } = fullHodl;
 
   const {
     createdAt: tokenCreatedAt,
     updatedAt: tokenUpdatedAt,
-    ...curToken
-  } = token;
+    ...token
+  } = fullToken;
 
   const startDate = formatDate(hodlCreatedAt, "medium");
 
@@ -249,7 +278,7 @@ export async function getServerSideProps(
     props: {
       startDate,
       hodl,
-      token: curToken,
+      token,
     },
   };
 }
