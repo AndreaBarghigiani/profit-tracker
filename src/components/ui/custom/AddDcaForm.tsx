@@ -1,11 +1,10 @@
 // Utils
-import { useEffect, useState } from "react";
 import { api } from "@/utils/api";
 import * as z from "zod";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
-import { currencyConverter, uppercaseFirst } from "@/utils/string";
+import { currencyConverter } from "@/utils/string";
 import { percentageOf } from "@/utils/number";
 
 // Types
@@ -25,7 +24,6 @@ import { Minus, RefreshCcw, Save } from "lucide-react";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
