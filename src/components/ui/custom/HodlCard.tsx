@@ -196,6 +196,7 @@ const HodlCardData = ({
           className: cn(child.props.className as ClassValue, {
             block: isOverflowing,
           }),
+          key: child.key,
         });
       })
     : children;
