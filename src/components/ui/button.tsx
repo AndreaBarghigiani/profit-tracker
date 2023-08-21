@@ -16,6 +16,8 @@ const buttonVariants = cva(
           "bg-dog-200 text-primary-foreground hover:bg-main disabled:hover:bg-dog-200",
         active:
           "bg-accent text-accent-foreground hover:bg-accent/90 disabled:hover:bg-accent",
+        orange:
+          "bg-orange-500 text-primary-foreground hover:bg-orange-300 disabled:hover:bg-orange-200",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:hover:bg-destructive",
         outline:
@@ -24,6 +26,9 @@ const buttonVariants = cva(
           "border border-alert-300 text-alert-300 hover:border-alert-400 hover:text-alert-400",
         "outline-success":
           "border border-success-600 text-success-600 hover:border-success-500 hover:text-success-500",
+        "outline-orange":
+          "border border-orange-600 text-orange-600 hover:border-orange-500 hover:text-orange-500",
+        "outline-input": "border border-dog-600 bg-background",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "text-dog-300 hover:text-main-500",
