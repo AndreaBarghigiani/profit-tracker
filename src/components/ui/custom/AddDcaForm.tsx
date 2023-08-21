@@ -75,6 +75,8 @@ const AddDcaForm = ({ token, hodl, dcaStrategy, closeModal }: AddDcaProps) => {
 
   const totals = watchSteps.reduce(
     (acc, curr) => {
+      if (curr.percentage === 0) return acc;
+
       const availableTokens = hodl.amount - acc.tokens;
       const totTokens =
         acc.tokens + percentageOf(availableTokens, curr.percentage);
