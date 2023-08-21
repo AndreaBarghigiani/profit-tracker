@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/form";
 
 type DollarInputProps = {
-  label: string;
+  label?: string;
   placeholder?: string;
   setValue: React.Dispatch<React.SetStateAction<number>>;
 };
@@ -17,10 +17,11 @@ type DollarInputProps = {
 const DollarInput = ({ label, placeholder, setValue }: DollarInputProps) => {
   return (
     <FormItem>
-      <FormLabel>{label}</FormLabel>
+      {!!label && <FormLabel>{label}</FormLabel>}
+
       <FormControl>
-        <div className="flex h-10 items-center rounded-md border border-dog-600 px-3 focus-within:ring-2 focus-within:ring-main-600 focus-within:ring-offset-main-700">
-          <span className="focus:text-main-600">$</span>
+        <div className="group flex h-10 items-center rounded-md border border-dog-600 px-3 focus-within:ring-2 focus-within:ring-main-600 focus-within:ring-offset-main-700">
+          <span className="group-focus-within:text-main-600 ">$</span>
           <Input
             type="number"
             min={0.01}
