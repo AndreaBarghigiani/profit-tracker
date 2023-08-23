@@ -1,8 +1,12 @@
 // Utils
-import { signIn } from "next-auth/react";
+// import { signIn } from "next-auth/react";
+import va from "@vercel/analytics";
+
 // Components
 import Heading from "@/components/ui/heading";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
 
 const CTASection = () => {
   return (
@@ -18,9 +22,22 @@ const CTASection = () => {
         a more profitable crypto investment future.
       </p>
 
-      <Button className="mx-auto" variant={"active"} onClick={() => signIn()}>
+      {/* <Button className="mx-auto" variant={"active"} onClick={() => signIn()}>
         Get Started
-      </Button>
+      </Button> */}
+
+      <Link
+        className={buttonVariants({
+          variant: "active",
+          className: "mx-auto flex items-center",
+        })}
+        href="/get-started"
+        onClick={() => {
+          va.track("Homepage Get Started");
+        }}
+      >
+        Get Started
+      </Link>
     </section>
   );
 };
