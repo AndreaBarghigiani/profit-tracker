@@ -1,10 +1,10 @@
-import { signIn, signOut, useSession } from "next-auth/react";
+// import { signIn, signOut, useSession } from "next-auth/react";
 
 // Components
-import { Button } from "./ui/button";
+// import { Button } from "./ui/button";
 
 const Header = () => {
-  const { data: sessionData } = useSession();
+  // const { data: sessionData } = useSession();
 
   return (
     <header className="mx-auto mb-6 flex items-center py-4">
