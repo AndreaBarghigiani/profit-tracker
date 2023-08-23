@@ -18,15 +18,15 @@ const HodlSummary = ({ hodls }: { hodls: FullPositionZod[] }) => {
     .filter((hodl) => hodl.token.id === summary.topPerformer.tokenId)
     .pop();
 
-  const summaryPerformanceBadgeClass = clsx(
-    "flex flex-shrink-0 items-center font-semibold rounded-3xl border px-3 py-1 ml-4 text-xs",
-    {
-      "border-success-800 bg-success-900 text-success-600":
-        Number(summary.change) > 0,
-      "border-alert-700 bg-alert-900 text-alert-600":
-        Number(summary.change) < 0,
-    },
-  );
+  // const summaryPerformanceBadgeClass = clsx(
+  //   "flex flex-shrink-0 items-center font-semibold rounded-3xl border px-3 py-1 ml-4 text-xs",
+  //   {
+  //     "border-success-800 bg-success-900 text-success-600":
+  //       Number(summary.change) > 0,
+  //     "border-alert-700 bg-alert-900 text-alert-600":
+  //       Number(summary.change) < 0,
+  //   },
+  // );
 
   const topPerformerBadgeClass = clsx(
     "flex flex-shrink-0 items-center font-semibold rounded-3xl border px-3 py-1 ml-4 text-xs",
@@ -53,9 +53,10 @@ const HodlSummary = ({ hodls }: { hodls: FullPositionZod[] }) => {
           {currencyConverter({ amount: summary.total })}
         </p>
 
-        <p className={summaryPerformanceBadgeClass}>
+        {/* TODO: improve the way we calculate %
+				<p className={summaryPerformanceBadgeClass}>
           {summary.change.toFixed(2)}%
-        </p>
+        </p> */}
       </div>
 
       {topPerformer && (
@@ -90,7 +91,7 @@ const HodlSummary = ({ hodls }: { hodls: FullPositionZod[] }) => {
             </Link>
 
             <p className={topPerformerBadgeClass}>
-              {summary.topPerformer.percentage}%
+              {summary.topPerformer.percentage.toFixed(2)}%
             </p>
           </div>
         </>

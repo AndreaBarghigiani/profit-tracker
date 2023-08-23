@@ -75,15 +75,15 @@ export const hodlSummary = (hodls: FullPositionZod[]) => {
     (acc, diff) => {
       if (!diff) return acc;
 
-      return Number(diff.percentage) > Number(acc.percentage) ? diff : acc;
+      return diff.percentage > acc.percentage ? diff : acc;
     },
-    { tokenId: "", percentage: "0" },
+    { tokenId: "", percentage: 0 },
   );
 
   const reduced = diffs.reduce((acc, diff) => {
     if (!diff) return acc;
 
-    return (acc += Number(diff.percentage));
+    return (acc += diff.percentage);
   }, 0);
 
   return {

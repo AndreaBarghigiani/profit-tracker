@@ -86,10 +86,8 @@ export const getDiffFromBuyes = async ({
     tokenId: buys.token.id,
     average,
     diff: currentHodlValue - averagedHodlValue,
-    percentage: (
-      ((currentHodlValue - averagedHodlValue) / averagedHodlValue) *
-      100
-    ).toFixed(2),
+    percentage:
+      ((currentHodlValue - averagedHodlValue) / averagedHodlValue) * 100,
     positive: currentHodlValue > averagedHodlValue,
   };
 };

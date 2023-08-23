@@ -96,7 +96,7 @@ const HodlCard = ({
               </Heading>
             </Link>
             {isHodlDiffSuccess && (
-              <p className={badgeClass}>{hodlDiff.percentage}%</p>
+              <p className={badgeClass}>{hodlDiff.percentage.toFixed(2)}%</p>
             )}
           </header>
 
