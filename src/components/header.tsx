@@ -43,14 +43,14 @@ const Header = () => {
         </div>
       </div>
 
-      <nav className="ml-auto flex gap-4">
+      {/* <nav className="ml-auto flex gap-4">
         <Button
           variant={"active"}
           onClick={sessionData ? () => signOut() : () => signIn()}
         >
           {sessionData ? "Sign out" : "Sign in"}
         </Button>
-      </nav>
+      </nav> */}
     </header>
   );
 };
