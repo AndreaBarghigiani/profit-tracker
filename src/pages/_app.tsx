@@ -1,8 +1,3 @@
-// Components
-import Layout from "@/components/layout";
-import NextTopLoader from "nextjs-toploader";
-import Head from "next/head";
-
 // Utils
 import { api } from "@/utils/api";
 
@@ -13,6 +8,12 @@ import type { AppProps } from "next/app";
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
+
+// Components
+import Layout from "@/components/layout";
+import NextTopLoader from "nextjs-toploader";
+import Head from "next/head";
+import { Analytics } from "@vercel/analytics/react";
 
 import "@/styles/globals.css";
 
@@ -45,6 +46,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       </Head>
       <NextTopLoader color="#ffcd1a" />
       <Layout>{layout}</Layout>
+      <Analytics />
     </SessionProvider>
   );
 };
