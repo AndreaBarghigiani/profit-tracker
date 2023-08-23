@@ -61,7 +61,7 @@ const AddDcaForm = ({ token, hodl, dcaStrategy, closeModal }: AddDcaProps) => {
       : [
           {
             percentage: 10,
-            price: token.latestPrice,
+            price: token.latestPrice + percentageOf(token.latestPrice, 20),
           },
         ],
   };
@@ -309,23 +309,23 @@ const AddDcaForm = ({ token, hodl, dcaStrategy, closeModal }: AddDcaProps) => {
 
             <div>
               <Heading size="h3" className="text-dog-100">
-                Total
-              </Heading>
-              <p>
-                <strong className=" text-dog-500">
-                  {currencyConverter({ amount: totals.dollars.toFixed(2) })}
-                </strong>
-              </p>
-            </div>
-
-            <div>
-              <Heading size="h3" className="text-dog-100">
                 {diffWithExposure > 0 ? "Profit" : "Exposed"}
               </Heading>
               <p className=" text-dog-500">
                 {currencyConverter({
                   amount: diffWithExposure,
                 })}
+              </p>
+            </div>
+
+            <div>
+              <Heading size="h3" className="text-dog-100">
+                Total
+              </Heading>
+              <p>
+                <strong className=" text-dog-500">
+                  {currencyConverter({ amount: totals.dollars.toFixed(2) })}
+                </strong>
               </p>
             </div>
           </div>
