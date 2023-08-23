@@ -1,6 +1,7 @@
 // Utils
 import clsx from "clsx";
 import { currencyConverter } from "@/utils/string";
+import { calcPercentageVariance } from "@/utils/number";
 import { hodlSummary } from "@/utils/positions";
 import { buttonVariants } from "../../button";
 
@@ -18,15 +19,15 @@ const HodlSummary = ({ hodls }: { hodls: FullPositionZod[] }) => {
     .filter((hodl) => hodl.token.id === summary.topPerformer.tokenId)
     .pop();
 
-  // const summaryPerformanceBadgeClass = clsx(
-  //   "flex flex-shrink-0 items-center font-semibold rounded-3xl border px-3 py-1 ml-4 text-xs",
-  //   {
-  //     "border-success-800 bg-success-900 text-success-600":
-  //       Number(summary.change) > 0,
-  //     "border-alert-700 bg-alert-900 text-alert-600":
-  //       Number(summary.change) < 0,
-  //   },
-  // );
+  const summaryPerformanceBadgeClass = clsx(
+    "flex flex-shrink-0 items-center font-semibold rounded-3xl border px-3 py-1 ml-10 text-xs",
+    {
+      "border-success-800 bg-success-900 text-success-600":
+        Number(summary.change) > 0,
+      "border-alert-700 bg-alert-900 text-alert-600":
+        Number(summary.change) < 0,
+    },
+  );
 
   const topPerformerBadgeClass = clsx(
     "flex flex-shrink-0 items-center font-semibold rounded-3xl border px-3 py-1 ml-4 text-xs",
@@ -48,15 +49,23 @@ const HodlSummary = ({ hodls }: { hodls: FullPositionZod[] }) => {
         Total Evaluation:
       </Heading>
 
-      <div className="flex items-center">
-        <p className="text-2xl font-semibold text-dog-200">
-          {currencyConverter({ amount: summary.total })}
-        </p>
+      <div className="mb-4 flex items-center">
+        <div>
+          <p className="text-2xl font-semibold text-dog-200">
+            {currencyConverter({ amount: summary.total })}
+          </p>
+          <p className="text-sm font-normal text-dog-600">
+            {currencyConverter({ amount: summary.change, showSign: true })}
+          </p>
+        </div>
 
-        {/* TODO: improve the way we calculate %
-				<p className={summaryPerformanceBadgeClass}>
-          {summary.change.toFixed(2)}%
-        </p> */}
+        <p className={summaryPerformanceBadgeClass}>
+          {calcPercentageVariance(
+            summary.total,
+            summary.total + summary.change,
+          )}
+          %
+        </p>
       </div>
 
       {topPerformer && (

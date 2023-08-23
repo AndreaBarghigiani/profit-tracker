@@ -83,7 +83,7 @@ export const hodlSummary = (hodls: FullPositionZod[]) => {
   const reduced = diffs.reduce((acc, diff) => {
     if (!diff) return acc;
 
-    return (acc += diff.percentage);
+    return (acc += diff.diff);
   }, 0);
 
   return {
