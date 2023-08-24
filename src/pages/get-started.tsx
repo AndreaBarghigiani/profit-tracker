@@ -15,7 +15,7 @@ import Image from "next/image";
 const Home: NextPageWithLayout = () => {
   return (
     <>
-      <div className="my-10 flex h-auto w-full flex-col justify-center">
+      <div className="my-2 flex h-auto w-full flex-col justify-center md:my-10">
         <Heading size="page" gradient="gold">
           Thank you for your interest! But this is a closed beta.
         </Heading>
@@ -40,8 +40,8 @@ const Home: NextPageWithLayout = () => {
         </Heading>
       </div>
 
-      <section className="mx-auto w-2/3">
-        <article className="prose prose-xl prose-h2:text-dog-100 prose-h3:text-dog-100 prose-p:text-dog-200 prose-strong:text-dog-100">
+      <section className="mx-auto md:w-2/3">
+        <article className="prose prose-base md:prose-xl prose-h2:text-dog-100 prose-h3:text-dog-100 prose-p:text-dog-200 prose-strong:text-dog-100">
           <p>Hey there, crypto explorer! 🚀 </p>
           <p>
             Ready to take your portfolio tracking game to the next level? Look
@@ -180,18 +180,18 @@ export default Home;
 
 const CTA = () => {
   return (
-    <div className=" mx-auto w-5/6 rounded-xl border border-dog-800 bg-dog-900 p-6 text-center">
+    <div className=" mx-auto rounded-xl border border-dog-800 bg-dog-900 p-2 text-center md:w-5/6 md:p-6">
       <Heading as="h2" size="h2" className="my-0">
         Are you ready to join the beta?
       </Heading>
       <p className="text-sm">It&apos;s as easy as to invest in your future.</p>
 
-      <div className="mt-6 flex flex-col items-center justify-center">
+      <div className="mt-2 flex flex-col items-center justify-center md:mt-6">
         <a
           href="https://lucasrubix.samcart.com/referral/cryptolabs/ebELooIHWL6GuzeY"
           target="_blank"
           className={buttonVariants({
-            className: "mb-3 no-underline",
+            className: "no-underline md:mb-3",
             variant: "active",
           })}
           onClick={() => {
