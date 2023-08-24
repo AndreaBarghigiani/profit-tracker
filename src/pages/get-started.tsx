@@ -41,7 +41,7 @@ const Home: NextPageWithLayout = () => {
       </div>
 
       <section className="mx-auto w-2/3">
-        <article className="prose prose-xl prose-h2:text-dog-100 prose-p:text-dog-200 prose-strong:text-dog-100">
+        <article className="prose prose-xl prose-h2:text-dog-100 prose-h3:text-dog-100 prose-p:text-dog-200 prose-strong:text-dog-100">
           <p>Hey there, crypto explorer! 🚀 </p>
           <p>
             Ready to take your portfolio tracking game to the next level? Look
@@ -92,7 +92,9 @@ const Home: NextPageWithLayout = () => {
             universe, we&#39;re built by crypto enthusiasts for crypto
             enthusiasts.
           </p>
-          <p>We get you because we&#39;re one of you.</p>
+          <p>
+            We get you because <strong>we&#39;re one of you.</strong>
+          </p>
           <p>And guess what? Your journey doesn&#39;t stop there!</p>
           <p>
             When you join our exclusive CryptoLabs community, you&#39;re not
@@ -120,6 +122,50 @@ const Home: NextPageWithLayout = () => {
             on this journey of crypto mastery. 🚀🔥
           </p>
           <CTA />
+          <Heading size="h2" as="h3" spacing="large">
+            Why do we require a CryptoLabs Membership?
+          </Heading>
+          <p>
+            To put it simply, this project was built from the ground up with the
+            support of the CryptoLabs team, and at the beginning, I was planning
+            to release it as an internal tool.
+          </p>
+          <p>
+            On top of that, you will get a lot from the community. Brilliant
+            people are inside, and you get daily opportunities to invest your
+            funds intelligently.
+          </p>
+          <p>
+            I could spend countless words trying to convince you to go and
+            create your account. Instead, I want you to be informed and DYOR (Do
+            Your Own Research, commonly referred to in DeFi).
+          </p>
+          <p>
+            So head over to{" "}
+            <a
+              href="https://lucasrubix.samcart.com/referral/cryptolabs/ebELooIHWL6GuzeY"
+              target="_blank"
+              className="text-dog-100 underline"
+              onClick={() => {
+                va.track("CLabs Membership Sign In");
+              }}
+            >
+              the website
+            </a>{" "}
+            or, even better, their{" "}
+            <a
+              href="https://lucasrubix.samcart.com/referral/youtube/ebELooIHWL6GuzeY"
+              target="_blank"
+              className="text-dog-100 underline"
+              onClick={() => {
+                va.track("CLabs YouTube Channel");
+              }}
+            >
+              YouTube channel
+            </a>{" "}
+            and see if the content they present will be helpful in your crypto
+            life.
+          </p>
         </article>
       </section>
     </>
@@ -138,7 +184,7 @@ const CTA = () => {
       <Heading as="h2" size="h2" className="my-0">
         Are you ready to join the beta?
       </Heading>
-      <p className="text-sm">It&apos; as easy as to invest in your future</p>
+      <p className="text-sm">It&apos;s as easy as to invest in your future.</p>
 
       <div className="mt-6 flex flex-col items-center justify-center">
         <a
@@ -155,9 +201,10 @@ const CTA = () => {
           Get started
         </a>
 
-        <span className="text-xs text-dog-400">
-          Once inside the commynity, drop me a DM to get access
-        </span>
+        <p className="text-xs text-dog-400">
+          Once inside the commynity, and DM &quot;Andrea Barghigiani&quot; to
+          get access
+        </p>
       </div>
     </div>
   );
