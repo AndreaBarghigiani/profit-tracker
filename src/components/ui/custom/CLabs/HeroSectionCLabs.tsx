@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 
 const HeroSectionCLabs = () => {
   return (
-    <div className="my-10 flex h-144 w-full flex-col justify-center">
+    <div className="my-4 flex h-64 w-full flex-col justify-center md:my-10 md:h-144">
       <Heading size="page" gradient="gold">
         Welcome CLabs family!
       </Heading>

@@ -16,10 +16,10 @@ const headingVariants = cva("font-semibold", {
   variants: {
     size: {
       h1: "text-3xl",
-      h2: "text-2xl",
+      h2: "text:lg md:text-2xl",
       h3: "text-xl",
       h4: "text-lg",
-      page: "text-8xl text-center font-bold leading-tight",
+      page: "text-4xl md:text-8xl text-center font-bold leading-tight",
     },
     gradient: {
       gold: "bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-accent via-yellow-500 to-accent text-transparent bg-clip-text",
