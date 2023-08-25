@@ -10,7 +10,7 @@ const WalletInfo = () => {
     api.wallet.getUserStats.useQuery();
 
   return (
-    <div className="p-2">
+    <div className="absolute bottom-0 p-2">
       <Heading size="h4" className="mb-0">
         General Info
       </Heading>
