@@ -6,6 +6,7 @@ import { sortedPositionsByPrice } from "@/utils/positions";
 import { prisma } from "@/server/db";
 import { getServerAuthSession } from "@/server/auth";
 import { getByCurrentUser } from "@/server/api/routers/hodl";
+import va from "@vercel/analytics";
 
 // Types
 import type {
@@ -48,6 +49,7 @@ const Dashboard: NextPage<
   const handleRefresh = async () => {
     if (!hodls) return;
 
+    va.track("Update Hodls Prices");
     const tokenIds = hodls.map((position) => position.token.coingecko_id);
     await updatePrices({ tokenIds });
   };
@@ -108,6 +110,7 @@ const Dashboard: NextPage<
                     size: "sm",
                     className: "ml-auto flex items-center",
                   })}
+                  onClick={() => va.track("Add Hodl Position")}
                   href="/hodl/add"
                 >
                   <Plus className="mr-2 h-3 w-3" />
