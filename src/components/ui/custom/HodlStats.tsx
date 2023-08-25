@@ -2,6 +2,7 @@
 import { api } from "@/utils/api";
 import { currencyConverter, formatNumber } from "@/utils/string";
 import clsx from "clsx";
+import { cn } from "@/lib/utils";
 
 // Types
 import type { HodlWithoutDates, TokenWithoutDates } from "@/server/types";
@@ -64,9 +65,9 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
 
   return (
     <>
-      <div className="grid grid-cols-5 gap-4">
+      <div className="xl:grid xl:grid-cols-5 xl:gap-4">
         {/* Overview box */}
-        <div className="flex flex-col justify-between rounded-lg border border-dog-800 bg-dog-900 p-5">
+        <div className="mb-4 flex justify-between rounded-lg border border-dog-800 bg-dog-900 p-5 xl:mb-0 xl:flex-col">
           <div>
             <Heading
               size="h3"
@@ -143,13 +144,21 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
             </p>
           </div>
         </div>
-        <div className="col-span-4 h-80 rounded-lg border border-dog-800 bg-dog-900 p-5">
+        <div
+          className={cn(
+            "col-span-4 rounded-lg border border-dog-800 bg-dog-900 p-5",
+            {
+              "h-fit": !isChartDataSuccess,
+              "h-80": isChartDataSuccess,
+            },
+          )}
+        >
           <Heading size="h3" spacing="small" className="text-dog-500">
             24h Performance
           </Heading>
 
           {isChartDataSuccess && (
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer className="h-80" width="100%" height="100%">
               <AreaChart
                 width={800}
                 height={200}
@@ -196,15 +205,15 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
           )}
 
           {token.custom && (
-            <div className="relative flex h-full items-center justify-center">
+            <div className="relative flex h-fit items-center justify-center">
               <Image
                 alt={token.name || token.symbol || "Token"}
                 width={1000}
                 height={300}
-                className="absolute opacity-25"
+                className="w-full opacity-25"
                 src={"/no-chart-custom-token.jpg"}
               />
-              <p className="relative -rotate-3 rounded-full bg-black/25 p-6 text-center text-2xl text-alert-600 shadow-2xl backdrop-blur-sm backdrop-filter">
+              <p className="absolute -rotate-3 rounded-full bg-black/25 p-6 text-center text-2xl text-alert-600 shadow-2xl backdrop-blur-sm backdrop-filter">
                 <span className="font-semibold italic">
                   No chart for custom tokens
                 </span>{" "}

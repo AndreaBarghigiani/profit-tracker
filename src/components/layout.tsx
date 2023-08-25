@@ -93,7 +93,7 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
                 d="M350.923 326.819c0-28.677-23.282-51.959-51.959-51.959H196.709c-28.677 0-51.96 23.282-51.96 51.959v96.222c0 28.677 23.283 51.959 51.96 51.959h102.255c28.677 0 51.959-23.282 51.959-51.959v-96.222Z"
               />
             </svg>
-            <Heading className="-mt-2 bg-gradient-to-r from-main-500 to-main-300 bg-clip-text px-4 font-extrabold tracking-tight text-transparent">
+            <Heading className="-mt-2 hidden bg-gradient-to-r from-main-500 to-main-300 bg-clip-text px-4 font-extrabold tracking-tight text-transparent md:block">
               Underdog Tracker
             </Heading>
           </div>
