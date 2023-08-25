@@ -7,7 +7,7 @@ import type { buttonVariants } from "@/components/ui/button";
 import type { VariantProps } from "class-variance-authority";
 import type { DialogProps } from "@radix-ui/react-dialog";
 import type { LucideIcon } from "lucide-react";
-import type { useHodlTransactionModal } from "@/hooks/useTransactionModal";
+import type { useTransactionModal } from "@/hooks/useTransactionModal";
 
 // Components
 import { Button } from "@/components/ui/button";
@@ -41,7 +41,7 @@ const contentVariants = cva("w-full", {
 interface AddTransactionModalProps
   extends DialogProps,
     VariantProps<typeof contentVariants> {
-  transactionModal: ReturnType<typeof useHodlTransactionModal>;
+  transactionModal: ReturnType<typeof useTransactionModal>;
   Icon?: LucideIcon;
   iconClasses?: string;
   btnVariants?: VariantProps<typeof buttonVariants>;

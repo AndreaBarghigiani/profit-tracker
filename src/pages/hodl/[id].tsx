@@ -6,7 +6,8 @@ import { useRouter } from "next/router";
 import { prisma } from "@/server/db";
 import { formatDate } from "@/utils/string";
 import { getHodl } from "@/server/api/routers/hodl";
-import { useHodlTransactionModal } from "@/hooks/useTransactionModal";
+import { useTransactionModal } from "@/hooks/useTransactionModal";
+import va from "@vercel/analytics";
 
 // Types
 import type {
@@ -36,9 +37,9 @@ import {
 const Hodl: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ startDate, token, hodl }) => {
-  const transactionModal = useHodlTransactionModal();
-  const airdropModal = useHodlTransactionModal();
-  const dcaModal = useHodlTransactionModal();
+  const transactionModal = useTransactionModal("Hodl transaction");
+  const airdropModal = useTransactionModal("Hodl airdrop");
+  const dcaModal = useTransactionModal("Hodl DCA Out strategy");
 
   const utils = api.useContext();
   const router = useRouter();
@@ -155,7 +156,10 @@ const Hodl: NextPage<
               <Button
                 variant="outline"
                 size="link"
-                onClick={() => updatePrice({ tokenId: token.coingecko_id })}
+                onClick={async () => {
+                  va.track("Update Hodls Prices");
+                  await updatePrice({ tokenId: token.coingecko_id });
+                }}
               >
                 <TooltipProvider>
                   <Tooltip>
@@ -178,13 +182,14 @@ const Hodl: NextPage<
               <Button
                 variant="outline-success"
                 size="link"
-                onClick={() =>
+                onClick={() => {
+                  va.track("Close Hodl Position");
                   closePosition({
                     hodlId: hodl.id,
                     amount: hodl.amount,
                     price: token.latestPrice,
-                  })
-                }
+                  });
+                }}
               >
                 <TooltipProvider>
                   <Tooltip>
@@ -203,7 +208,10 @@ const Hodl: NextPage<
               <Button
                 variant="outline-danger"
                 size="link"
-                onClick={() => deletePosition(hodl.id)}
+                onClick={() => {
+                  va.track("Delete Hodl Position");
+                  deletePosition(hodl.id);
+                }}
               >
                 <TooltipProvider>
                   <Tooltip>
