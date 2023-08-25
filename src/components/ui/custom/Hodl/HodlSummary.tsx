@@ -1,5 +1,5 @@
 // Utils
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 import { currencyConverter } from "@/utils/string";
 import { calcPercentageVariance } from "@/utils/number";
 import { hodlSummary } from "@/utils/positions";
@@ -13,13 +13,19 @@ import Image from "next/image";
 import Link from "next/link";
 import Heading from "@/components/ui/heading";
 
-const HodlSummary = ({ hodls }: { hodls: FullPositionZod[] }) => {
+const HodlSummary = ({
+  hodls,
+  className,
+}: {
+  hodls: FullPositionZod[];
+  className?: string;
+}) => {
   const summary = hodlSummary(hodls);
   const topPerformer = hodls
     .filter((hodl) => hodl.token.id === summary.topPerformer.tokenId)
     .pop();
 
-  const summaryPerformanceBadgeClass = clsx(
+  const summaryPerformanceBadgeClass = cn(
     "flex flex-shrink-0 items-center font-semibold rounded-3xl border px-3 py-1 ml-10 text-xs",
     {
       "border-success-800 bg-success-900 text-success-600":
@@ -29,7 +35,7 @@ const HodlSummary = ({ hodls }: { hodls: FullPositionZod[] }) => {
     },
   );
 
-  const topPerformerBadgeClass = clsx(
+  const topPerformerBadgeClass = cn(
     "flex flex-shrink-0 items-center font-semibold rounded-3xl border px-3 py-1 ml-4 text-xs",
     {
       "border-success-800 bg-success-900 text-success-600":
@@ -40,7 +46,12 @@ const HodlSummary = ({ hodls }: { hodls: FullPositionZod[] }) => {
   );
 
   return (
-    <div className="relative rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg">
+    <div
+      className={cn(
+        "relative rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg",
+        className,
+      )}
+    >
       <Heading
         size="h2"
         spacing="small"

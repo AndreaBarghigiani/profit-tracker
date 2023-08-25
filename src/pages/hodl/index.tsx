@@ -85,8 +85,8 @@ const Hodl: NextPage<
         {!!positionsSorted && (
           <>
             <Heading>Hodl at a glance:</Heading>
-            <div className="mb-4 grid grid-cols-2 gap-4">
-              <HodlSummary hodls={positionsSorted} />
+            <div className="mb-4 xl:grid xl:grid-cols-2 xl:gap-4">
+              <HodlSummary className="mb-4 xl:mb-0" hodls={positionsSorted} />
               <HodlBar hodls={positionsSorted} />
             </div>
 
@@ -101,7 +101,7 @@ const Hodl: NextPage<
                 Refresh all
               </Button>
             </header>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-4 xl:grid xl:grid-cols-2 xl:gap-4 xl:space-y-0">
               {positionsSorted.map((position, index) => (
                 <HodlCard
                   key={position.id}
