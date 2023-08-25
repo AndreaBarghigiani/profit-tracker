@@ -23,7 +23,7 @@ import {
   Power,
   User2,
 } from "lucide-react";
-import UserCard from "@/components/userCard";
+// import UserCard from "@/components/userCard";
 import { Separator } from "@/components/ui/separator";
 import WalletInfo from "./ui/testing/WalletInfo";
 import FeedbackComponent from "./ui/custom/Feedback";
@@ -66,7 +66,7 @@ const Sidebar = ({ linkClicked }: { linkClicked?: () => void }) => {
         ))}
       </ul>
 
-      <Separator className="my-4 bg-foreground/50" />
+      {/* <Separator className="my-4 bg-foreground/50" /> */}
 
       <WalletInfo />
     </nav>
@@ -89,7 +89,7 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
       {status === "authenticated" ? (
         <aside className="top-50 fixed left-0 hidden h-full flex-col border-r border-foreground/50 bg-background md:w-72 xl:flex">
           <Sidebar />
-          <UserCard />
+          {/* <UserCard /> */}
         </aside>
       ) : null}
 
