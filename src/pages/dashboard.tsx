@@ -66,9 +66,11 @@ const Dashboard: NextPage<
           Dashboard
         </Heading>
 
-        <div className="grid grid-cols-5 gap-4">
+        <div className="xl:grid xl:grid-cols-5 xl:gap-4">
           {isUserStatsSuccess && (
-            <UserStats orientation="vertical" userStats={userStats} />
+            <div className="hidden xl:block">
+              <UserStats orientation="vertical" userStats={userStats} />
+            </div>
           )}
 
           <section className="col-span-4 space-y-12">
@@ -90,7 +92,7 @@ const Dashboard: NextPage<
                   </Link>
                 </header>
 
-                <div className="flex grid-cols-2 flex-col gap-4 lg:grid">
+                <div className="flex flex-col gap-4 lg:grid lg:grid-cols-2">
                   {projects.map((project: Project) => (
                     <ProjectCard key={project.id} project={project} />
                   ))}
@@ -127,7 +129,7 @@ const Dashboard: NextPage<
                 </Button>
               </header>
               {!!hodlsSorted && (
-                <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-4 lg:grid lg:grid-cols-2">
                   {hodlsSorted.map((hodl, index) => (
                     <HodlCard key={hodl.id} position={hodl} rank={index + 1} />
                   ))}
