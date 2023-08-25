@@ -11,9 +11,10 @@ type NavLinkProps = {
   path: string;
   label: string;
   Icon: LucideIcon;
+  onClick?: () => void;
 };
 
-const NavLink = ({ active, path, label, Icon }: NavLinkProps) => {
+const NavLink = ({ active, path, label, Icon, onClick }: NavLinkProps) => {
   return (
     <li>
       <Link
@@ -25,6 +26,7 @@ const NavLink = ({ active, path, label, Icon }: NavLinkProps) => {
           className: active ? "text-main" : "",
         })}
         href={path}
+        onClick={onClick}
       >
         <Icon className="mr-2 h-4 w-4" /> {label}
       </Link>
