@@ -23,6 +23,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       Subject: `Feedback from ${email} for Underdog Tracker`,
       From: "andrea@cupofcraft.dev",
       TextBody: message as string,
+      ReplyTo: email as string,
     });
 
     return res.status(200).json({
