@@ -26,6 +26,7 @@ import {
 import UserCard from "@/components/userCard";
 import { Separator } from "@/components/ui/separator";
 import WalletInfo from "./ui/testing/WalletInfo";
+import FeedbackComponent from "./ui/custom/Feedback";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import {
@@ -131,12 +132,14 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
             </div>
 
             <nav className="ml-auto flex items-center gap-4">
+              <FeedbackComponent />
+
               {!!session && (
                 <Popover>
                   <PopoverTrigger>
                     <Avatar className="shrink-0">
                       <AvatarImage
-                        className="h-8 w-8 rounded-full transition-all hover:shadow-dog"
+                        className="h-6 w-6 rounded-full transition-all hover:shadow-dog"
                         src={session.user.image?.toString()}
                       />
                       <AvatarFallback>
