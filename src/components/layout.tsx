@@ -26,7 +26,7 @@ import {
 // import UserCard from "@/components/userCard";
 // import { Separator } from "@/components/ui/separator";
 import WalletInfo from "./ui/testing/WalletInfo";
-import FeedbackComponent from "./ui/custom/Feedback";
+// import FeedbackComponent from "./ui/custom/Feedback";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import {
@@ -132,7 +132,7 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
             </div>
 
             <nav className="ml-auto flex items-center gap-4">
-              <FeedbackComponent />
+              {/* <FeedbackComponent /> */}
 
               {!!session && (
                 <Popover>
