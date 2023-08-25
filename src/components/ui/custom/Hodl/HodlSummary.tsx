@@ -48,39 +48,41 @@ const HodlSummary = ({
   return (
     <div
       className={cn(
-        "relative rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg",
+        "relative flex gap-x-10 gap-y-2 rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg xl:flex-col",
         className,
       )}
     >
-      <Heading
-        size="h2"
-        spacing="small"
-        className="flex justify-between text-dog-500"
-      >
-        Total Evaluation:
-      </Heading>
+      <div>
+        <Heading
+          size="h2"
+          spacing="small"
+          className="flex justify-between text-dog-500"
+        >
+          Total Evaluation:
+        </Heading>
 
-      <div className="mb-4 flex items-center">
-        <div>
-          <p className="text-2xl font-semibold text-dog-200">
-            {currencyConverter({ amount: summary.total })}
-          </p>
-          <p className="text-sm font-normal text-dog-600">
-            {currencyConverter({ amount: summary.change, showSign: true })}
+        <div className="mb-4 flex items-center">
+          <div>
+            <p className="text-2xl font-semibold text-dog-200">
+              {currencyConverter({ amount: summary.total })}
+            </p>
+            <p className="text-sm font-normal text-dog-600">
+              {currencyConverter({ amount: summary.change, showSign: true })}
+            </p>
+          </div>
+
+          <p className={summaryPerformanceBadgeClass}>
+            {calcPercentageVariance(
+              summary.total,
+              summary.total + summary.change,
+            )}
+            %
           </p>
         </div>
-
-        <p className={summaryPerformanceBadgeClass}>
-          {calcPercentageVariance(
-            summary.total,
-            summary.total + summary.change,
-          )}
-          %
-        </p>
       </div>
 
       {topPerformer && (
-        <>
+        <div>
           <Heading
             size="h2"
             spacing="small"
@@ -114,7 +116,7 @@ const HodlSummary = ({
               {summary.topPerformer.percentage.toFixed(2)}%
             </p>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
