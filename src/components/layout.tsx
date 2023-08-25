@@ -24,7 +24,7 @@ import {
   User2,
 } from "lucide-react";
 // import UserCard from "@/components/userCard";
-import { Separator } from "@/components/ui/separator";
+// import { Separator } from "@/components/ui/separator";
 import WalletInfo from "./ui/testing/WalletInfo";
 import FeedbackComponent from "./ui/custom/Feedback";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
