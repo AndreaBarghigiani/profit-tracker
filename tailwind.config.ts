@@ -137,6 +137,9 @@ module.exports = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      boxShadow: {
+        dog: "0 0 0 2px #959781",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: 0 },
