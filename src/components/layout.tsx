@@ -10,7 +10,8 @@ import { useRouter } from "next/router";
 // Types
 
 // Components
-import NavLink from "./ui/custom/NavLink";
+import Link from "next/link";
+import NavLink from "@/components/ui/custom/NavLink";
 import {
   Gauge,
   ArrowUpDown,
@@ -25,16 +26,15 @@ import {
 } from "lucide-react";
 // import UserCard from "@/components/userCard";
 // import { Separator } from "@/components/ui/separator";
-import WalletInfo from "./ui/testing/WalletInfo";
-// import FeedbackComponent from "./ui/custom/Feedback";
+import WalletInfo from "@/components/ui/testing/WalletInfo";
+import FeedbackComponent from "@/components/ui/custom/Feedback";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import Link from "next/link";
 
 const paths = [
   { path: "/dashboard", label: "Dashboard", Icon: Gauge },
@@ -132,14 +132,14 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
             </div>
 
             <nav className="ml-auto flex items-center gap-4">
-              {/* <FeedbackComponent /> */}
+              <FeedbackComponent />
 
               {!!session && (
                 <Popover>
                   <PopoverTrigger>
-                    <Avatar className="shrink-0">
+                    <Avatar className="shrink-0 items-center justify-center">
                       <AvatarImage
-                        className="h-6 w-6 rounded-full transition-all hover:shadow-dog"
+                        className="h-8 w-8 rounded-full transition-all hover:shadow-dog"
                         src={session.user.image?.toString()}
                       />
                       <AvatarFallback>

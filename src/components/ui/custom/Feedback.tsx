@@ -1,13 +1,18 @@
 // Utils
-import * as z from "zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
+import { feedbackSchema } from "@/server/types";
+
+// Types
+import type { feedbackProps } from "@/server/types";
 
 // Components
 import { MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
@@ -19,57 +24,31 @@ import {
 } from "@/components/ui/dialog";
 import {
   Form,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useState } from "react";
+import StarRating from "@/components/ui/custom/StarRating";
 
-const MAX_FILE_SIZE = 500000;
-const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
-
-const formSchema = z.object({
-  message: z.string().nonempty(),
-  email: z.string().email(),
-  image: z
-    .any()
-    .refine(
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      (files) => files?.[0]?.size <= MAX_FILE_SIZE,
-      "Max image size is 5MB",
-    )
-    .refine(
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
-      (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-      "Only .jpg, .jpeg, .png and .webp formats are supported.",
-    )
-    .optional(),
-});
-
-type formProps = z.infer<typeof formSchema>;
-
-const defaultValues: Partial<formProps> = {
+const defaultValues: Partial<feedbackProps> = {
+  username: "demo",
+  email: "demo@underdogtracker.xyz",
   message: "",
-  email: "",
+  image: "http://your-hodl.screenshot.com",
 };
 
 const FeedbackComponent = ({}) => {
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const form = useForm<formProps>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<feedbackProps>({
+    resolver: zodResolver(feedbackSchema),
     defaultValues,
   });
 
-  const feedbackMutation = useMutation(async (values: formProps) => {
-    values.email = session?.user?.email ? session.user.email : values.email;
-    const res = await fetch("/api/feedback", {
+  const feedbackMutation = useMutation(async (values: feedbackProps) => {
+    const res = await fetch("/api/emails/feedback", {
       method: "POST",
       body: JSON.stringify(values),
       headers: {
@@ -84,7 +63,17 @@ const FeedbackComponent = ({}) => {
     return res.json();
   });
 
-  const onSubmit = (values: formProps) => {
+  if (!session) return "No session available";
+
+  if (session.user.email) {
+    form.setValue("email", session.user.email);
+  }
+
+  if (session.user.name) {
+    form.setValue("username", session.user.name);
+  }
+
+  const onSubmit = (values: feedbackProps) => {
     feedbackMutation.mutate(values);
     form.reset();
     setIsOpen(false);
@@ -108,7 +97,7 @@ const FeedbackComponent = ({}) => {
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
               name="message"
@@ -116,6 +105,41 @@ const FeedbackComponent = ({}) => {
                 <FormItem className="w-full">
                   <FormLabel htmlFor="message">Message</FormLabel>
                   <Textarea placeholder="Here goes your text..." {...field} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              name="rating"
+              render={({}) => (
+                <FormItem>
+                  <FormLabel>Rating</FormLabel>
+                  <StarRating
+                    onSelected={(rate) => form.setValue("rating", rate)}
+                  />
+                </FormItem>
+              )}
+            ></FormField>
+
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel htmlFor="image">Image</FormLabel>
+                  <FormDescription className="text-dog-600">
+                    You can use any cloud hosting providers like:{" "}
+                    <a
+                      className="underline"
+                      href="https://imgbb.com/"
+                      target="_blank"
+                    >
+                      imgbb
+                    </a>{" "}
+                    or any other alternative.
+                  </FormDescription>
+                  <Input placeholder="Here goes the image URL..." {...field} />
                   <FormMessage />
                 </FormItem>
               )}

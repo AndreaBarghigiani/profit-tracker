@@ -396,3 +396,14 @@ export type TokenWithoutDates = Partial<
   Pick<Token, "createdAt" | "updatedAt">
 > &
   Omit<Token, "createdAt" | "updatedAt">;
+
+// Emails
+export const feedbackSchema = z.object({
+  email: z.string().email(),
+  username: z.string().nonempty(),
+  message: z.string().nonempty(),
+  rating: z.number().min(1).max(5).optional(),
+  image: z.string().url().optional(),
+});
+
+export type feedbackProps = z.infer<typeof feedbackSchema>;
