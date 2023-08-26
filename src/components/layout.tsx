@@ -89,7 +89,6 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
       {status === "authenticated" ? (
         <aside className="top-50 fixed left-0 hidden h-full flex-col border-r border-foreground/50 bg-background md:w-72 xl:flex">
           <Sidebar />
-          {/* <UserCard /> */}
         </aside>
       ) : null}
 

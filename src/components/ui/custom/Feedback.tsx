@@ -63,7 +63,7 @@ const FeedbackComponent = ({}) => {
     return res.json();
   });
 
-  if (!session) return "No session available";
+  if (!session) return null;
 
   if (session.user.email) {
     form.setValue("email", session.user.email);
