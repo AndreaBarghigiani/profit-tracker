@@ -47,7 +47,6 @@ const paths = [
 ];
 
 const Sidebar = ({ linkClicked }: { linkClicked?: () => void }) => {
-  // const { data: userRole } = api.user.getRole.useQuery();
   const router = useRouter();
   const currentRoute = router.pathname;
 
