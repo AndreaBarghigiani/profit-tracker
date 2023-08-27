@@ -74,37 +74,9 @@ const Dashboard: NextPage<
           )}
 
           <section className="col-span-4 space-y-12">
-            {isProjectsSuccess ? (
-              <div>
-                <header className="flex items-center">
-                  <Heading size="h2" spacing="2xl">
-                    Your projects
-                  </Heading>
-                  <Link
-                    className={buttonVariants({
-                      size: "sm",
-                      className: "ml-auto flex items-center",
-                    })}
-                    href="/project/create"
-                  >
-                    <Plus className="mr-2 h-3 w-3" />
-                    Add project
-                  </Link>
-                </header>
-
-                <div className="flex flex-col gap-4 lg:grid lg:grid-cols-2">
-                  {projects.map((project: Project) => (
-                    <ProjectCard key={project.id} project={project} />
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <p>Loading...</p>
-            )}
-
             <div>
-              <header className="flex items-center">
-                <Heading size="h2" spacing="2xl">
+              <header className="mb-8 flex items-center">
+                <Heading size="h2" spacing="none">
                   Your holdings
                 </Heading>
                 <Link
@@ -136,6 +108,34 @@ const Dashboard: NextPage<
                 </div>
               )}
             </div>
+
+            {isProjectsSuccess ? (
+              <div>
+                <header className="flex items-center">
+                  <Heading size="h2" spacing="2xl">
+                    Your projects
+                  </Heading>
+                  <Link
+                    className={buttonVariants({
+                      size: "sm",
+                      className: "ml-auto flex items-center",
+                    })}
+                    href="/project/create"
+                  >
+                    <Plus className="mr-2 h-3 w-3" />
+                    Add project
+                  </Link>
+                </header>
+
+                <div className="flex flex-col gap-4 lg:grid lg:grid-cols-2">
+                  {projects.map((project: Project) => (
+                    <ProjectCard key={project.id} project={project} />
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <p>Loading...</p>
+            )}
           </section>
         </div>
       </div>
