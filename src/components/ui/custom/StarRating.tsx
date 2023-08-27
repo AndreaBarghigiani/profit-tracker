@@ -7,9 +7,11 @@ import { Star } from "lucide-react";
 
 const StarRating = ({
   maxRating = 5,
+  className,
   onSelected,
 }: {
   maxRating?: number;
+  className?: string;
   onSelected: (rating: number) => void;
 }) => {
   const [rating, setRating] = useState(0);
@@ -21,11 +23,11 @@ const StarRating = ({
   };
 
   return (
-    <div className="flex">
+    <div className={cn("flex", className)}>
       {Array.from({ length: maxRating }).map((_, index) => (
         <Star
           key={index}
-          className={cn("h-7 w-7 cursor-pointer px-1", {
+          className={cn("mr-1 h-4 w-4 cursor-pointer", {
             "fill-main-500 stroke-main-400":
               index < rating || index < hoverRating,
             "text-dog-300": index >= rating || index >= hoverRating,

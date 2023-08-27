@@ -12,16 +12,14 @@ import type { feedbackProps } from "@/server/types";
 // Components
 import { MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Heading from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import {
   Form,
   FormDescription,
@@ -80,29 +78,31 @@ const FeedbackComponent = ({}) => {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <PopoverTrigger asChild>
         <Button size="sm" variant="outline" className="flex items-center">
           <MessageSquare size={16} className="mr-2" />
           Feedback
         </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Share your Feedback</DialogTitle>
-          <DialogDescription>
-            Feel free to share the good, the bad and the ugly of this
-            application.
-          </DialogDescription>
-        </DialogHeader>
-
+      </PopoverTrigger>
+      <PopoverContent
+        className="w-96 border-dog-600 px-6 py-3"
+        align="end"
+        sideOffset={10}
+      >
+        <Heading as="h3" size="h3" className="text-dog-200">
+          Share your Feedback
+        </Heading>
+        <p className="mb-4 text-sm text-dog-400">
+          Feel free to share the good, the bad and the ugly of this application.
+        </p>
         <Form {...form}>
-          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
               name="message"
               render={({ field }) => (
-                <FormItem className="w-full">
+                <FormItem className="my-2 w-full">
                   <FormLabel htmlFor="message">Message</FormLabel>
                   <Textarea placeholder="Here goes your text..." {...field} />
                   <FormMessage />
@@ -113,7 +113,7 @@ const FeedbackComponent = ({}) => {
             <FormField
               name="rating"
               render={({}) => (
-                <FormItem>
+                <FormItem className="mb-2 mt-3 flex items-center gap-4 space-y-0">
                   <FormLabel>Rating</FormLabel>
                   <StarRating
                     onSelected={(rate) => form.setValue("rating", rate)}
@@ -126,7 +126,7 @@ const FeedbackComponent = ({}) => {
               control={form.control}
               name="image"
               render={({ field }) => (
-                <FormItem className="w-full">
+                <FormItem className="my-2 w-full">
                   <FormLabel htmlFor="image">Image</FormLabel>
                   <FormDescription className="text-dog-600">
                     You can use any cloud hosting providers like:{" "}
@@ -145,13 +145,13 @@ const FeedbackComponent = ({}) => {
               )}
             />
 
-            <Button type="submit" className="mt-4">
+            <Button type="submit" className="mb-3 mt-4">
               Submit
             </Button>
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+      </PopoverContent>
+    </Popover>
   );
 };
 
