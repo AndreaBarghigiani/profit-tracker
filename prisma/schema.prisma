@@ -114,6 +114,8 @@ model Hodl {
   walletId    String
   transaction Transaction[]
   dcaStrategy DcaStrategy?
+
+  @@unique([userId, tokenId])
 }
 
 model Transaction {
@@ -198,4 +200,5 @@ enum TransactionType {
   BUY
   SELL
   REMOVE // Remove from deposit
+  AIRDROP
 }

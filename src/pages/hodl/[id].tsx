@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // Utils
 import { api } from "@/utils/api";
+import { useState, useEffect } from "react";
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import { prisma } from "@/server/db";
@@ -45,7 +46,11 @@ const Hodl: NextPage<
   const router = useRouter();
   const pageTitle = `Token ${token.name} Hodl page - Underdog Tracker`;
 
-  const { data, isSuccess } = api.hodl.getTransactions.useQuery({
+  const refreshPage = async () => {
+    await router.replace(router.asPath, undefined, { scroll: false });
+  };
+
+  const { data: transactions, isSuccess } = api.hodl.getTransactions.useQuery({
     hodlId: hodl.id,
   });
 
@@ -54,7 +59,7 @@ const Hodl: NextPage<
   const { mutateAsync: updatePrice, isLoading: isPriceLoading } =
     api.token.updatePrice.useMutation({
       onSuccess: async () => {
-        await router.replace(router.asPath);
+        await refreshPage();
         // await utils.hodl.get.invalidate();
         // await utils.hodl.getDiffFromBuyes.invalidate();
         // await utils.token.get.invalidate();
@@ -233,18 +238,19 @@ const Hodl: NextPage<
         <HodlStats hodl={hodl} token={token} />
 
         <section>
-          {isSuccess && data.transaction ? (
+          {isSuccess && transactions ? (
             <div className="space-y-3">
               <div className="grid grid-cols-3 gap-4 rounded-md bg-foreground/30">
                 <p className="p-3">Amount</p>
                 <p className="p-3">Type</p>
                 <p className="p-3">Date</p>
               </div>
-              {data.transaction.map((transaction) => (
+              {transactions.map((transaction) => (
                 <HodlTransactionCard
                   transaction={transaction}
                   token={token}
                   key={transaction.id}
+                  refresher={refreshPage}
                 />
               ))}
             </div>

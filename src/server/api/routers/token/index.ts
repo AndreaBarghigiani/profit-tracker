@@ -21,6 +21,23 @@ const sample = [
   "arbitrum",
 ];
 
+export const getTokenByCoingeckoId = async ({
+  tokenId,
+  prisma,
+}: {
+  tokenId: string;
+  prisma: PrismaClient;
+}) => {
+  return await prisma.token.findFirstOrThrow({
+    where: {
+      coingecko_id: tokenId,
+    },
+    select: {
+      id: true,
+    },
+  });
+};
+
 export const getToken = async ({
   tokenId,
   prisma,
