@@ -1,6 +1,9 @@
 // Utils
+import { api } from "@/utils/api";
 import { prisma } from "@/server/db";
 import { getToken } from "@/server/api/routers/token";
+import { getHodlByTokenId } from "@/server/api/routers/hodl";
+import { getServerAuthSession } from "@/server/auth";
 
 // Types
 import type {
@@ -16,14 +19,16 @@ import Heading from "@/components/ui/heading";
 
 const AddHodlPosition: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ token, hodlId }) => {
+> = ({ token, hodlId, hodlAmount }) => {
+  const positionFormHodl = { hodlId, hodlAmount };
   return (
     <div>
       <Heading size="page" gradient="gold" spacing="massive">
         Your positions for {token.name}
       </Heading>
 
-      {!!token.platforms && (
+      {/* JUST A TEST TO SHOW CONTRACTS
+			{!!token.platforms && (
         <div className="mx-auto w-2/3">
           <Heading size="h2">Contract Address</Heading>
           {Object.entries(token.platforms).map((platform) => (
@@ -32,7 +37,7 @@ const AddHodlPosition: NextPage<
             </p>
           ))}
         </div>
-      )}
+      )} */}
 
       {!!hodlId && (
         <p className="mb-4 text-center text-lg text-stone-400">
@@ -41,7 +46,7 @@ const AddHodlPosition: NextPage<
       )}
 
       <div className="mx-auto w-2/3">
-        <AddHodlPositionForm hodlId={hodlId} token={token} />
+        <AddHodlPositionForm hodl={positionFormHodl} token={token} />
       </div>
     </div>
   );
@@ -53,6 +58,33 @@ export async function getServerSideProps(
   context: GetServerSidePropsContext<{ coingecko_id: string }>,
 ) {
   if (!context.params?.coingecko_id) return;
+
+  const session = await getServerAuthSession(context);
+
+  if (!!session && session.user.id) {
+    const hodl = await getHodlByTokenId({
+      cgId: context.params?.coingecko_id,
+      userId: session.user.id,
+      prisma,
+    });
+
+    if (!!hodl) {
+      const token: TokenWithoutDates = {
+        ...hodl.token,
+      };
+
+      delete token.createdAt;
+      delete token.updatedAt;
+
+      return {
+        props: {
+          token,
+          hodlId: hodl.id,
+          hodlAmount: hodl.amount,
+        },
+      };
+    }
+  }
 
   const token: TokenWithoutDates = await getToken({
     tokenId: context.params?.coingecko_id,

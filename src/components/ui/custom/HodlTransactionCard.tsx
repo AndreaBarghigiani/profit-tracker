@@ -4,7 +4,8 @@ import { api } from "@/utils/api";
 import clsx from "clsx";
 
 // Types
-import type { Token, Transaction } from "@prisma/client";
+import type { Token } from "@prisma/client";
+import type { HodlDeleteTransaction } from "@/server/types";
 
 // Components
 import {
@@ -22,20 +23,24 @@ import {
 } from "@/components/ui/tooltip";
 
 type HodlTransactionCardProps = {
-  transaction: Transaction;
+  transaction: HodlDeleteTransaction;
   token: Partial<Token>;
+  refresher: () => void;
 };
 
 const HodlTransactionCard = ({
   transaction,
   token,
+  refresher,
 }: HodlTransactionCardProps) => {
   const utils = api.useContext();
   const { mutate: deleteTransaction, isLoading: isDeletingTransaction } =
-    api.transaction.delete.useMutation({
+    api.hodl.deleteTransaction.useMutation({
       onSuccess: async () => {
         await utils.wallet.getUserStats.invalidate();
         await utils.hodl.getTransactions.invalidate();
+        await utils.hodl.getDiffFromBuyes.invalidate();
+        refresher();
       },
     });
 
@@ -88,7 +93,12 @@ const HodlTransactionCard = ({
               size="sm"
               className="ml-auto mr-3"
               onClick={() =>
-                deleteTransaction({ transactionId: transaction.id })
+                deleteTransaction({
+                  hodlId: transaction.hodlId,
+                  transactionId: transaction.id,
+                  transactionAmount: transaction.amount,
+                  transactionEvaluation: transaction.evaluation,
+                })
               }
             >
               {isDeletingTransaction ? (

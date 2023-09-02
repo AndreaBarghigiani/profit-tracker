@@ -3,11 +3,17 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { HodlTransactionSchema } from "@/server/types";
 import { getWallet } from "../wallet";
+import { getTokenByCoingeckoId } from "../token";
 
 // Types
 import { type PrismaClient, TransactionType } from "@prisma/client";
 import type { Session } from "next-auth";
-import type { HodlTransaction, CalcDiffs } from "@/server/types";
+import type {
+  HodlTransaction,
+  CalcDiffs,
+  HodlDeleteTransaction,
+  PrismaHodlTransaction,
+} from "@/server/types";
 
 export const getHodl = async ({
   hodlId,
@@ -19,6 +25,33 @@ export const getHodl = async ({
   return await prisma.hodl.findUniqueOrThrow({
     where: {
       id: hodlId,
+    },
+    include: {
+      token: true,
+    },
+  });
+};
+
+export const getHodlByTokenId = async ({
+  cgId,
+  userId,
+  prisma,
+}: {
+  cgId: string;
+  userId: string;
+  prisma: PrismaClient;
+}) => {
+  const { id: tokenId } = await getTokenByCoingeckoId({
+    tokenId: cgId,
+    prisma,
+  });
+
+  return await prisma.hodl.findUnique({
+    where: {
+      userId_tokenId: {
+        tokenId,
+        userId,
+      },
     },
     include: {
       token: true,
@@ -214,6 +247,10 @@ export const hodlRouter = createTRPCRouter({
         await getWallet({ userId: ctx.session.user.id, prisma: ctx.prisma })
       ).id;
 
+      const transactionType = input.airdrop
+        ? (TransactionType.AIRDROP as "AIRDROP")
+        : (TransactionType.BUY as "BUY");
+
       const position = await ctx.prisma.hodl.create({
         data: {
           amount: input.amount,
@@ -235,7 +272,7 @@ export const hodlRouter = createTRPCRouter({
           },
           transaction: {
             create: {
-              type: TransactionType.BUY,
+              type: transactionType,
               amount: input.amount,
               evaluation: input.evaluation,
             },
@@ -287,34 +324,34 @@ export const hodlRouter = createTRPCRouter({
     .query(({ ctx, input }) => {
       return getHodl({ hodlId: input.hodlId, prisma: ctx.prisma });
     }),
-  getByTokenId: protectedProcedure.input(z.string()).query(({ ctx, input }) => {
-    return ctx.prisma.hodl.findMany({
-      where: {
-        tokenId: input,
-        userId: ctx.session.user.id,
-      },
-      take: 1,
-    });
-  }),
+  getByTokenId: protectedProcedure
+    .input(z.object({ tokenId: z.string().optional() }))
+    .query(async ({ ctx, input }) => {
+      if (!input.tokenId) return;
+
+      return await ctx.prisma.hodl.findUnique({
+        where: {
+          userId_tokenId: {
+            tokenId: input.tokenId,
+            userId: ctx.session.user.id,
+          },
+        },
+      });
+    }),
   getByCurrentUser: protectedProcedure.query(async ({ ctx }) => {
     return await getByCurrentUser({ ctx });
   }),
   getTransactions: protectedProcedure
     .input(z.object({ hodlId: z.string() }))
-    .query(({ ctx, input }) => {
-      return ctx.prisma.hodl.findUniqueOrThrow({
+    .query(async ({ ctx, input }) => {
+      return (await ctx.prisma.transaction.findMany({
         where: {
-          id: input.hodlId,
+          hodlId: input.hodlId,
         },
-        select: {
-          createdAt: true,
-          transaction: {
-            orderBy: {
-              createdAt: "desc",
-            },
-          },
+        orderBy: {
+          createdAt: "desc",
         },
-      });
+      })) as PrismaHodlTransaction[];
     }),
   getDiffFromBuyes: protectedProcedure
     .input(
@@ -336,6 +373,36 @@ export const hodlRouter = createTRPCRouter({
         },
         include: {
           token: true,
+        },
+      });
+    }),
+  deleteTransaction: protectedProcedure
+    .input(
+      z.object({
+        hodlId: z.string(),
+        transactionId: z.string(),
+        transactionAmount: z.number(),
+        transactionEvaluation: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Don't need to touch the wallet, the Exposure is calculated on the fly
+      await ctx.prisma.hodl.update({
+        where: {
+          id: input.hodlId,
+        },
+        data: {
+          amount: {
+            decrement: input.transactionAmount,
+          },
+          exposure: {
+            decrement: input.transactionEvaluation,
+          },
+          transaction: {
+            delete: {
+              id: input.transactionId,
+            },
+          },
         },
       });
     }),

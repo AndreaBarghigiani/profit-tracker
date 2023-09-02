@@ -1,4 +1,5 @@
 // Utils
+import { api } from "@/utils/api";
 import { useState } from "react";
 
 // Types
@@ -13,7 +14,18 @@ const AddAirdropForm = ({
   closeModal?: () => void | Promise<void>;
 }) => {
   const [selectedToken, setSelectedToken] = useState<Token | null>(null);
+  console.log("selectedToken:", selectedToken);
+  const { data: hodl } = api.hodl.getByTokenId.useQuery(
+    { tokenId: selectedToken?.id },
+    {
+      enabled: !!selectedToken?.id,
+    },
+  );
 
+  const foundHodl = {
+    hodlId: hodl?.id ? hodl.id : null,
+    hodlAmount: hodl?.amount ? hodl.amount : null,
+  };
   return (
     <>
       <div>
@@ -30,7 +42,7 @@ const AddAirdropForm = ({
       {!!selectedToken && (
         <div className="text-left">
           <AddHodlPositionForm
-            hodlId={null}
+            hodl={foundHodl}
             token={selectedToken}
             closeModal={closeModal}
             airdrop

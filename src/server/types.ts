@@ -24,6 +24,23 @@ export const TransactionValuesSchema = z.object({
   useLiquidFunds: z.boolean().optional(),
 });
 
+export const PrismaTransactionSchema = z.object({
+  id: z.string(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+  amount: z.number(),
+  evaluation: z.number(),
+  type: z.nativeEnum(TransactionType),
+  projectId: z.string().optional(),
+  hodlId: z.string().optional(),
+});
+
+export const PrismaHodlTransactionSchema = PrismaTransactionSchema.extend({
+  hodlId: z.string(),
+});
+
+export type PrismaHodlTransaction = z.infer<typeof PrismaHodlTransactionSchema>;
+
 export type TransactionValues = z.infer<typeof TransactionValuesSchema>;
 
 export type SumTxItem = {
@@ -99,6 +116,14 @@ export const HodlTransactionSchema = TransactionValuesSchema.extend({
 });
 
 export type HodlTransaction = z.infer<typeof HodlTransactionSchema>;
+
+export const HodlDeleteTransactionSchema = TransactionValuesSchema.extend({
+  hodlId: z.string(),
+  id: z.string(),
+  createdAt: z.date(),
+});
+
+export type HodlDeleteTransaction = z.infer<typeof HodlDeleteTransactionSchema>;
 
 export const DcaStrategyStep = z.object({
   percentage: z.number().positive().max(100),

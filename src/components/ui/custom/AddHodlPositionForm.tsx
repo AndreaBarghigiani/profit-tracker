@@ -32,9 +32,14 @@ import {
   TooltipContent,
 } from "@/components/ui/tooltip";
 
+type HodlPositionFormProps = {
+  hodlId: string | null;
+  hodlAmount: number | null;
+} | null;
+
 type AddPositionProps = {
   token: TokenWithoutDates | TokenZod;
-  hodlId: string | null;
+  hodl?: HodlPositionFormProps;
   airdrop?: boolean;
   closeModal?: () => void | Promise<void>;
 };
@@ -45,12 +50,14 @@ type AddPositionFormProps = HodlTransaction & {
 
 const AddHodlPositionForm = ({
   token,
-  hodlId,
+  hodl,
   airdrop = false,
   closeModal,
 }: AddPositionProps) => {
   const selectedToken = token;
   const utils = api.useContext();
+  const hodlId = hodl?.hodlId;
+  const hodlAmount = hodl?.hodlAmount;
   const router = useRouter();
   const [useLiquidFunds, setUseLiquidFunds] = useState(false);
   const {
@@ -146,11 +153,11 @@ const AddHodlPositionForm = ({
       onSubmit={handleSubmitInvestment(handleAddPosition)}
     >
       <div
-        className={clsx("mb-5 flex items-start gap-6", {
+        className={clsx("mb-5 flex items-end gap-6", {
           "justify-between": !hodlId && !airdrop,
         })}
       >
-        {!hodlId && !airdrop ? (
+        {!airdrop ? (
           <Controller
             control={control}
             name="useLiquidFunds"
@@ -202,7 +209,6 @@ const AddHodlPositionForm = ({
             </span>
           ) : null}
         </div>
-
         <div>
           <Label>Price per token</Label>
           <div className="flex items-center">
@@ -240,7 +246,7 @@ const AddHodlPositionForm = ({
           </div>
         </div>
 
-        {hodlId && (
+        {!!hodlId && !airdrop && (
           <Controller
             control={control}
             name="type"
