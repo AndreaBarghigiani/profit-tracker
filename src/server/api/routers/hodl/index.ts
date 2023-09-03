@@ -84,7 +84,7 @@ export const getDiffFromBuyes = async ({
   ctx: { prisma: PrismaClient; session: Session };
   input: CalcDiffs;
 }) => {
-  const buys = await ctx.prisma.hodl.findUniqueOrThrow({
+  const airdrops_buys = await ctx.prisma.hodl.findUniqueOrThrow({
     where: {
       id: input.hodlId,
     },
@@ -96,27 +96,36 @@ export const getDiffFromBuyes = async ({
       },
       transaction: {
         where: {
-          type: TransactionType.BUY,
+          type: { in: [TransactionType.AIRDROP, TransactionType.BUY] },
         },
         select: {
           amount: true,
           evaluation: true,
+          type: true,
         },
       },
     },
   });
 
-  const average =
-    buys.transaction.reduce(
-      (acc, curr) => acc + curr.evaluation / curr.amount,
-      0,
-    ) / buys.transaction.length;
+  const tots = airdrops_buys.transaction.reduce(
+    (acc, curr) => {
+      if (curr.type === TransactionType.BUY) {
+        acc.buys += curr.evaluation;
+      } else if (curr.type === TransactionType.AIRDROP) {
+        acc.airdrops += curr.evaluation;
+      }
+      acc.tokens += curr.amount;
+      return acc;
+    },
+    { buys: 0, airdrops: 0, tokens: 0 },
+  );
 
+  const average = tots.buys / tots.tokens;
   const currentHodlValue = input.hodlAmount * input.tokenLatestPrice;
   const averagedHodlValue = input.hodlAmount * average;
 
   return {
-    tokenId: buys.token.id,
+    tokenId: airdrops_buys.token.id,
     average,
     diff: currentHodlValue - averagedHodlValue,
     percentage:
@@ -148,6 +157,10 @@ const makeBuy = async ({
   ctx: { prisma: PrismaClient; session: Session };
   input: HodlTransaction;
 }) => {
+  const transactionType = input.airdrop
+    ? (TransactionType.AIRDROP as "AIRDROP")
+    : (TransactionType.BUY as "BUY");
+
   await ctx.prisma.hodl.update({
     where: {
       id: input.hodlId,
@@ -157,12 +170,12 @@ const makeBuy = async ({
         increment: input.amount,
       },
       exposure: {
-        increment: input.evaluation,
+        increment: input.airdrop ? 0 : input.evaluation,
       },
       status: "active",
       transaction: {
         create: {
-          type: TransactionType.BUY,
+          type: transactionType,
           amount: input.amount,
           evaluation: input.evaluation,
         },
