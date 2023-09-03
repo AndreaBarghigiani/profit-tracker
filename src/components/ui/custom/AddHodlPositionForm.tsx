@@ -16,6 +16,7 @@ import type {
   TokenZod,
   HodlTransaction,
   TokenWithoutDates,
+  HodlPositionForm,
 } from "@/server/types";
 
 // Components
@@ -32,14 +33,9 @@ import {
   TooltipContent,
 } from "@/components/ui/tooltip";
 
-type HodlPositionFormProps = {
-  hodlId: string | null;
-  hodlAmount: number | null;
-} | null;
-
 type AddPositionProps = {
   token: TokenWithoutDates | TokenZod;
-  hodl?: HodlPositionFormProps;
+  hodl?: HodlPositionForm;
   airdrop?: boolean;
   closeModal?: () => void | Promise<void>;
 };
@@ -57,7 +53,7 @@ const AddHodlPositionForm = ({
   const selectedToken = token;
   const utils = api.useContext();
   const hodlId = hodl?.hodlId;
-  const hodlAmount = hodl?.hodlAmount;
+  // const hodlAmount = hodl?.hodlAmount;
   const router = useRouter();
   const [useLiquidFunds, setUseLiquidFunds] = useState(false);
   const {

@@ -384,6 +384,16 @@ export const CalcDiffsSchema = z.object({
   tokenLatestPrice: z.number(),
 });
 
+export const HodlPositionFormSchema = z
+  .object({
+    hodlId: z.string().nullable().optional(),
+    hodlAmount: z.number().nullable().optional(),
+  })
+  .nullable()
+  .optional();
+
+export type HodlPositionForm = z.infer<typeof HodlPositionFormSchema>;
+
 export type CalcDiffs = z.infer<typeof CalcDiffsSchema>;
 
 export type UpdateTokenData = {
