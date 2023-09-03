@@ -29,7 +29,7 @@ const AddHodlPosition: NextPage<
         </p>
       )}
 
-      <AddHodlPositionForm hodlId={hodlId} token={token} />
+      <AddHodlPositionForm hodl={{ hodlId }} token={token} />
     </div>
   );
 };

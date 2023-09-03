@@ -1,5 +1,4 @@
 // Utils
-import { api } from "@/utils/api";
 import { prisma } from "@/server/db";
 import { getToken } from "@/server/api/routers/token";
 import { getHodlByTokenId } from "@/server/api/routers/hodl";

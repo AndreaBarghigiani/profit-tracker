@@ -87,7 +87,7 @@ const AddCustomTokenForm = () => {
             {token.name} <span className="text-sm">[{token.symbol}]</span>
           </Heading>
 
-          <AddHodlPositionForm hodlId={null} token={token} />
+          <AddHodlPositionForm token={token} />
         </div>
       )}
     </div>
