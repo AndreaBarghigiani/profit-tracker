@@ -1,6 +1,7 @@
 // Utils
 import { api } from "@/utils/api";
 import { calcAverage } from "@/utils/number";
+import { TransactionType } from "@prisma/client";
 
 // Types
 import type {
@@ -8,6 +9,25 @@ import type {
   UpdateTokenData,
   FullPositionZod,
 } from "@/server/types";
+
+// Components
+import {
+  ArrowBigDownDash,
+  ArrowBigUpDash,
+  PartyPopper,
+  TrendingUp,
+  Trash2,
+} from "lucide-react";
+
+export const TRANSACTION_TYPE_ICONS = {
+  [TransactionType.DEPOSIT]: ArrowBigDownDash,
+  [TransactionType.BUY]: ArrowBigDownDash,
+  [TransactionType.SELL]: ArrowBigUpDash,
+  [TransactionType.WITHDRAW]: ArrowBigUpDash,
+  [TransactionType.INTEREST]: TrendingUp,
+  [TransactionType.AIRDROP]: PartyPopper,
+  [TransactionType.REMOVE]: Trash2,
+};
 
 export const sortedPositionsByPrice = (
   positions: FullPositionZod[],
