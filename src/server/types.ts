@@ -442,3 +442,10 @@ export const feedbackSchema = z.object({
 });
 
 export type feedbackProps = z.infer<typeof feedbackSchema>;
+
+// User
+export type UserCache = {
+  modals: {
+    [key: string]: boolean;
+  };
+};

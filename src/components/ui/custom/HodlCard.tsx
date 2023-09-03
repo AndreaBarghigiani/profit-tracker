@@ -101,7 +101,12 @@ const HodlCard = ({
           </header>
 
           <section className="mt-4 flex items-center justify-between">
-            <HodlCardData amount={currentEvaluation} Icon={Wallet} highlighted>
+            <HodlCardData
+              key="token-amount"
+              amount={currentEvaluation}
+              Icon={Wallet}
+              highlighted
+            >
               <p className="text-base font-semibold">Evaluation</p>
 
               <p className="mt-1 text-xs text-dog-600">
@@ -120,7 +125,11 @@ const HodlCard = ({
               </p>
             </HodlCardData>
 
-            <HodlCardData amount={position.exposure} Icon={AlertTriangle}>
+            <HodlCardData
+              key="exposure"
+              amount={position.exposure}
+              Icon={AlertTriangle}
+            >
               <p className="text-base font-semibold">Exposure</p>
             </HodlCardData>
 

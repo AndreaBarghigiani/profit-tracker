@@ -24,8 +24,6 @@ import {
   Power,
   User2,
 } from "lucide-react";
-// import UserCard from "@/components/userCard";
-// import { Separator } from "@/components/ui/separator";
 import WalletInfo from "@/components/ui/testing/WalletInfo";
 import FeedbackComponent from "@/components/ui/custom/Feedback";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -35,6 +33,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import ChangesModal from "@/components/ui/custom/ChangesModal";
 
 const paths = [
   { path: "/dashboard", label: "Dashboard", Icon: Gauge },
@@ -131,6 +130,8 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
 
             <nav className="ml-auto flex items-center gap-4">
               <FeedbackComponent />
+
+              <ChangesModal session={session} />
 
               {!!session && (
                 <Popover>
