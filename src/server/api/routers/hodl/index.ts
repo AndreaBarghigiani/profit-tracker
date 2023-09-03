@@ -11,7 +11,6 @@ import type { Session } from "next-auth";
 import type {
   HodlTransaction,
   CalcDiffs,
-  HodlDeleteTransaction,
   PrismaHodlTransaction,
 } from "@/server/types";
 

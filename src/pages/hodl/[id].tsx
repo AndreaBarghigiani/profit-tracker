@@ -46,6 +46,8 @@ const Hodl: NextPage<
   const router = useRouter();
   const pageTitle = `Token ${token.name} Hodl page - Underdog Tracker`;
 
+  const { id: hodlId, amount: hodlAmount } = hodl;
+
   const refreshPage = async () => {
     await router.replace(router.asPath, undefined, { scroll: false });
   };
@@ -109,7 +111,7 @@ const Hodl: NextPage<
                 btnVariants={{ size: "link" }}
               >
                 <AddHodlPositionForm
-                  hodlId={hodl.id}
+                  hodl={{ hodlId, hodlAmount }}
                   token={token}
                   closeModal={() => transactionModal.setOpen(false)}
                 />
