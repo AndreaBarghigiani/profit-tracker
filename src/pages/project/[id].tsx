@@ -1,7 +1,7 @@
 // Utils
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
-import { uppercaseFirst, formatDate } from "@/utils/string";
+import { formatDate } from "@/utils/string";
 import { useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -11,7 +11,6 @@ import type { Project } from "@prisma/client";
 
 // Components
 import Heading from "@/components/ui/heading";
-import { ArrowBigDownDash, ArrowBigUpDash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import OnlyAdmin from "@/components/ui/custom/OnlyAdmin";
 import {
@@ -24,8 +23,8 @@ import {
 } from "@/components/ui/dialog";
 import AddProjectTransactionForm from "@/components/ui/custom/AddProjectTransactionForm";
 import ProjectStats from "@/components/ui/custom/ProjectStats";
-
 import LastProjectTransaction from "@/components/ui/custom/LastProjectTransaction";
+import ProjectTransactionCard from "@/components/ui/custom/Projects/ProjectTransactionCard";
 
 const ProjectPage: NextPage = () => {
   const router = useRouter();
@@ -33,7 +32,7 @@ const ProjectPage: NextPage = () => {
 
   const { data: project, isLoading } = api.project.get.useQuery(
     { projectId: router.query.id as string },
-    { enabled: !!router.query.id }
+    { enabled: !!router.query.id },
   );
 
   const { data: transactions, isLoading: isLoadingTransactions } =
@@ -42,7 +41,7 @@ const ProjectPage: NextPage = () => {
         projectId: router.query.id as string,
         orderBy: "desc",
       },
-      { enabled: !!router.query.id }
+      { enabled: !!router.query.id },
     );
 
   const { mutate: deleteProject } = api.project.delete.useMutation({
@@ -120,32 +119,10 @@ const ProjectPage: NextPage = () => {
           {isLoadingTransactions
             ? "Loading..."
             : transactions?.map((transaction) => (
-                <div
+                <ProjectTransactionCard
+                  transaction={transaction}
                   key={transaction.id}
-                  className="grid grid-cols-3 items-center gap-4 rounded-md bg-foreground/10"
-                >
-                  <p className="p-3">{`$${transaction.amount.toFixed(2)}`}</p>
-                  <p className="flex items-center p-3">
-                    {transaction.type === "DEPOSIT" ? (
-                      <ArrowBigDownDash className="mr-2 h-4 w-4" />
-                    ) : (
-                      <ArrowBigUpDash className="mr-2 h-4 w-4" />
-                    )}
-                    {uppercaseFirst(transaction.type)}
-                  </p>
-                  <time className="p-3 text-sm">
-                    <p>
-                      {transaction.createdAt.toLocaleString("en-US", {
-                        dateStyle: "medium",
-                      })}
-                    </p>
-                    <p className="text-xs text-foreground/50">
-                      {transaction.createdAt.toLocaleString("en-US", {
-                        timeStyle: "short",
-                      })}
-                    </p>
-                  </time>
-                </div>
+                />
               ))}
         </div>
       </article>

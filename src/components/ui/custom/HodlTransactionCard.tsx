@@ -2,18 +2,14 @@
 import { currencyConverter, uppercaseFirst } from "@/utils/string";
 import { api } from "@/utils/api";
 import clsx from "clsx";
+import { TRANSACTION_TYPE_ICONS } from "@/utils/positions";
 
 // Types
 import type { Token } from "@prisma/client";
 import type { HodlDeleteTransaction } from "@/server/types";
 
 // Components
-import {
-  ArrowBigDownDash,
-  ArrowBigUpDash,
-  Trash2,
-  RefreshCcw,
-} from "lucide-react";
+import { Trash2, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -48,6 +44,8 @@ const HodlTransactionCard = ({
     "animate-spin": isDeletingTransaction,
   });
 
+  const Icon = TRANSACTION_TYPE_ICONS[transaction.type];
+
   return (
     <div
       key={transaction.id}
@@ -66,11 +64,7 @@ const HodlTransactionCard = ({
         </p>
       </div>
       <p className="flex items-center p-3">
-        {transaction.type === "DEPOSIT" || transaction.type === "BUY" ? (
-          <ArrowBigDownDash className="mr-2 h-4 w-4" />
-        ) : (
-          <ArrowBigUpDash className="mr-2 h-4 w-4" />
-        )}
+        <Icon className="mr-2 h-4 w-4" />
         {uppercaseFirst(transaction.type)}
       </p>
       <time className="p-3 text-sm">

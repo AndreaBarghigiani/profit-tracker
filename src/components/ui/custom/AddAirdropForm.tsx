@@ -14,7 +14,7 @@ const AddAirdropForm = ({
   closeModal?: () => void | Promise<void>;
 }) => {
   const [selectedToken, setSelectedToken] = useState<Token | null>(null);
-  console.log("selectedToken:", selectedToken);
+
   const { data: hodl } = api.hodl.getByTokenId.useQuery(
     { tokenId: selectedToken?.id },
     {
