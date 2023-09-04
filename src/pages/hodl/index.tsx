@@ -81,7 +81,7 @@ const Hodl: NextPage<
           </div>
         )}
 
-        {!!positionsSorted && (
+        {!!positionsSorted.length && (
           <>
             <header className="mb-8 flex items-center">
               <Heading>Hodl at a glance:</Heading>
