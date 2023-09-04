@@ -173,7 +173,7 @@ const AddHodlPositionForm = ({
                     disabled={!userWallet?.liquidFunds}
                     value="true"
                   >
-                    Use liquid funds
+                    Liquid Funds
                   </ToggleItem>
                   <ToggleItem value="false">Fresh capital</ToggleItem>
                 </ToggleGroup>
