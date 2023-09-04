@@ -11,6 +11,7 @@ import Heading from "@/components/ui/heading";
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import ProjectCard from "@/components/ui/custom/ProjectCard";
+import { Plus } from "lucide-react";
 
 const Projects: NextPage = () => {
   const { data: projects, isSuccess: isProjectsSuccess } =
@@ -28,15 +29,21 @@ const Projects: NextPage = () => {
 
           {projects.length > 0 ? (
             <>
-              <p className="flex items-center">
-                These are your projects
+              <header className="flex items-center">
+                <Heading size="h2" spacing="2xl">
+                  Your projects
+                </Heading>
                 <Link
-                  className={buttonVariants({ className: "ml-auto" })}
+                  className={buttonVariants({
+                    size: "sm",
+                    className: "ml-auto flex items-center",
+                  })}
                   href="/project/create"
                 >
-                  Add project
+                  <Plus className="mr-2 h-3 w-3" />
+                  Project
                 </Link>
-              </p>
+              </header>
 
               <div className="grid grid-cols-2 gap-4">
                 {projects.map((project: Project) => (

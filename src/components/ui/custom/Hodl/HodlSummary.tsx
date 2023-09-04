@@ -58,7 +58,7 @@ const HodlSummary = ({
           spacing="small"
           className="flex justify-between text-dog-500"
         >
-          Total Evaluation:
+          Total Valuation:
         </Heading>
 
         <div className="mb-4 flex items-center">

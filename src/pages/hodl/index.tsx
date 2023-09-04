@@ -5,6 +5,8 @@ import { sortedPositionsByPrice } from "@/utils/positions";
 import { prisma } from "@/server/db";
 import { getServerAuthSession } from "@/server/auth";
 import { getByCurrentUser } from "@/server/api/routers/hodl";
+import va from "@vercel/analytics";
+import { useRouter } from "next/router";
 
 // Types
 import type {
@@ -15,7 +17,7 @@ import type {
 
 // Components
 import { Button, buttonVariants } from "@/components/ui/button";
-import { RefreshCcw } from "lucide-react";
+import { RefreshCcw, Plus } from "lucide-react";
 import Head from "next/head";
 import Link from "next/link";
 import Heading from "@/components/ui/heading";
@@ -27,20 +29,27 @@ const Hodl: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ positions }) => {
   const utils = api.useContext();
+  const router = useRouter();
 
   const { mutateAsync: updatePrices, isLoading: isPricesLoading } =
     api.token.updatePrices.useMutation({
       onSuccess: async () => {
         await utils.hodl.getByCurrentUser.invalidate();
+        await refreshPage();
       },
     });
 
   const positionsSorted = !!positions ? sortedPositionsByPrice(positions) : [];
 
+  const refreshPage = async () => {
+    await router.replace(router.asPath, undefined, { scroll: false });
+  };
+
   const handleRefresh = async () => {
     if (!positions) return;
 
     const tokenIds = positions.map((position) => position.token.coingecko_id);
+    console.log("tokenIds:", tokenIds);
     await updatePrices({ tokenIds });
   };
 
@@ -52,22 +61,12 @@ const Hodl: NextPage<
 
       <div>
         <Heading size="page" gradient="gold" spacing="massive">
-          Your positions
+          Your Positions
         </Heading>
 
         {!!positions && positions.length ? (
           <div className="my-4 space-y-3 text-center text-stone-400">
             <Heading>Congrats for tracking your positions!</Heading>
-            <p className=" text-lg ">
-              Here you can have a feeling on how your investments are going, or
-              create a new one.
-            </p>
-            <Link
-              className={buttonVariants({ className: "ml-auto" })}
-              href="/hodl/add"
-            >
-              New position
-            </Link>
           </div>
         ) : (
           <div className="my-4 space-y-3 text-center text-stone-400">
@@ -84,7 +83,20 @@ const Hodl: NextPage<
 
         {!!positionsSorted && (
           <>
-            <Heading>Hodl at a glance:</Heading>
+            <header className="mb-8 flex items-center">
+              <Heading>Hodl at a glance:</Heading>
+              <Link
+                className={buttonVariants({
+                  size: "sm",
+                  className: "ml-auto flex items-center",
+                })}
+                onClick={() => va.track("Add Hodl Position")}
+                href="/hodl/add"
+              >
+                <Plus className="mr-1 h-3 w-3" />
+                Hodl
+              </Link>
+            </header>
             <div className="mb-4 xl:grid xl:grid-cols-2 xl:gap-4">
               <HodlSummary className="mb-4 xl:mb-0" hodls={positionsSorted} />
               <HodlBar hodls={positionsSorted} />
@@ -98,7 +110,7 @@ const Hodl: NextPage<
                     "animate-spin": isPricesLoading,
                   })}
                 />
-                Refresh all
+                Refresh
               </Button>
             </header>
             <div className="space-y-4 xl:grid xl:grid-cols-2 xl:gap-4 xl:space-y-0">
