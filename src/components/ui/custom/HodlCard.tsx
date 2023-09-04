@@ -198,14 +198,14 @@ const HodlCardData = ({
   };
 
   const massagedChildren = Array.isArray(children)
-    ? children.map((child: ReactElement<ChildrenProps>) => {
+    ? children.map((child: ReactElement<ChildrenProps>, index) => {
         if (!isValidElement(child)) return child;
 
         return cloneElement(child as ReactElement, {
           className: cn(child.props.className as ClassValue, {
             block: isOverflowing,
           }),
-          key: child.key,
+          key: `key-${index}`,
         });
       })
     : children;
