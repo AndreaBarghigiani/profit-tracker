@@ -66,14 +66,11 @@ const Dashboard: NextPage<
           Dashboard
         </Heading>
 
-        <div className="xl:grid xl:grid-cols-5 xl:gap-4">
-          {isUserStatsSuccess && (
-            <div className="hidden xl:block">
-              <UserStats orientation="vertical" userStats={userStats} />
-            </div>
-          )}
-
+        <div className="xl:grid xl:grid-cols-4 xl:gap-4">
           <section className="col-span-4 space-y-12">
+            {isUserStatsSuccess && (
+              <UserStats orientation="horizontal" userStats={userStats} />
+            )}
             <div>
               <header className="mb-8 flex items-center">
                 <Heading size="h2" spacing="none">

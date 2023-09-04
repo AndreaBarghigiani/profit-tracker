@@ -11,7 +11,7 @@ const cardVariants = cva("rounded-lg border shadow-sm", {
   variants: {
     variant: {
       default:
-        "border-stone-800 bg-gradient-to-bl from-background to-stone-900 text-card-foreground",
+        "border-dog-800 bg-gradient-to-bl from-background to-dog-900 text-dog-400",
       redish:
         "border-redish-border bg-gradient-to-tr from-redish to-redish-end text-background",
       redpurple:
@@ -43,7 +43,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
       className={cn(cardVariants({ variant, className }))}
       {...props}
     />
-  )
+  ),
 );
 Card.displayName = "Card";
 
@@ -67,7 +67,7 @@ const CardTitle = React.forwardRef<
     ref={ref}
     className={cn(
       "text-lg font-semibold leading-none tracking-tight",
-      className
+      className,
     )}
     {...props}
   />
