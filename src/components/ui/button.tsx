@@ -31,7 +31,7 @@ const buttonVariants = cva(
         "outline-input": "border border-dog-600 bg-background",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "text-dog-300 hover:text-main-500",
+        ghost: "text-dog-300 hover:text-main-500 focus:ring-0",
         "ghost-danger":
           "text-alert-300 hover:text-primary-foreground hover:bg-alert-400",
         link: "underline-offset-4 hover:underline hover:text-main-600",
