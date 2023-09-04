@@ -157,7 +157,7 @@ const Hodl: NextPage<
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="end"
-                  className="w-40 border-dog-750 bg-dog-850 text-dog-400"
+                  className="w-36 border-dog-750 bg-dog-850 text-dog-400"
                 >
                   <AddTransactionModal
                     size="large"
@@ -171,7 +171,7 @@ const Hodl: NextPage<
                         <Button
                           size="link"
                           variant="ghost"
-                          className="ml-auto w-full cursor-pointer justify-end text-right transition-colors hover:text-main-500 focus:bg-dog-800 focus:text-main-500"
+                          className="ml-auto w-full cursor-pointer justify-start text-right transition-colors duration-200 focus:bg-dog-800 focus:text-main-500"
                         >
                           <Coins className="mr-2 h-4 w-4" />
                           Dca Out
@@ -204,7 +204,7 @@ const Hodl: NextPage<
                         <Button
                           size="link"
                           variant="ghost"
-                          className="ml-auto w-full cursor-pointer justify-end text-right transition-colors hover:text-main-500 focus:bg-dog-800 focus:text-main-500"
+                          className="ml-auto w-full cursor-pointer justify-start text-right transition-colors duration-200 focus:bg-dog-800 focus:text-main-500"
                         >
                           <Gift className="mr-2 h-4 w-4" />
                           Reward
@@ -228,7 +228,7 @@ const Hodl: NextPage<
                     <Button
                       variant="ghost"
                       size="link"
-                      className="ml-auto w-full cursor-pointer justify-end text-right transition-colors focus:bg-dog-800 focus:text-main-500"
+                      className="ml-auto w-full cursor-pointer justify-start text-right transition-colors duration-200 focus:bg-dog-800 focus:text-main-500"
                       onClick={async () => {
                         va.track("Update Hodls Prices");
                         await updatePrice({ tokenId: token.coingecko_id });
@@ -247,7 +247,7 @@ const Hodl: NextPage<
                     <Button
                       variant="ghost"
                       size="link"
-                      className="ml-auto w-full cursor-pointer justify-end text-right transition-colors duration-200 focus:bg-dog-800 focus:text-success-600"
+                      className="ml-auto w-full cursor-pointer justify-start text-right transition-colors duration-200 focus:bg-dog-800 focus:text-success-600"
                       onClick={() => {
                         va.track("Close Hodl Position");
                         closePosition({
@@ -262,11 +262,11 @@ const Hodl: NextPage<
                     </Button>
                   </DropdownMenuItem>
 
-                  <DropdownMenuItem className="justify-end focus:bg-dog-800 focus:text-dog-400">
+                  <DropdownMenuItem asChild>
                     <Button
                       variant="ghost"
                       size="link"
-                      className="ml-auto w-full cursor-pointer justify-end text-right transition-colors hover:text-alert-400 focus:bg-dog-800 focus:text-alert-500"
+                      className="ml-auto w-full cursor-pointer justify-start text-right transition-colors duration-200  focus:bg-dog-800 focus:text-alert-400"
                       onClick={() => {
                         va.track("Delete Hodl Position");
                         deletePosition(hodl.id);
