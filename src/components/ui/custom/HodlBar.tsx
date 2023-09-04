@@ -59,7 +59,7 @@ const HodlBar = ({ hodls }: { hodls: FullPositionZod[] }) => {
 
   return (
     <div className="relative rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg">
-      <Heading size="h2">Your top 5 bags</Heading>
+      <Heading size="h2">Your Top 5 Bags</Heading>
 
       <p className="font-semibold text-dog-300">
         {hoveredToken

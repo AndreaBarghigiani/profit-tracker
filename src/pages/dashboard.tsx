@@ -87,8 +87,8 @@ const Dashboard: NextPage<
                   onClick={() => va.track("Add Hodl Position")}
                   href="/hodl/add"
                 >
-                  <Plus className="mr-2 h-3 w-3" />
-                  Add hodl
+                  <Plus className="mr-1 h-4 w-4" />
+                  Hodl
                 </Link>
 
                 <Button className="ml-4" size="sm" onClick={handleRefresh}>
@@ -97,7 +97,7 @@ const Dashboard: NextPage<
                       "animate-spin": isPricesLoading,
                     })}
                   />
-                  Refresh all
+                  Refresh
                 </Button>
               </header>
               {!!hodlsSorted && (
@@ -123,7 +123,7 @@ const Dashboard: NextPage<
                     href="/project/create"
                   >
                     <Plus className="mr-2 h-3 w-3" />
-                    Add project
+                    Project
                   </Link>
                 </header>
 

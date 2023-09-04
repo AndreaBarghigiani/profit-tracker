@@ -107,20 +107,20 @@ const HodlCard = ({
               Icon={Wallet}
               highlighted
             >
-              <p className="text-base font-semibold">Evaluation</p>
+              <p className="text-base font-semibold">Details</p>
+
+              <p className="mt-1 hidden text-xs text-dog-600">
+                Valuation:{` `}
+                <strong>
+                  {currencyConverter({ amount: currentEvaluation })}
+                </strong>
+              </p>
 
               <p className="mt-1 text-xs text-dog-600">
                 Token amount:{` `}
                 <strong>
                   {formatNumber(position.amount)}{" "}
                   <span className="uppercase">{position.token.symbol}</span>
-                </strong>
-              </p>
-
-              <p className="mt-1 hidden text-xs text-dog-600">
-                Position evaluation:{` `}
-                <strong>
-                  {currencyConverter({ amount: currentEvaluation })}
                 </strong>
               </p>
             </HodlCardData>

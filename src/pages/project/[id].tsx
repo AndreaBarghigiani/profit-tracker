@@ -25,6 +25,7 @@ import AddProjectTransactionForm from "@/components/ui/custom/AddProjectTransact
 import ProjectStats from "@/components/ui/custom/ProjectStats";
 import LastProjectTransaction from "@/components/ui/custom/LastProjectTransaction";
 import ProjectTransactionCard from "@/components/ui/custom/Projects/ProjectTransactionCard";
+import { Trash, Plus } from "lucide-react";
 
 const ProjectPage: NextPage = () => {
   const router = useRouter();
@@ -97,7 +98,8 @@ const ProjectPage: NextPage = () => {
           <div className="ml-auto flex gap-2">
             <OnlyAdmin>
               <Button variant="adminOutline" onClick={handleAddInterest}>
-                Add interest
+                <Plus className="mr-2 h-3 w-3" />
+                Interest
               </Button>
             </OnlyAdmin>
             <AddTransaction project={project} />
@@ -105,6 +107,7 @@ const ProjectPage: NextPage = () => {
               variant="ghost-danger"
               onClick={() => deleteProject(project.id)}
             >
+              <Trash className="mr-2 h-4 w-4" />
               Delete
             </Button>
           </div>
@@ -138,7 +141,10 @@ const AddTransaction = ({ project }: { project: Project }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className={buttonVariants()}>Add Transaction</Button>
+        <Button className={buttonVariants()}>
+          <Plus className="mr-2 h-3 w-3" />
+          Transaction
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

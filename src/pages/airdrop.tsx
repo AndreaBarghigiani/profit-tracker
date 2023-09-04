@@ -33,7 +33,7 @@ const Airdrop: NextPage = () => {
             <strong>
               <em>Note:</em>
             </strong>{" "}
-            as an airdrop the $ evaluation of the tokens will not be added to
+            as an airdrop the $ valuation of the tokens will not be added to
             your exposure!
           </p>
         </section>
