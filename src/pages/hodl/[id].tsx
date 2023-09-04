@@ -174,13 +174,13 @@ const Hodl: NextPage<
                           className="ml-auto w-full cursor-pointer justify-start text-right transition-colors duration-200 focus:bg-dog-800 focus:text-main-500"
                         >
                           <Coins className="mr-2 h-4 w-4" />
-                          Dca Out
+                          Exit Strategy
                         </Button>
                       </DropdownMenuItem>
                     )}
                     modalContent={{
-                      title: "Add your DCA Out Strategy",
-                      description: `You can add your DCA Out strategy for ${token.name} to see how much you will earn if you sell your tokens at a specific price.`,
+                      title: "Add your Exit Strategy",
+                      description: `You can add your strategy and study how to DCA Out from ${token.name} and discover how much will you earn selling at a specific prices.`,
                       tooltip: "DCA Out",
                     }}
                   >
