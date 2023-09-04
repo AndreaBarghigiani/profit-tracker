@@ -1,4 +1,5 @@
 // Utils
+import React from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
@@ -44,11 +45,13 @@ interface AddTransactionModalProps
   transactionModal: ReturnType<typeof useTransactionModal>;
   Icon?: LucideIcon;
   iconClasses?: string;
+  triggerText?: string;
+  customTrigger?: () => JSX.Element;
   btnVariants?: VariantProps<typeof buttonVariants>;
   modalContent?: {
     title: string;
     description: string;
-    tooltip: string;
+    tooltip?: string;
   };
 }
 
@@ -58,37 +61,44 @@ const AddTransactionModal = ({
   transactionModal,
   Icon,
   iconClasses,
+  triggerText,
+  customTrigger,
   btnVariants,
   modalContent = {
     title: "Add a transaction",
     description: "Here you can add your transaction.",
-    tooltip: "Add transaction",
   },
 }: AddTransactionModalProps) => {
+  console.log(customTrigger);
   return (
     <Dialog
       open={transactionModal.open}
       onOpenChange={transactionModal.setOpen}
     >
       <DialogTrigger asChild>
-        <Button {...btnVariants}>
-          {!!Icon ? (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span className="flex h-9 items-center justify-center px-3">
-                    <Icon className={cn(iconClasses)} />
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent className="border-dog-800 text-dog-500">
-                  <p>{modalContent.tooltip}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          ) : (
-            "Add Transaction"
-          )}
-        </Button>
+        {!!customTrigger ? (
+          customTrigger()
+        ) : (
+          <Button {...btnVariants}>
+            {!!Icon ? (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <>
+                      <Icon className={cn(iconClasses)} />
+                      {triggerText}
+                    </>
+                  </TooltipTrigger>
+                  <TooltipContent className="border-dog-800 text-dog-500">
+                    <p>{modalContent.tooltip}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ) : (
+              "Add Transaction"
+            )}
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className={cn(contentVariants({ size }))}>
         <DialogHeader>
