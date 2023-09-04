@@ -276,7 +276,7 @@ const AddHodlPositionForm = ({
 
       <div className="rounded-md border border-input bg-dog-800 px-8 py-5">
         <Heading size="h4" spacing="small" className="mt-0 text-dog-400">
-          Valuation
+          Purchase Price
         </Heading>
         <p className="text-4xl font-semibold text-dog-100">
           {watchAmount

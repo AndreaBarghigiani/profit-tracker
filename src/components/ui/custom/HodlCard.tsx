@@ -16,7 +16,7 @@ import Image from "next/image";
 import Heading from "@/components/ui/heading";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
-import { Wallet, AlertTriangle } from "lucide-react";
+import { Wallet, BadgePercent } from "lucide-react";
 import {
   Tooltip,
   TooltipTrigger,
@@ -128,9 +128,12 @@ const HodlCard = ({
             <HodlCardData
               key="exposure"
               amount={position.exposure}
-              Icon={AlertTriangle}
+              Icon={BadgePercent}
             >
               <p className="text-base font-semibold">Exposure</p>
+              <p className="text-xs">
+                How much to <strong>100% ROI</strong>
+              </p>
             </HodlCardData>
 
             {/* <div className="flex items-center">
@@ -186,7 +189,7 @@ const HodlCardData = ({
 
   const textClasses = cn("truncate", {
     "text-4xl font-semibold": highlighted,
-    "text-dog-300": !highlighted,
+    "text-dog-500": !highlighted,
   });
 
   // Calculate Text Overflow
@@ -225,7 +228,7 @@ const HodlCardData = ({
         </TooltipTrigger>
         <TooltipContent
           side="bottom"
-          className="border-dog-800 text-center text-dog-500"
+          className="max-w-xs border-dog-800 text-center text-dog-500 "
         >
           {massagedChildren}
         </TooltipContent>
