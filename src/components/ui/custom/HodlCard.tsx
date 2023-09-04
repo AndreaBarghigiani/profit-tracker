@@ -16,7 +16,7 @@ import Image from "next/image";
 import Heading from "@/components/ui/heading";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
-import { Wallet, BadgePercent } from "lucide-react";
+import { Wallet, DoorOpen } from "lucide-react";
 import {
   Tooltip,
   TooltipTrigger,
@@ -128,7 +128,7 @@ const HodlCard = ({
             <HodlCardData
               key="exposure"
               amount={position.exposure}
-              Icon={BadgePercent}
+              Icon={DoorOpen}
             >
               <p className="text-base font-semibold">Exposure</p>
               <p className="text-xs">
