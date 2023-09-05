@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { currencyConverter } from "@/utils/string";
 import { calcPercentageVariance } from "@/utils/number";
 import { hodlSummary } from "@/utils/positions";
-import { buttonVariants } from "../../button";
+import { buttonVariants } from "@/components/ui/button";
 
 // Types
 import type { FullPositionZod } from "@/server/types";
