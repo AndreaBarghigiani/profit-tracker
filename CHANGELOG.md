@@ -1,3 +1,9 @@
+# 0.0.3 (2023-09-05)
+
+## 🚀 New Features
+
+- Reorganized Dashboard
+
 # 0.0.2 (2023-09-04)
 
 Lost few updates on the way...
