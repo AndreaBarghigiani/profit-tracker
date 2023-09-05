@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // Utils
 import { api } from "@/utils/api";
-import { useState, useEffect } from "react";
+import va from "@vercel/analytics";
 import clsx from "clsx";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import { prisma } from "@/server/db";
 import { formatDate } from "@/utils/string";
 import { getHodl } from "@/server/api/routers/hodl";
 import { useTransactionModal } from "@/hooks/useTransactionModal";
-import va from "@vercel/analytics";
+import { buttonVariants } from "@/components/ui/button";
 
 // Types
 import type {
@@ -19,6 +20,7 @@ import type {
 
 // Components
 import Head from "next/head";
+import Link from "next/link";
 import Heading from "@/components/ui/heading";
 import HodlTransactionCard from "@/components/ui/custom/HodlTransactionCard";
 import { Button } from "@/components/ui/button";
@@ -35,20 +37,14 @@ import {
   Banknote,
   Gift,
   Coins,
+  ArrowLeft,
 } from "lucide-react";
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipProvider,
-  TooltipContent,
-} from "@/components/ui/tooltip";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuItem,
   DropdownMenuContent,
 } from "@/components/ui/dropdown-menu";
-import type { Token, Hodl } from "@prisma/client";
 
 const Hodl: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -113,10 +109,15 @@ const Hodl: NextPage<
           </Heading>
 
           <section className="flex items-center">
-            <p>
-              You started this position at:{" "}
-              <time dateTime={startDate}>{startDate}</time>
-            </p>
+            <Link
+              href="/hodl"
+              className={buttonVariants({
+                variant: "ghost",
+              })}
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Hodls
+            </Link>
 
             <div className="ml-auto flex items-center space-x-2">
               <AddTransactionModal
@@ -286,21 +287,27 @@ const Hodl: NextPage<
 
         <section>
           {isSuccess && transactions ? (
-            <div className="space-y-3">
-              <div className="grid grid-cols-3 gap-4 rounded-md bg-foreground/30">
-                <p className="p-3">Amount</p>
-                <p className="p-3">Type</p>
-                <p className="p-3">Date</p>
+            <>
+              <p>
+                You started this position at:{" "}
+                <time dateTime={startDate}>{startDate}</time>
+              </p>
+              <div className="space-y-3">
+                <div className="grid grid-cols-3 gap-4 rounded-md bg-foreground/30">
+                  <p className="p-3">Amount</p>
+                  <p className="p-3">Type</p>
+                  <p className="p-3">Date</p>
+                </div>
+                {transactions.map((transaction) => (
+                  <HodlTransactionCard
+                    transaction={transaction}
+                    token={token}
+                    key={transaction.id}
+                    refresher={refreshPage}
+                  />
+                ))}
               </div>
-              {transactions.map((transaction) => (
-                <HodlTransactionCard
-                  transaction={transaction}
-                  token={token}
-                  key={transaction.id}
-                  refresher={refreshPage}
-                />
-              ))}
-            </div>
+            </>
           ) : null}
         </section>
       </div>
