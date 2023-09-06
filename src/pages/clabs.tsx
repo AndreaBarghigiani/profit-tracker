@@ -7,7 +7,7 @@ import type { IncomingMessage, ServerResponse } from "http";
 
 // Components
 import LayoutMarketing from "@/components/layoutMarketing";
-import HeroSection from "@/components/ui/custom/CLabs/HeroSectionCLabs";
+import HeroSection from "@/components/custom/CLabs/HeroSectionCLabs";
 
 const Home: NextPageWithLayout = () => {
   return (

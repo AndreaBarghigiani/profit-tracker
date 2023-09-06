@@ -19,7 +19,7 @@ import type { DcaStrategy, DcaSteps } from "@prisma/client";
 import Image from "next/image";
 import Heading from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
-import DollarInput from "@/components/ui/custom/DollarInput";
+import DollarInput from "@/components/custom/DollarInput";
 import { Minus, RefreshCcw, Save } from "lucide-react";
 import {
   Form,

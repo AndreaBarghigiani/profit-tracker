@@ -6,7 +6,7 @@ import type { NextPage } from "next";
 // Components
 import Head from "next/head";
 import Heading from "@/components/ui/heading";
-import AddAirdropForm from "@/components/ui/custom/AddAirdropForm";
+import AddAirdropForm from "@/components/custom/AddAirdropForm";
 
 const Airdrop: NextPage = () => {
   return (

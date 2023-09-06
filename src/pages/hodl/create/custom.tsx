@@ -3,7 +3,7 @@
 // Types
 
 // Components
-import AddCustomTokenForm from "@/components/ui/custom/AddCustomTokenForm";
+import AddCustomTokenForm from "@/components/custom/AddCustomTokenForm";
 import Heading from "@/components/ui/heading";
 
 const AddHodlPosition = () => {

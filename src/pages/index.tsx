@@ -7,12 +7,12 @@ import type { IncomingMessage, ServerResponse } from "http";
 
 // Components
 import LayoutMarketing from "@/components/layoutMarketing";
-import HeroSection from "@/components/ui/custom/Homepage/HeroSection";
-import AboutSection from "@/components/ui/custom/Homepage/AboutSection";
-import ProblemSection from "@/components/ui/custom/Homepage/ProblemSection";
-import SolutionSection from "@/components/ui/custom/Homepage/SolutionSection";
-import UVPSection from "@/components/ui/custom/Homepage/UVPSection";
-import CTASection from "@/components/ui/custom/Homepage/CTASection";
+import HeroSection from "@/components/custom/Homepage/HeroSection";
+import AboutSection from "@/components/custom/Homepage/AboutSection";
+import ProblemSection from "@/components/custom/Homepage/ProblemSection";
+import SolutionSection from "@/components/custom/Homepage/SolutionSection";
+import UVPSection from "@/components/custom/Homepage/UVPSection";
+import CTASection from "@/components/custom/Homepage/CTASection";
 
 const Home: NextPageWithLayout = () => {
   return (

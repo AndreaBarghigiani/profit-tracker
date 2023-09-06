@@ -12,7 +12,7 @@ import type { Project } from "@prisma/client";
 // Components
 import Heading from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
-import OnlyAdmin from "@/components/ui/custom/OnlyAdmin";
+import OnlyAdmin from "@/components/custom/OnlyAdmin";
 import {
   Dialog,
   DialogContent,
@@ -21,10 +21,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import AddProjectTransactionForm from "@/components/ui/custom/AddProjectTransactionForm";
-import ProjectStats from "@/components/ui/custom/ProjectStats";
-import LastProjectTransaction from "@/components/ui/custom/LastProjectTransaction";
-import ProjectTransactionCard from "@/components/ui/custom/Projects/ProjectTransactionCard";
+import AddProjectTransactionForm from "@/components/custom/AddProjectTransactionForm";
+import ProjectStats from "@/components/custom/ProjectStats";
+import LastProjectTransaction from "@/components/custom/LastProjectTransaction";
+import ProjectTransactionCard from "@/components/custom/Projects/ProjectTransactionCard";
 import { Trash, Plus } from "lucide-react";
 
 const ProjectPage: NextPage = () => {

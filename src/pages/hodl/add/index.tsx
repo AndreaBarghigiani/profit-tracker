@@ -17,7 +17,7 @@ import type { TokenWithoutDates } from "@/server/types";
 import Heading from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import HodlRow from "@/components/ui/custom/HodlRow";
+import HodlRow from "@/components/custom/HodlRow";
 import { Search, RefreshCcw, ChevronRight } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";

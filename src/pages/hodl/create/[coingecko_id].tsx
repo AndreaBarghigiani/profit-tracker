@@ -13,7 +13,7 @@ import type {
 import type { TokenWithoutDates } from "@/server/types";
 
 // Components
-import AddHodlPositionForm from "@/components/ui/custom/AddHodlPositionForm";
+import AddHodlPositionForm from "@/components/custom/AddHodlPositionForm";
 import Heading from "@/components/ui/heading";
 
 const AddHodlPosition: NextPage<

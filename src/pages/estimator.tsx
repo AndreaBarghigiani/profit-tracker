@@ -22,8 +22,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import TokenSearchInput from "@/components/ui/custom/TokenSearchInput";
-import DollarInput from "@/components/ui/custom/DollarInput";
+import TokenSearchInput from "@/components/custom/TokenSearchInput";
+import DollarInput from "@/components/custom/DollarInput";
 
 const formSchema = z.object({
   amount: z.number().positive(),

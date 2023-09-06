@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 
 // Components
 import Link from "next/link";
-import NavLink from "@/components/ui/custom/NavLink";
+import NavLink from "@/components/custom/NavLink";
 import {
   Gauge,
   ArrowUpDown,
@@ -25,7 +25,7 @@ import {
   User2,
 } from "lucide-react";
 import WalletInfo from "@/components/ui/testing/WalletInfo";
-import FeedbackComponent from "@/components/ui/custom/Feedback";
+import FeedbackComponent from "@/components/custom/Feedback";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -33,7 +33,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import ChangesModal from "@/components/ui/custom/ChangesModal";
+import ChangesModal from "@/components/custom/ChangesModal";
 
 const paths = [
   { path: "/dashboard", label: "Dashboard", Icon: Gauge },
@@ -73,6 +73,7 @@ const Sidebar = ({ linkClicked }: { linkClicked?: () => void }) => {
 
 const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
   const { data: session, status } = useSession();
+  const router = useRouter();
   const [sheetOpen, setSheetOpen] = useState(false);
   const mainClass = clsx("px-7 py-5", {
     "xl:ml-72": status === "authenticated",
@@ -130,6 +131,10 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
 
             <nav className="ml-auto flex items-center gap-4">
               <ChangesModal session={session} />
+
+              {router.pathname !== "/dashboard" && (
+                <p>you're not in the dashboard</p>
+              )}
 
               {!!session && (
                 <Popover>

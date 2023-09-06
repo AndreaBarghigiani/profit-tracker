@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import Heading from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
 import { Search, RefreshCcw } from "lucide-react";
-import AddHodlPositionForm from "@/components/ui/custom/AddHodlPositionForm";
+import AddHodlPositionForm from "@/components/custom/AddHodlPositionForm";
 import {
   Form,
   FormField,

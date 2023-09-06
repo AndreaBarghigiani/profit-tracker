@@ -22,9 +22,9 @@ import Heading from "@/components/ui/heading";
 import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus, RefreshCcw } from "lucide-react";
-import HodlCard from "@/components/ui/custom/HodlCard";
-import UserStats from "@/components/ui/custom/UserStats";
-import ProjectCard from "@/components/ui/custom/ProjectCard";
+import HodlCard from "@/components/custom/HodlCard";
+import UserStats from "@/components/custom/UserStats";
+import ProjectCard from "@/components/custom/ProjectCard";
 
 const Dashboard: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
