@@ -107,13 +107,13 @@ const TokenSearchInput = ({
           </Button>
         </PopoverTrigger>
 
-        <PopoverContent className="w-[200px] p-0">
+        <PopoverContent className="w-[200px] border-dog-600 bg-dog-800 p-0">
           <Command shouldFilter={false} loop>
             <CommandInput
               onValueChange={(search) => handleSearch(search)}
               placeholder="Search for a token"
             />
-            <CommandList>
+            <CommandList className="border-dog-600 bg-dog-850">
               {isTokensLoading || isSearchLoading ? (
                 <CommandLoading>
                   <div className="flex items-center p-3 text-sm text-dog-300">
@@ -140,13 +140,13 @@ const TokenSearchInput = ({
                           <Image
                             src={token.iconUrl ?? "/placeholder.png"}
                             alt={token.name}
-                            className="mr-4 flex-shrink-0 rounded-full group-hover:bg-dog-800"
+                            className="mr-4 flex-shrink-0 rounded-full group-hover:bg-dog-800 group-aria-selected:bg-dog-800"
                             width={18}
                             height={18}
                           />
                           <p className="flex gap-2">
                             <span className="truncate">{token.name}</span>{" "}
-                            <span className="ml-2 text-xs text-dog-500">
+                            <span className="ml-2 text-xs text-dog-500 group-hover:text-dog-800 group-aria-selected:text-dog-800">
                               [{token.symbol.toUpperCase()}]
                             </span>
                           </p>
@@ -166,13 +166,13 @@ const TokenSearchInput = ({
                           <Image
                             src={token.iconUrl ?? "/placeholder.png"}
                             alt={token.name}
-                            className="mr-4 flex-shrink-0 rounded-full group-hover:bg-dog-800"
+                            className="mr-4 flex-shrink-0 rounded-full group-hover:bg-dog-800 group-aria-selected:bg-dog-800"
                             width={18}
                             height={18}
                           />
                           <p className="flex max-w-[140px] items-center gap-2">
                             <span className="truncate">{token.name}</span>{" "}
-                            <span className="ml-2 text-xs text-dog-500">
+                            <span className="ml-2 text-xs text-dog-500 group-hover:text-dog-800 group-aria-selected:text-dog-800">
                               [{token.symbol.toUpperCase()}]
                             </span>
                           </p>
