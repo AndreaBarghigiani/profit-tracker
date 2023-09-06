@@ -129,8 +129,6 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
             </div>
 
             <nav className="ml-auto flex items-center gap-4">
-              <FeedbackComponent />
-
               <ChangesModal session={session} />
 
               {!!session && (
@@ -173,6 +171,8 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
                   </PopoverContent>
                 </Popover>
               )}
+
+              <FeedbackComponent />
 
               <Sheet open={sheetOpen} onOpenChange={handleSheetOpen}>
                 <SheetTrigger className="xl:hidden">
