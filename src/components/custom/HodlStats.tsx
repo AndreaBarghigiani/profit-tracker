@@ -15,7 +15,7 @@ import type {
 
 // Components
 import Heading from "@/components/ui/heading";
-import { Skeleton } from "../skeleton";
+import { Skeleton } from "../ui/skeleton";
 import Image from "next/image";
 import { Clock } from "lucide-react";
 import {

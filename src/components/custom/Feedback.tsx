@@ -28,7 +28,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import StarRating from "@/components/ui/custom/StarRating";
+import StarRating from "@/components/custom/StarRating";
 
 const defaultValues: Partial<feedbackProps> = {
   username: "demo",

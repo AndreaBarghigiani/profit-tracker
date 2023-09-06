@@ -5,8 +5,8 @@ import { useState } from "react";
 // Types
 import type { Token } from "@prisma/client";
 // Components
-import TokenSearchInput from "@/components/ui/custom/TokenSearchInput";
-import AddHodlPositionForm from "@/components/ui/custom/AddHodlPositionForm";
+import TokenSearchInput from "@/components/custom/TokenSearchInput";
+import AddHodlPositionForm from "@/components/custom/AddHodlPositionForm";
 
 const AddAirdropForm = ({
   closeModal,

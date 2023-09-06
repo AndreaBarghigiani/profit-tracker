@@ -10,7 +10,7 @@ import Head from "next/head";
 import Heading from "@/components/ui/heading";
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
-import ProjectCard from "@/components/ui/custom/ProjectCard";
+import ProjectCard from "@/components/custom/ProjectCard";
 import { Plus } from "lucide-react";
 
 const Projects: NextPage = () => {

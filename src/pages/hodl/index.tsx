@@ -21,9 +21,9 @@ import { RefreshCcw, Plus } from "lucide-react";
 import Head from "next/head";
 import Link from "next/link";
 import Heading from "@/components/ui/heading";
-import HodlCard from "@/components/ui/custom/HodlCard";
-import HodlBar from "@/components/ui/custom/HodlBar";
-import HodlSummary from "@/components/ui/custom/Hodl/HodlSummary";
+import HodlCard from "@/components/custom/HodlCard";
+import HodlBar from "@/components/custom/HodlBar";
+import HodlSummary from "@/components/custom/Hodl/HodlSummary";
 
 const Hodl: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -49,7 +49,6 @@ const Hodl: NextPage<
     if (!positions) return;
 
     const tokenIds = positions.map((position) => position.token.coingecko_id);
-    console.log("tokenIds:", tokenIds);
     await updatePrices({ tokenIds });
   };
 

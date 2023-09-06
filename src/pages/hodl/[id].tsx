@@ -22,13 +22,13 @@ import type {
 import Head from "next/head";
 import Link from "next/link";
 import Heading from "@/components/ui/heading";
-import HodlTransactionCard from "@/components/ui/custom/HodlTransactionCard";
+import HodlTransactionCard from "@/components/custom/HodlTransactionCard";
 import { Button } from "@/components/ui/button";
-import AddTransactionModal from "@/components/ui/custom/AddTransactionModal";
-import AddHodlPositionForm from "@/components/ui/custom/AddHodlPositionForm";
-import AddAirdropForm from "@/components/ui/custom/AddAirdropForm";
-import AddDcaForm from "@/components/ui/custom/AddDcaForm";
-import HodlStats from "@/components/ui/custom/HodlStats";
+import AddTransactionModal from "@/components/custom/AddTransactionModal";
+import AddHodlPositionForm from "@/components/custom/AddHodlPositionForm";
+import AddAirdropForm from "@/components/custom/AddAirdropForm";
+import AddDcaForm from "@/components/custom/AddDcaForm";
+import HodlStats from "@/components/custom/HodlStats";
 import {
   MenuIcon,
   Trash2,
