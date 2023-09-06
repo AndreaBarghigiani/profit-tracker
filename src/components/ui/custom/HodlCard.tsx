@@ -4,6 +4,7 @@ import { api } from "@/utils/api";
 import { cn } from "@/lib/utils";
 import clsx from "clsx";
 import { currencyConverter, formatNumber } from "@/utils/string";
+import { useRouter } from "next/router";
 
 // Types
 import type { LucideIcon } from "lucide-react";
@@ -32,6 +33,7 @@ const HodlCard = ({
   rank: number;
 }) => {
   const currentEvaluation = position.amount * position.token.latestPrice;
+  const router = useRouter();
   const { data: hodlDiff, isSuccess: isHodlDiffSuccess } =
     api.hodl.getDiffFromBuyes.useQuery(
       {
@@ -53,6 +55,12 @@ const HodlCard = ({
     },
   );
 
+  const handleCardClick = async () => {
+    if (!!position.id) {
+      await router.push(`/hodl/${position.id}`);
+    }
+  };
+
   // Keeping for now, in case I want to add delete functionality
   // const utils = api.useContext();
   // const { mutate: deletePosition, isLoading: isDeletingPosition } =
@@ -67,7 +75,10 @@ const HodlCard = ({
   // });
 
   return (
-    <div className="relative rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg">
+    <div
+      className="group relative rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg transition-colors hover:cursor-pointer hover:bg-dog-850"
+      onClick={handleCardClick}
+    >
       {rank && (
         <div className="absolute left-0 top-0 rounded-br-lg rounded-tl-lg bg-dog-800 px-3 py-1 text-xs text-dog-500">
           {`#${rank}`}
@@ -89,6 +100,7 @@ const HodlCard = ({
               className={buttonVariants({
                 variant: "link",
                 size: "link",
+                className: "hover:no-underline group-hover:text-main-600",
               })}
             >
               <Heading size="h2" className="my-0">

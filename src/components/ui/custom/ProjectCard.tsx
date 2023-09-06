@@ -1,7 +1,7 @@
 // Utils
 import { api } from "@/utils/api";
 import { currencyConverter } from "@/utils/string";
-
+import { useRouter } from "next/router";
 import { cn } from "@/lib/utils";
 
 // Types
@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/tooltip";
 
 const ProjectCard = ({ project }: { project: Project }) => {
+  const router = useRouter();
   const {
     data: interests,
     // isLoading: isInterestLoading,
@@ -37,17 +38,25 @@ const ProjectCard = ({ project }: { project: Project }) => {
     projectId: project.id,
   });
 
+  const handleCardClick = async () => {
+    await router.push(`/project/${project.id}`);
+  };
+
   // ProjectData, what changes
   // icon, size,
 
   return (
-    <div className="rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg">
+    <div
+      className="group rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg hover:cursor-pointer hover:bg-dog-850"
+      onClick={handleCardClick}
+    >
       <header className="flex items-start justify-between gap-6">
         <Link
           href={`/project/${project.id}`}
           className={buttonVariants({
             variant: "link",
             size: "link",
+            className: "group-hover:text-main-600",
           })}
         >
           <Heading size="h2" className="my-0">
