@@ -1,4 +1,5 @@
 // Utils & Hooks
+import { api } from "@/utils/api";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
@@ -8,6 +9,8 @@ import { useRouter } from "next/router";
 // import { Role } from "@prisma/client";
 
 // Types
+import type { Session } from "next-auth";
+import type { FullPositionZod } from "@/server/types";
 
 // Components
 import Link from "next/link";
@@ -34,6 +37,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import ChangesModal from "@/components/custom/ChangesModal";
+import UserStatsDropdown from "@/components/custom/User/UserStatsDropdown";
 
 const paths = [
   { path: "/dashboard", label: "Dashboard", Icon: Gauge },
@@ -72,16 +76,26 @@ const Sidebar = ({ linkClicked }: { linkClicked?: () => void }) => {
 };
 
 const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
-  const { data: session, status } = useSession();
   const router = useRouter();
+  const { data: session, status } = useSession();
   const [sheetOpen, setSheetOpen] = useState(false);
   const mainClass = clsx("px-7 py-5", {
     "xl:ml-72": status === "authenticated",
   });
 
+  const { data: positions } = api.hodl.getByCurrentUser.useQuery(undefined, {
+    enabled: !!session?.user?.id,
+  });
+  const { data: userStats } = api.wallet.getUserStats.useQuery(undefined, {
+    enabled: !!session?.user?.id,
+  });
+
   const handleSheetOpen = () => {
     setSheetOpen((prev) => !prev);
   };
+
+  const hasSummaryBadge =
+    router.pathname !== "/dashboard" && !!userStats && !!positions;
 
   return (
     <div className="min-h-screen">
@@ -132,53 +146,16 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
             <nav className="ml-auto flex items-center gap-4">
               <ChangesModal session={session} />
 
-              {router.pathname !== "/dashboard" && (
-                <p>you're not in the dashboard</p>
+              {hasSummaryBadge && (
+                <UserStatsDropdown
+                  userStats={userStats}
+                  holds={positions as FullPositionZod[]}
+                />
               )}
 
-              {!!session && (
-                <Popover>
-                  <PopoverTrigger>
-                    <Avatar className="shrink-0 items-center justify-center">
-                      <AvatarImage
-                        className="h-8 w-8 rounded-full transition-all hover:shadow-dog"
-                        src={session.user.image?.toString()}
-                      />
-                      <AvatarFallback>
-                        {session.user.name?.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                  </PopoverTrigger>
-
-                  <PopoverContent
-                    align="end"
-                    className="w-fit space-y-2 border-dog-750 px-6 py-3 text-sm text-dog-300"
-                    sideOffset={10}
-                  >
-                    <Link
-                      className="flex items-center hover:text-main-500"
-                      href="/profile"
-                    >
-                      <User2 className="mr-2 h-4 w-4" />
-                      Profile
-                    </Link>
-
-                    <Link
-                      className="flex items-center hover:text-main-500"
-                      href="/"
-                      onClick={() =>
-                        signOut({ callbackUrl: window.location.origin })
-                      }
-                    >
-                      <Power className="mr-2 h-4 w-4" />
-                      Logout
-                    </Link>
-                  </PopoverContent>
-                </Popover>
-              )}
+              {!!session && <AvatarDropdown session={session} />}
 
               <FeedbackComponent />
-
               <Sheet open={sheetOpen} onOpenChange={handleSheetOpen}>
                 <SheetTrigger className="xl:hidden">
                   <Menu />
@@ -198,3 +175,39 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default LayoutDashboard;
+
+const AvatarDropdown = ({ session }: { session: Session }) => {
+  return (
+    <Popover>
+      <PopoverTrigger>
+        <Avatar className="shrink-0 items-center justify-center">
+          <AvatarImage
+            className="h-8 w-8 rounded-full transition-all hover:shadow-dog"
+            src={session.user.image?.toString()}
+          />
+          <AvatarFallback>{session.user.name?.charAt(0)}</AvatarFallback>
+        </Avatar>
+      </PopoverTrigger>
+
+      <PopoverContent
+        align="end"
+        className="w-fit space-y-2 border-dog-750 px-4 py-2 text-sm text-dog-300"
+        sideOffset={10}
+      >
+        <Link className="flex items-center hover:text-main-500" href="/profile">
+          <User2 className="mr-2 h-4 w-4" />
+          Profile
+        </Link>
+
+        <Link
+          className="flex items-center hover:text-main-500"
+          href="/"
+          onClick={() => signOut({ callbackUrl: window.location.origin })}
+        >
+          <Power className="mr-2 h-4 w-4" />
+          Logout
+        </Link>
+      </PopoverContent>
+    </Popover>
+  );
+};
