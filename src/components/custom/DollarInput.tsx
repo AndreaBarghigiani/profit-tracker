@@ -24,11 +24,11 @@ const DollarInput = ({ label, placeholder, setValue }: DollarInputProps) => {
           <span className="group-focus-within:text-main-600 ">$</span>
           <Input
             type="number"
-            min={0.01}
+            min={0}
             step="any"
             placeholder={placeholder}
             className="h-8 border-none focus:border-none focus:ring-0"
-            onChange={(e) => setValue(parseFloat(e.target.value))}
+            onChange={(e) => setValue(Math.abs(parseFloat(e.target.value)))}
           />
         </div>
       </FormControl>
