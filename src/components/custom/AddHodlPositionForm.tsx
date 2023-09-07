@@ -194,7 +194,11 @@ const AddHodlPositionForm = ({
               })}
             step="any"
             id="amount"
-            {...registerInvestment("amount", { valueAsNumber: true })}
+            {...registerInvestment("amount", {
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                setValue("amount", Math.abs(Number(e.target.value))),
+              valueAsNumber: true,
+            })}
           />
 
           {useLiquidFunds && isUserWalletSuccess ? (
