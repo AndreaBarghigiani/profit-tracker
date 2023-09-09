@@ -448,4 +448,7 @@ export type UserCache = {
   modals: {
     [key: string]: boolean;
   };
+  preferences?: {
+    [key: string]: string;
+  };
 };

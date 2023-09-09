@@ -69,7 +69,6 @@ const AddTransactionModal = ({
     description: "Here you can add your transaction.",
   },
 }: AddTransactionModalProps) => {
-  console.log(customTrigger);
   return (
     <Dialog
       open={transactionModal.open}

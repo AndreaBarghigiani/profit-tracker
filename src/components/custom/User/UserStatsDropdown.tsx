@@ -1,19 +1,19 @@
 // Utils
+import { api } from "@/utils/api";
 import { currencyConverter } from "@/utils/string";
-import clsx from "clsx";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
+import va from "@vercel/analytics";
 
 // Types
 import type { Wallet } from "@prisma/client";
 import type { MassagedSumTxItem } from "@/server/types";
 import type { ReactElement } from "react";
 import type { LucideIcon } from "lucide-react";
-import type { FullPositionZod } from "@/server/types";
 
 // Components
-import { Button } from "@/components/ui/button";
 import { DollarSign, DoorOpen, Banknote } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -28,7 +28,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-type UserStatsCardProps = {
+type UserStatsDropdownProps = {
   userStats: {
     wallet: Wallet;
     interests: MassagedSumTxItem;
@@ -38,23 +38,46 @@ type UserStatsCardProps = {
       exposure: number;
     };
   };
-  holds: FullPositionZod[];
   orientation?: "horizontal" | "vertical";
 };
 
 const UserStatsDropdown = ({
   userStats,
-  holds,
   orientation,
-}: UserStatsCardProps) => {
-  if (!userStats || !holds) return null;
+}: UserStatsDropdownProps) => {
+  const { data: session } = useSession();
+  const { data: user } = api.user.getRedisUser.useQuery(undefined, {
+    enabled: !!session,
+  });
 
-  const wrapperClasses = clsx("md:flex border-none rounded-lg hidden", {
+  const wrapperClasses = cn("md:flex border-none rounded-lg hidden", {
     "flex-col h-128 w-56": orientation === "vertical",
   });
 
+  const handleValueChange = async (value: string) => {
+    if (!session?.user?.id || !user) return;
+
+    va.track("UserStatsDropdown Value Change");
+
+    await fetch("/api/user/setPreference", {
+      method: "POST",
+      body: JSON.stringify({
+        userId: session.user.id,
+        prefId: "stat_dropdown_selection",
+        prefValue: value,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  };
+
+  const userPref = user?.preferences?.stat_dropdown_selection
+    ? user.preferences.stat_dropdown_selection
+    : "liquid";
+
   return (
-    <Select>
+    <Select defaultValue={userPref} onValueChange={handleValueChange}>
       <SelectTrigger className={wrapperClasses}>
         <SelectValue
           placeholder={
@@ -64,50 +87,24 @@ const UserStatsDropdown = ({
           }
         />
       </SelectTrigger>
-      <SelectContent align="end">
-        <SelectItem value="liquid">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <UserCard Icon={DollarSign}>
-                  {currencyConverter({ amount: userStats.wallet.liquidFunds })}
-                </UserCard>
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                <p>Liquid Funds</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </SelectItem>
-        <SelectItem value="exposure">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <UserCard Icon={DoorOpen}>
-                  {currencyConverter({ amount: userStats.totals.exposure })}
-                </UserCard>
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                <p>Exposure</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </SelectItem>
+      <SelectContent className="overflow-visible border-dog-600" align="end">
+        <UserSelectItem value="liquid" text="Liquid Funds">
+          <UserCard Icon={DollarSign}>
+            {currencyConverter({ amount: userStats.wallet.liquidFunds })}
+          </UserCard>
+        </UserSelectItem>
 
-        <SelectItem value="profits" className="text-right">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <UserCard Icon={Banknote}>
-                  {currencyConverter({ amount: userStats.totals.profits })}
-                </UserCard>
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                <p>Profits</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </SelectItem>
+        <UserSelectItem value="exposure" text="Exposure">
+          <UserCard Icon={DoorOpen}>
+            {currencyConverter({ amount: userStats.totals.exposure })}
+          </UserCard>
+        </UserSelectItem>
+
+        <UserSelectItem value="profits" text="Profits">
+          <UserCard Icon={Banknote}>
+            {currencyConverter({ amount: userStats.totals.profits })}
+          </UserCard>
+        </UserSelectItem>
       </SelectContent>
     </Select>
   );
@@ -135,5 +132,33 @@ const UserCard = ({
         <CardTitle className={cardTitleClasses}>{children}</CardTitle>
       </CardHeader>
     </Card>
+  );
+};
+
+const UserSelectItem = ({
+  value,
+  text,
+  children,
+}: {
+  value: string;
+  text: string;
+  children: ReactElement;
+}) => {
+  const selectItemClasses = cn(
+    "group cursor-pointer hover:bg-dog-800 focus:bg-dog-800",
+  );
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <SelectItem className={selectItemClasses} value={value}>
+            {children}
+          </SelectItem>
+        </TooltipTrigger>
+        <TooltipContent className="border-dog-600" side="right">
+          <p className="text-dog-500">{text}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 };

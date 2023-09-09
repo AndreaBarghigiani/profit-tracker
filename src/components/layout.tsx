@@ -10,7 +10,6 @@ import { useRouter } from "next/router";
 
 // Types
 import type { Session } from "next-auth";
-import type { FullPositionZod } from "@/server/types";
 
 // Components
 import Link from "next/link";
@@ -146,12 +145,7 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
             <nav className="ml-auto flex items-center gap-4">
               <ChangesModal session={session} />
 
-              {hasSummaryBadge && (
-                <UserStatsDropdown
-                  userStats={userStats}
-                  holds={positions as FullPositionZod[]}
-                />
-              )}
+              {hasSummaryBadge && <UserStatsDropdown userStats={userStats} />}
 
               {!!session && <AvatarDropdown session={session} />}
 
