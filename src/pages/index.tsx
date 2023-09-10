@@ -8,6 +8,7 @@ import type { IncomingMessage, ServerResponse } from "http";
 // Components
 import LayoutMarketing from "@/components/layoutMarketing";
 import HeroSection from "@/components/custom/Homepage/HeroSection";
+import BentoGrid from "@/components/custom/Homepage/BentoGrid";
 import AboutSection from "@/components/custom/Homepage/AboutSection";
 import ProblemSection from "@/components/custom/Homepage/ProblemSection";
 import SolutionSection from "@/components/custom/Homepage/SolutionSection";
@@ -18,6 +19,14 @@ const Home: NextPageWithLayout = () => {
   return (
     <>
       <HeroSection />
+      <div
+        className="-mt-48 px-10 py-48"
+        style={{
+          background: `radial-gradient(ellipse, rgba(255, 227, 128, .15) 0%, transparent 60%)`,
+        }}
+      >
+        <BentoGrid />
+      </div>
       <AboutSection />
       <ProblemSection />
       <SolutionSection />

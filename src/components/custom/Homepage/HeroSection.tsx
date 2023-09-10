@@ -10,7 +10,7 @@ import Link from "next/link";
 
 const HeroSection = () => {
   return (
-    <div className="my-10 flex h-144 w-full flex-col justify-center">
+    <div className="mt-10 flex h-144 w-full flex-col justify-center">
       <Heading size="page" gradient="gold">
         Track Your Crypto Investments with Precision
       </Heading>
@@ -20,7 +20,7 @@ const HeroSection = () => {
         size="h2"
         className="mb-8 text-center italic text-dog-400"
       >
-        Stay on top of your hodl positions and maximize your profits
+        Built to help you maximize your profits
       </Heading>
 
       {/* <Button className="mx-auto" variant={"active"} onClick={() => signIn()}>
@@ -41,7 +41,7 @@ const HeroSection = () => {
       </Link>
 
       <span className="my-1 text-center text-xs text-dog-400">
-        Create your account NOW!
+        Create your account <strong>NOW</strong>!
       </span>
     </div>
   );
