@@ -26,7 +26,7 @@ import {
   Power,
   User2,
 } from "lucide-react";
-import WalletInfo from "@/components/ui/testing/WalletInfo";
+// import WalletInfo from "@/components/ui/testing/WalletInfo";
 import FeedbackComponent from "@/components/custom/Feedback";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -69,7 +69,7 @@ const Sidebar = ({ linkClicked }: { linkClicked?: () => void }) => {
 
       {/* <Separator className="my-4 bg-foreground/50" /> */}
 
-      <WalletInfo />
+      {/* <WalletInfo /> */}
     </nav>
   );
 };
