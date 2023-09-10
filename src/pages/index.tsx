@@ -19,13 +19,15 @@ const Home: NextPageWithLayout = () => {
   return (
     <>
       <HeroSection />
-      <div
-        className="-mt-48 px-10 py-48"
-        style={{
-          background: `radial-gradient(ellipse, rgba(255, 227, 128, .15) 0%, transparent 60%)`,
-        }}
-      >
-        <BentoGrid />
+      <div className="-mb-48 mt-48 h-[150vh]">
+        <div
+          className="sticky top-1/2 z-10 flex h-128 -translate-y-1/2 items-center justify-stretch px-10"
+          style={{
+            background: `radial-gradient(ellipse, rgba(255, 227, 128, .15) 0%, transparent 60%)`,
+          }}
+        >
+          <BentoGrid />
+        </div>
       </div>
       <AboutSection />
       <ProblemSection />
