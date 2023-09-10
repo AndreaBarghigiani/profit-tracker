@@ -1,16 +1,32 @@
 // Utils
 // import { signIn } from "next-auth/react";
+import { useRef } from "react";
 import va from "@vercel/analytics";
+import { useScroll, useTransform, motion } from "framer-motion";
 
 // Components
-import Heading from "@/components/ui/heading";
 // import { Button } from "@/components/ui/button";
+import Heading from "@/components/ui/heading";
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 
 const HeroSection = () => {
+  const targetRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+    offset: ["end end", "end start"],
+  });
+
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.5]);
+  const marginTop = useTransform(scrollYProgress, [0, 0.5], [-100, -200]);
+
   return (
-    <div className="mt-10 flex h-144 w-full flex-col justify-center">
+    <motion.div
+      style={{ opacity, scale, marginTop }}
+      ref={targetRef}
+      className=" flex h-screen w-full flex-col justify-center "
+    >
       <Heading size="page" gradient="gold">
         Track Your Crypto Investments with Precision
       </Heading>
@@ -43,7 +59,7 @@ const HeroSection = () => {
       <span className="my-1 text-center text-xs text-dog-400">
         Create your account <strong>NOW</strong>!
       </span>
-    </div>
+    </motion.div>
   );
 };
 
