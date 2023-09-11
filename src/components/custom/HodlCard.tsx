@@ -76,7 +76,7 @@ const HodlCard = ({
 
   return (
     <div
-      className="group relative rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg transition-colors hover:cursor-pointer hover:bg-dog-850"
+      className="group relative rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg transition-colors hover:cursor-pointer hover:bg-dog-800"
       onClick={handleCardClick}
     >
       {rank && (

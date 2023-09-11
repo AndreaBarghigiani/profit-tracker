@@ -47,7 +47,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
 
   return (
     <div
-      className="group rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg hover:cursor-pointer hover:bg-dog-850"
+      className="group rounded-lg border border-dog-800 bg-dog-900 p-5 shadow-lg transition-colors hover:cursor-pointer hover:bg-dog-800"
       onClick={handleCardClick}
     >
       <header className="flex items-start justify-between gap-6">
@@ -56,7 +56,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
           className={buttonVariants({
             variant: "link",
             size: "link",
-            className: "group-hover:text-main-600",
+            className: "hover:no-underline group-hover:text-main-600",
           })}
         >
           <Heading size="h2" className="my-0">
@@ -109,26 +109,6 @@ const ProjectCard = ({ project }: { project: Project }) => {
         <ProjectCardData amount={project.profits} Icon={Gem}>
           <p className="text-base font-semibold">Profits</p>
         </ProjectCardData>
-
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                href={`/project/${project.id}`}
-                className={buttonVariants({
-                  variant: "ghost",
-                  size: "xs",
-                  className: "ml-auto",
-                })}
-              >
-                <Eye className="h-4 w-4" />
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent className="border-dog-800 text-dog-500">
-              <p>Project details</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
       </section>
     </div>
   );
