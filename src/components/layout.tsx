@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/popover";
 import ChangesModal from "@/components/custom/ChangesModal";
 import UserStatsDropdown from "@/components/custom/User/UserStatsDropdown";
+import SocialLinks from "@/components/custom/SocialLinks";
 
 const paths = [
   { path: "/dashboard", label: "Dashboard", Icon: Gauge },
@@ -70,6 +71,9 @@ const Sidebar = ({ linkClicked }: { linkClicked?: () => void }) => {
       {/* <Separator className="my-4 bg-foreground/50" /> */}
 
       {/* <WalletInfo /> */}
+      <div className="absolute bottom-0 flex items-center gap-2 p-2">
+        <SocialLinks />
+      </div>
     </nav>
   );
 };
@@ -150,6 +154,8 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
               {!!session && <AvatarDropdown session={session} />}
 
               <FeedbackComponent />
+
+              {!session && <SocialLinks />}
               <Sheet open={sheetOpen} onOpenChange={handleSheetOpen}>
                 <SheetTrigger className="xl:hidden">
                   <Menu />
