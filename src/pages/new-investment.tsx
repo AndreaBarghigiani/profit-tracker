@@ -48,7 +48,6 @@ const NewInvestment: NextPage = () => {
               <Link
                 href={`/hodl/add`}
                 className={buttonVariants({
-                  variant: "secondary",
                   size: "sm",
                 })}
               >
@@ -75,7 +74,7 @@ const NewInvestment: NextPage = () => {
             <CardFooter>
               <Link
                 href={`/project/create`}
-                className={buttonVariants({ variant: "secondary", size: "sm" })}
+                className={buttonVariants({ size: "sm" })}
               >
                 Next
                 <ChevronRight className="ml-2 h-4 w-4" />
