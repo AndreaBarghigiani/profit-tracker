@@ -1,34 +1,29 @@
 // Utils
 
 // Components
-import Image from "next/image";
+import DashboardIllustration from "@/components/svg/dashboard";
 import Heading from "@/components/ui/heading";
+import { Card } from "@/components/ui/card";
+import ZoomIn from "@/components/custom/ZoomIn";
 
 const AboutSection = () => {
   return (
-    <section className="mx-auto my-20 grid max-w-3xl grid-cols-3  items-center gap-6">
-      <Image
-        src="/people-talking-crypto.jpg"
-        alt="Man in front of a chart graph to empower your crypto investment journey"
-        className="rounded-full border-4 border-main-500 shadow-inner"
-        width={200}
-        height={200}
-      />
-      <div className="col-span-2">
-        <Heading as="h3" size="h2" className=" text-main-500">
-          Empowering Your Crypto Investment Journey
-        </Heading>
+    <ZoomIn from="left">
+      <Card className="mx-auto max-w-4xl grid-cols-3 items-center justify-stretch gap-6 border-main-900 p-10 md:grid md:shadow-main-custom">
+        <DashboardIllustration className="hidden md:block" />
 
-        <p className="text-dog-400">
-          At Underdog Tracker, we understand that every crypto investor has a
-          unique dream. Whether you&apos;re looking to make your mark in
-          decentralized apps or aiming to build a robust crypto portfolio,
-          we&apos;re here to support your ambitions. Our comprehensive portfolio
-          tracking platform ensures that your investment decisions are driven by
-          accurate insights and data.
-        </p>
-      </div>
-    </section>
+        <div className="md:col-span-2">
+          <Heading as="h3" size="h1" className=" text-main-500">
+            Empowering Your Crypto Investment Journey
+          </Heading>
+
+          <p className="text-dog-400">
+            Our comprehensive portfolio tracking platform ensures that your
+            investment decisions are driven by accurate insights and data.
+          </p>
+        </div>
+      </Card>
+    </ZoomIn>
   );
 };
 
