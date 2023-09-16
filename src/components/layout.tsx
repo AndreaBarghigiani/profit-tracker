@@ -111,7 +111,7 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
       <main className={mainClass}>
         <div className="mx-auto max-w-7xl">
           <header className="mx-auto mb-6 flex items-center py-4">
-            <div className="flex items-center gap-4">
+            <Link className="flex items-center gap-4" href="/">
               <svg
                 className="h-8 w-8"
                 viewBox="0 0 500 500"
@@ -140,11 +140,11 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
                   Underdog Tracker
                 </h1>
 
-                <span className="-translate-x-4 -translate-y-5 rotate-12 scale-75 rounded-3xl border border-main-500 px-2 py-1 text-xs text-main-600">
+                <span className="hidden -translate-x-4 -translate-y-5 rotate-12 scale-75 rounded-3xl border border-main-500 px-2 py-1 text-xs text-main-600 sm:block">
                   beta
                 </span>
               </div>
-            </div>
+            </Link>
 
             <nav className="ml-auto flex items-center gap-4">
               <ChangesModal session={session} />
@@ -156,14 +156,17 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
               <FeedbackComponent />
 
               {!session && <SocialLinks />}
-              <Sheet open={sheetOpen} onOpenChange={handleSheetOpen}>
-                <SheetTrigger className="xl:hidden">
-                  <Menu />
-                </SheetTrigger>
-                <SheetContent side="left">
-                  <Sidebar linkClicked={handleSheetOpen} />
-                </SheetContent>
-              </Sheet>
+
+              {!!session && (
+                <Sheet open={sheetOpen} onOpenChange={handleSheetOpen}>
+                  <SheetTrigger className="xl:hidden">
+                    <Menu />
+                  </SheetTrigger>
+                  <SheetContent side="left">
+                    <Sidebar linkClicked={handleSheetOpen} />
+                  </SheetContent>
+                </Sheet>
+              )}
             </nav>
           </header>
 
