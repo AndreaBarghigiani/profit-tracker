@@ -19,13 +19,13 @@ const HeroSection = () => {
 
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.5]);
-  const marginTop = useTransform(scrollYProgress, [0, 0.5], [-100, -200]);
+  const marginTop = useTransform(scrollYProgress, [0, 0.5], [-50, -200]);
 
   return (
     <motion.div
       style={{ opacity, scale, marginTop }}
       ref={targetRef}
-      className=" flex h-screen w-full flex-col justify-center "
+      className="flex h-screen w-full flex-col justify-center"
     >
       <Heading size="page" gradient="gold">
         Track Your Crypto Investments with Precision

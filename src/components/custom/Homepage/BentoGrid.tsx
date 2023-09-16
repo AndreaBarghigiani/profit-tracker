@@ -2,57 +2,46 @@
 // import { signIn } from "next-auth/react";
 import { useRef } from "react";
 import { cn } from "@/lib/utils";
-import va from "@vercel/analytics";
-import {
-  motion,
-  useMotionValue,
-  useMotionTemplate,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { motion, useMotionValue, useMotionTemplate } from "framer-motion";
 
 // Components
-import Heading from "@/components/ui/heading";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-// import { Button } from "@/components/ui/button";
-import { buttonVariants } from "@/components/ui/button";
-import Link from "next/link";
+import { CardHeader, CardTitle } from "@/components/ui/card";
 
 const BentoGrid = () => {
   return (
-    <div className="grid w-full auto-rows-min grid-cols-4 gap-4">
+    <div className="w-full auto-rows-min grid-cols-4 gap-4 space-y-3 md:grid md:space-y-0">
       <BentoCard>
-        <BentoCardTitle>Track Any Crypto</BentoCardTitle>
+        <BentoCardTitle>Track any crypto</BentoCardTitle>
       </BentoCard>
 
       <BentoCard className="col-span-2 row-span-2 self-stretch">
-        <BentoCardTitle className="text-4xl">
-          Crystal-Clear Insights
+        <BentoCardTitle className="md:text-4xl">
+          Crystal-clear insights
         </BentoCardTitle>
       </BentoCard>
 
       <BentoCard>
-        <BentoCardTitle>Profit Estimator</BentoCardTitle>
+        <BentoCardTitle>Profit estimator</BentoCardTitle>
       </BentoCard>
 
       <BentoCard>
-        <BentoCardTitle>Exit Strategy</BentoCardTitle>
+        <BentoCardTitle>Exit strategy</BentoCardTitle>
       </BentoCard>
 
       <BentoCard>
-        <BentoCardTitle>Airdrop Tracker</BentoCardTitle>
+        <BentoCardTitle>Airdrop tracker</BentoCardTitle>
       </BentoCard>
 
       <BentoCard>
-        <BentoCardTitle>Whale Watcher</BentoCardTitle>
+        <BentoCardTitle>Whale watcher</BentoCardTitle>
       </BentoCard>
 
       <BentoCard>
-        <BentoCardTitle>ROI dApp Tracker</BentoCardTitle>
+        <BentoCardTitle>ROI dApp tracker</BentoCardTitle>
       </BentoCard>
 
       <BentoCard className="col-span-2">
-        <BentoCardTitle>All Based on Your Entry Price</BentoCardTitle>
+        <BentoCardTitle>All based on your entry price</BentoCardTitle>
       </BentoCard>
     </div>
   );
@@ -99,7 +88,6 @@ const BentoCard = ({
     mouseY.set(clientY - top);
   };
 
-  // console.log("mouses", mouseX, mouseY);
   return (
     <>
       <motion.div
