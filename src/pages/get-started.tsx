@@ -40,8 +40,8 @@ const Home: NextPageWithLayout = () => {
         </Heading>
       </div>
 
-      <section className="mx-auto md:w-2/3">
-        <article className="prose prose-base md:prose-xl prose-h2:text-dog-100 prose-h3:text-dog-100 prose-p:text-dog-200 prose-strong:text-dog-100">
+      <section className="mx-auto lg:w-4/5">
+        <article className="prose prose-base mx-auto md:prose-xl prose-h2:text-dog-100 prose-h3:text-dog-100 prose-p:text-dog-200 prose-strong:text-dog-100">
           <p>Hey there, crypto explorer! 🚀 </p>
           <p>
             Ready to take your portfolio tracking game to the next level? Look
@@ -180,7 +180,7 @@ export default Home;
 
 const CTA = () => {
   return (
-    <div className=" mx-auto rounded-xl border border-dog-800 bg-dog-900 p-2 text-center md:w-5/6 md:p-6">
+    <div className="mx-auto my-20 rounded-xl border border-dog-800 bg-dog-900 p-2 text-center md:w-5/6 md:p-6">
       <Heading as="h2" size="h2" className="my-0">
         Are you ready to join the beta?
       </Heading>
@@ -193,6 +193,7 @@ const CTA = () => {
           className={buttonVariants({
             className: "no-underline md:mb-3",
             variant: "active",
+            size: "lg",
           })}
           onClick={() => {
             va.track("CLabs Membership Sign In");
