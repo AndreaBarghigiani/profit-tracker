@@ -132,6 +132,9 @@ module.exports = {
         "128": "32rem",
         "144": "36rem",
       },
+      blur: {
+        "5xl": "120px",
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -139,6 +142,7 @@ module.exports = {
       },
       boxShadow: {
         dog: "0 0 0 2px #959781",
+        "main-custom": "0 0 15px 5px rgba(255, 205, 26, .05)",
       },
       keyframes: {
         "accordion-down": {
@@ -149,10 +153,15 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: 0 },
         },
+        "bg-pulse": {
+          "0%, 100%": { opacity: 0.1 },
+          "50%": { opacity: 0.08 },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "bg-pulse": "bg-pulse 2s ease-in-out infinite",
       },
     },
   },
