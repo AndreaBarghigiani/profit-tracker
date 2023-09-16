@@ -25,13 +25,14 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import Heading from "@/components/ui/heading";
 import { ToggleGroup, ToggleItem } from "@/components/ui/toggle-group";
-import { RefreshCcw, Plus } from "lucide-react";
+import { RefreshCcw, Plus, CreditCard, Recycle } from "lucide-react";
 import {
   Tooltip,
   TooltipTrigger,
   TooltipProvider,
   TooltipContent,
 } from "@/components/ui/tooltip";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 type AddPositionProps = {
   token: TokenWithoutDates | TokenZod;
@@ -148,39 +149,52 @@ const AddHodlPositionForm = ({
       className="space-y-3"
       onSubmit={handleSubmitInvestment(handleAddPosition)}
     >
+      {!airdrop && userWallet?.liquidFunds ? (
+        <RadioGroup
+          defaultValue="true"
+          onValueChange={(val) => {
+            setUseLiquidFunds(val === "true");
+            setValue("useLiquidFunds", val === "true");
+          }}
+          className="grid grid-cols-2 gap-4"
+        >
+          <div>
+            <RadioGroupItem value="true" id="liquid" className="peer sr-only" />
+            <Label
+              htmlFor="liquid"
+              className="group flex cursor-pointer gap-4 rounded-md border-2 border-dog-600 p-4 transition-colors hover:border-dog-750 hover:bg-dog-750 hover:text-dog-50 peer-data-[state=checked]:border-dog-100 [&:has([data-state=checked])]:border-dog-100"
+            >
+              <CreditCard className="h-8 w-8" />
+              <div>
+                <p>Liquid Funds</p>
+                <p className="text-xs text-dog-600 group-hover:text-dog-200">
+                  Use your stablecoins accumulated previously
+                </p>
+              </div>
+            </Label>
+          </div>
+          <div>
+            <RadioGroupItem value="false" id="fresh" className="peer sr-only" />
+            <Label
+              htmlFor="fresh"
+              className="group flex cursor-pointer gap-4 rounded-md border-2 border-dog-600 p-4 transition-colors hover:border-dog-750 hover:bg-dog-750 hover:text-dog-50 peer-data-[state=checked]:border-dog-100 [&:has([data-state=checked])]:border-dog-100"
+            >
+              <Recycle className="h-8 w-8" />
+              <div>
+                <p>Fresh Capital</p>
+                <p className="text-xs text-dog-600 group-hover:text-dog-200">
+                  This will increase your exposure.
+                </p>
+              </div>
+            </Label>
+          </div>
+        </RadioGroup>
+      ) : null}
       <div
         className={clsx("mb-5 flex items-end gap-6", {
           "justify-between": !hodlId && !airdrop,
         })}
       >
-        {!airdrop ? (
-          <Controller
-            control={control}
-            name="useLiquidFunds"
-            render={() => (
-              <>
-                <ToggleGroup
-                  type="single"
-                  value={useLiquidFunds.toString()}
-                  className="mt-6 flex justify-center"
-                  onValueChange={(val) => {
-                    setUseLiquidFunds(val === "true");
-                    setValue("useLiquidFunds", val === "true");
-                  }}
-                >
-                  <ToggleItem
-                    className="disabled:cursor-not-allowed"
-                    disabled={!userWallet?.liquidFunds}
-                    value="true"
-                  >
-                    Liquid Funds
-                  </ToggleItem>
-                  <ToggleItem value="false">Fresh capital</ToggleItem>
-                </ToggleGroup>
-              </>
-            )}
-          />
-        ) : null}
         <div>
           <Label htmlFor="name">Amount</Label>
 
