@@ -12,7 +12,6 @@ import Heading from "@/components/ui/heading";
 import {
   TimerReset,
   PiggyBank,
-  Eye,
   BarChart,
   Gem,
   type LucideIcon,
