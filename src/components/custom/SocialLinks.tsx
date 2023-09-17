@@ -26,7 +26,7 @@ const socialLinks: SocialLinkProps[] = [
 
 const SocialLinks = () => {
   return socialLinks.map(({ url, Icon, name }) => (
-    <div key={url} className="social-links">
+    <div key={url} className="social-link">
       <a href={url} title={name} target="_blank">
         <Icon className="h-6 w-6 fill-inherit" />
       </a>
