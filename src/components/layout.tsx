@@ -71,7 +71,7 @@ const Sidebar = ({ linkClicked }: { linkClicked?: () => void }) => {
       {/* <Separator className="my-4 bg-foreground/50" /> */}
 
       {/* <WalletInfo /> */}
-      <div className="absolute bottom-0 flex items-center gap-2 p-2">
+      <div className="absolute bottom-0 flex items-center gap-2 px-4 py-2">
         <SocialLinks />
       </div>
     </nav>
