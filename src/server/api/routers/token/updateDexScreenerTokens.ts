@@ -11,8 +11,9 @@ export const updateDexScreenerTokens = async ({
   dexScreenerTokens: string[];
 }) => {
   const customAddresses = dexScreenerTokens
-    .map((token) => token.replace("custom-", ""))
+    .map((token) => encodeURIComponent(token.replace("custom-", "")))
     .join(",");
+
   const DexScreenerUrl = new URL(
     `https://api.dexscreener.com/latest/dex/tokens/${customAddresses}`,
   );
