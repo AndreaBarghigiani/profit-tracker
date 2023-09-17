@@ -16,7 +16,6 @@ export default async function tokenHistory(
       tokenId,
       prisma,
     });
-    console.log("id:", id);
 
     const hodls = await prisma.hodl.findMany({
       where: {
