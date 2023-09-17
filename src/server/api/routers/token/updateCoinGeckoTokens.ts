@@ -32,9 +32,9 @@ export const updateCoinGeckoTokens = async ({
     },
   });
 
-  console.log("-------------------");
-  console.log("updatedTokens:", updatedTokens);
-  console.log("-------------------");
+  // console.log("-------------------");
+  // console.log("updatedTokens:", updatedTokens);
+  // console.log("-------------------");
 
   CoinGeckoUrl.searchParams.set("vs_currency", "usd");
   CoinGeckoUrl.searchParams.set("ids", coinGeckoTokens.join(","));
