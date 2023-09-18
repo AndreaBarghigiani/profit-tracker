@@ -148,7 +148,7 @@ model Token {
   tokenHistory TokenHistory[]
   hodl         Hodl[]
 
-  @@index([symbol, name])
+  @@index([symbol, name, coingecko_id])
 }
 
 model TokenHistory {
