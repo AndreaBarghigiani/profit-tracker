@@ -50,7 +50,7 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
       { tokenId: token.coingecko_id, tokenName: token.name },
       {
         refetchOnWindowFocus: false,
-        enabled: !token.custom,
+        enabled: !!token,
       },
     );
 
@@ -157,7 +157,7 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
             24h Performance
           </Heading>
 
-          {isChartDataSuccess && (
+          {isChartDataSuccess && chartData[0] !== undefined && (
             <ResponsiveContainer className="h-80" width="100%" height="100%">
               <AreaChart
                 width={800}
@@ -204,7 +204,7 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
             </ResponsiveContainer>
           )}
 
-          {token.custom && (
+          {isChartDataSuccess && chartData[0] === undefined && (
             <div className="relative flex h-fit items-center justify-center">
               <Image
                 alt={token.name || token.symbol || "Token"}
@@ -215,9 +215,9 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
               />
               <p className="absolute -rotate-3 rounded-full bg-black/25 p-6 text-center text-2xl text-alert-600 shadow-2xl backdrop-blur-sm backdrop-filter">
                 <span className="font-semibold italic">
-                  No chart for custom tokens
+                  No chart in our database. Get back in 24h.
                 </span>{" "}
-                😞
+                😜
               </p>
             </div>
           )}
@@ -243,7 +243,7 @@ const CustomTooltip = ({
     if (!data) return null;
 
     return (
-      <div className="rounded-lg border border-main-800 bg-main-900 p-2 text-center shadow-sm">
+      <div className="rounded-lg border border-main-800 bg-main-900 p-2 shadow-sm">
         <div className="flex items-center justify-center">
           <span className="font-semibold text-dog-400">
             {currencyConverter({
@@ -253,8 +253,8 @@ const CustomTooltip = ({
         </div>
 
         <div className="flex items-center justify-center">
-          <Clock className="mr-1 h-3 w-3 text-dog-300" />
-          <span className="text-dog-500">{data.date}</span>
+          <Clock className="mr-1 h-2 w-2 text-dog-300" />
+          <span className="text-xs text-dog-500">{data.date}</span>
         </div>
       </div>
     );
