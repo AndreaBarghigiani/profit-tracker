@@ -1,6 +1,7 @@
 const now = new Date();
-export const HALF_HOUR = now.getTime() - 30 * 60000;
 export const ONE_MINUTE = now.getTime() - 1 * 60000;
+export const HALF_HOUR = now.getTime() - 30 * 60000;
+export const ONE_DAY_AGO = Date.now() - 1000 * 60 * 60 * 24;
 
 export const calcPercentageVariance = (oldValue: number, newValue: number) => {
   return ((newValue / oldValue - 1) * 100).toFixed(2);
