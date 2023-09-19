@@ -2,6 +2,7 @@
 import { TRPCError } from "@trpc/server";
 import { getHTTPStatusCodeFromError } from "@trpc/server/http";
 import { prisma } from "@/server/db";
+import { ONE_DAY_AGO } from "@/utils/number";
 
 // Types
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -22,11 +23,27 @@ export default async function getToken(
 
   const { tokenId: id } = result.data;
   try {
-    const token = await prisma.token.findMany({
+    const token = await prisma.token.findFirst({
       where: {
-        AND: [{ tracked: true }, { coingecko_id: id }],
+        tracked: true,
+        OR: [{ coingecko_id: id }, { id }],
       },
     });
+
+    if (!!token?.id) {
+      const tokenHistory = await prisma.tokenHistory.findMany({
+        where: {
+          tokenId: token.id,
+          createdAt: {
+            gte: new Date(ONE_DAY_AGO),
+          },
+        },
+        take: 48,
+      });
+
+      console.log(new Date(ONE_DAY_AGO));
+      console.log("tokenHistory:", tokenHistory);
+    }
 
     res.status(200).json({ message: "ok", token });
   } catch (cause) {
