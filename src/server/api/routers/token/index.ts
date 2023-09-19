@@ -82,9 +82,10 @@ export const tokenRouter = createTRPCRouter({
   }),
   getChartData: protectedProcedure
     .input(z.object({ tokenId: z.string(), tokenName: z.string() }))
-    .query(async ({ input }) => {
+    .query(async ({ ctx, input }) => {
       return await getChartData({
         tokenId: input.tokenId,
+        prisma: ctx.prisma,
       });
     }),
   find: protectedProcedure

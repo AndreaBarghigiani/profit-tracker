@@ -1,8 +1,18 @@
+// Utils
+import { formatTime } from "@/utils/string";
+
 // Types
-import type { ChartTokenData } from "@/server/types";
+import type { ChartTokenData, TokenHistory } from "@/server/types";
+import type { PrismaClient } from "@prisma/client";
 import { CoinGeckoChartSchema } from "@/server/types";
 
-export const getChartData = async ({ tokenId }: { tokenId: string }) => {
+export const getChartData = async ({
+  tokenId,
+  prisma,
+}: {
+  tokenId: string;
+  prisma: PrismaClient;
+}) => {
   // Unable to find data for custom tokens
   // For now this is good enough
   if (!tokenId.startsWith("custom-")) {
@@ -19,9 +29,7 @@ export const getChartData = async ({ tokenId }: { tokenId: string }) => {
       if (cur.length < 2 || index % 6) return acc;
 
       const date = new Date(cur[0] as number);
-      const formatDate = Intl.DateTimeFormat("en-EN", {
-        timeStyle: "short",
-      }).format(date);
+      const formatDate = formatTime(date);
 
       acc.push({
         date: formatDate,
@@ -34,5 +42,38 @@ export const getChartData = async ({ tokenId }: { tokenId: string }) => {
     return data.prices.reduce(reducer, []);
   }
 
-  return [];
+  // This is a custom token
+  const token = await prisma.token.findUnique({
+    where: {
+      coingecko_id: tokenId,
+    },
+    select: { id: true },
+  });
+
+  if (!token) return [];
+
+  const tokenHistory: TokenHistory[] = await prisma.tokenHistory.findMany({
+    where: {
+      AND: [
+        { tokenId: token.id },
+        { createdAt: { gte: new Date(Date.now() - 1000 * 60 * 60 * 24) } },
+      ],
+    },
+  });
+
+  if (tokenHistory.length < 48) return [undefined];
+
+  function reducer(acc: ChartTokenData, cur: TokenHistory) {
+    const date = new Date(cur.createdAt);
+    const formatDate = formatTime(date);
+
+    acc.push({
+      date: formatDate,
+      price: cur.price,
+    });
+
+    return acc;
+  }
+
+  return tokenHistory.reduce(reducer, []);
 };
