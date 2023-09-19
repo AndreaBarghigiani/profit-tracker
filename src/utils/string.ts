@@ -16,6 +16,14 @@ export const formatDate = (
     timeStyle: !!timeType ? timeType : undefined,
   }).format(date);
 
+export const formatTime = (
+  date: number | Date | undefined,
+  timeType: TimeTypes = "short",
+): string =>
+  Intl.DateTimeFormat("en-EN", {
+    timeStyle: timeType,
+  }).format(date);
+
 const maxSignificantDigits = (num: number, count: number = 0): number => {
   if (num > 0) {
     return maxSignificantDigits(Math.floor(num / 10), ++count);
