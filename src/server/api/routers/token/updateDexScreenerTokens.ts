@@ -2,10 +2,38 @@
 import { formatDexPairAsToken } from "@/utils/positions";
 import { prisma } from "@/server/db";
 import { HALF_HOUR } from "@/utils/number";
-
+import { chunkArray } from "@/utils/array";
 // Types
 import type { DexScreenerPair } from "@/server/types";
 import { DexSearchSchema } from "@/server/types";
+
+const fetchTokensInChunks = async (
+  tokens: string[],
+  maxItemPerChunk: number,
+) => {
+  const chunks = chunkArray(tokens, maxItemPerChunk);
+
+  const fetchedDataRequests = chunks.map(async (chunk) => {
+    try {
+      return await fetch(
+        `https://api.dexscreener.com/latest/dex/tokens/${chunk.join(",")}`,
+      );
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+  });
+
+  const fetchedDataResponses = await Promise.all(fetchedDataRequests);
+  const fetchedDataPromises = fetchedDataResponses.map((response) =>
+    response !== undefined ? response.json() : {},
+  );
+  const fetchedData = await Promise.all(fetchedDataPromises);
+
+  if (!fetchedData) return;
+
+  return fetchedData.pop();
+};
 
 export const updateDexScreenerTokens = async ({
   dexScreenerTokens,
@@ -26,21 +54,17 @@ export const updateDexScreenerTokens = async ({
       ],
     },
   });
-
   const customAddresses = tokensToUpdate.map((token) =>
     encodeURIComponent(token.coingecko_id.replace("custom-", "")),
   );
 
   if (!customAddresses.length) return [];
 
-  const DexScreenerUrl = new URL(
-    `https://api.dexscreener.com/latest/dex/tokens/${customAddresses.join(
-      ",",
-    )}`,
-  );
+  const DexScreenerResponse = await fetchTokensInChunks(customAddresses, 30);
 
-  const DexScreenerResponse = await fetch(DexScreenerUrl);
-  const { pairs } = DexSearchSchema.parse(await DexScreenerResponse.json());
+  if (DexScreenerResponse === undefined) return [];
+
+  const { pairs } = DexSearchSchema.parse(DexScreenerResponse);
 
   const grouped = pairs.reduce((acc, pair) => {
     const {

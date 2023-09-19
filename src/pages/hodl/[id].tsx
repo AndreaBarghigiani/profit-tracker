@@ -73,6 +73,7 @@ const Hodl: NextPage<
   const { mutateAsync: updatePrice, isLoading: isPriceLoading } =
     api.token.updatePrice.useMutation({
       onSuccess: async () => {
+        await utils.token.getChartData.invalidate();
         await refreshPage();
         // await utils.hodl.get.invalidate();
         // await utils.hodl.getDiffFromBuyes.invalidate();
