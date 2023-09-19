@@ -13,7 +13,6 @@ export default async function getToken(
   res: NextApiResponse,
 ) {
   const result = ParseGetTokenSchema.safeParse(req.query);
-  console.log("hello", result);
 
   if (!result.success) {
     return res.status(400).json({
@@ -28,22 +27,17 @@ export default async function getToken(
         tracked: true,
         OR: [{ coingecko_id: id }, { id }],
       },
-    });
-
-    if (!!token?.id) {
-      const tokenHistory = await prisma.tokenHistory.findMany({
-        where: {
-          tokenId: token.id,
-          createdAt: {
-            gte: new Date(ONE_DAY_AGO),
+      include: {
+        tokenHistory: {
+          where: {
+            createdAt: {
+              gte: new Date(ONE_DAY_AGO),
+            },
           },
+          take: 48,
         },
-        take: 48,
-      });
-
-      console.log(new Date(ONE_DAY_AGO));
-      console.log("tokenHistory:", tokenHistory);
-    }
+      },
+    });
 
     res.status(200).json({ message: "ok", token });
   } catch (cause) {
