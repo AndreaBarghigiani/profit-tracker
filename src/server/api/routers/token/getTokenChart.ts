@@ -1,5 +1,6 @@
 // Utils
 import { formatTime } from "@/utils/string";
+import { ONE_DAY_AGO } from "@/utils/number";
 
 // Types
 import type { ChartTokenData, TokenHistory } from "@/server/types";
@@ -26,9 +27,9 @@ export const getChartData = async ({
     const data = CoinGeckoChartSchema.parse(await response.json());
 
     function reducer(acc: ChartTokenData, cur: number[], index: number) {
-      if (cur.length < 2 || index % 6) return acc;
+      if (cur.length < 2 || index % 6 || cur[0] === undefined) return acc;
 
-      const date = new Date(cur[0] as number);
+      const date = new Date(cur[0]);
       const formatDate = formatTime(date);
 
       acc.push({
@@ -56,7 +57,7 @@ export const getChartData = async ({
     where: {
       AND: [
         { tokenId: token.id },
-        { createdAt: { gte: new Date(Date.now() - 1000 * 60 * 60 * 24) } },
+        { createdAt: { gte: new Date(ONE_DAY_AGO) } },
       ],
     },
   });

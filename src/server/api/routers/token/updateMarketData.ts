@@ -15,8 +15,8 @@ export const updateMarketData = async ({
   // Split tokens between custom and CoinGecko
   let massaged: UpdateTokenData[] = [];
 
-  const dexScreenerTokens = tokenIds.filter((id) => id.startsWith("custom-"));
   const coinGeckoTokens = tokenIds.filter((id) => !id.startsWith("custom-"));
+  const dexScreenerTokens = tokenIds.filter((id) => id.startsWith("custom-"));
 
   // Update data for CoinGecko tokens
   if (coinGeckoTokens.length > 0) {
