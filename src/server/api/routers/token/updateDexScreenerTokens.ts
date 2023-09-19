@@ -1,5 +1,7 @@
 // Utils
 import { formatDexPairAsToken } from "@/utils/positions";
+import { prisma } from "@/server/db";
+import { HALF_HOUR } from "@/utils/number";
 
 // Types
 import type { DexScreenerPair } from "@/server/types";
@@ -10,22 +12,42 @@ export const updateDexScreenerTokens = async ({
 }: {
   dexScreenerTokens: string[];
 }) => {
-  const customAddresses = dexScreenerTokens
-    .map((token) => encodeURIComponent(token.replace("custom-", "")))
-    .join(",");
+  const tokensToUpdate = await prisma.token.findMany({
+    where: {
+      coingecko_id: {
+        in: dexScreenerTokens,
+      },
+      AND: [
+        {
+          updatedAt: {
+            lte: new Date(HALF_HOUR),
+          },
+        },
+      ],
+    },
+  });
+
+  const customAddresses = tokensToUpdate.map((token) =>
+    encodeURIComponent(token.coingecko_id.replace("custom-", "")),
+  );
+
+  if (!customAddresses.length) return [];
 
   const DexScreenerUrl = new URL(
-    `https://api.dexscreener.com/latest/dex/tokens/${customAddresses}`,
+    `https://api.dexscreener.com/latest/dex/tokens/${customAddresses.join(
+      ",",
+    )}`,
   );
 
   const DexScreenerResponse = await fetch(DexScreenerUrl);
   const { pairs } = DexSearchSchema.parse(await DexScreenerResponse.json());
-  // const DexToken: UpdateTokenData = formatDexPairAsToken({ pairs });
 
   const grouped = pairs.reduce((acc, pair) => {
     const {
       baseToken: { address },
     } = pair;
+
+    if (!customAddresses.includes(address)) return acc;
 
     if (!acc[address]) {
       acc[address] = [];

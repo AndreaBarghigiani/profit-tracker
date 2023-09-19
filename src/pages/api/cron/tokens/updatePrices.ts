@@ -3,6 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { getHTTPStatusCodeFromError } from "@trpc/server/http";
 import { prisma } from "@/server/db";
 import { updateMarketData } from "@/server/api/routers/token/updateMarketData";
+import { HALF_HOUR } from "@/utils/number";
 
 // Types
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -11,8 +12,6 @@ export default async function tokenHistory(
   _: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const oneDay = Date.now() - 1000 * 60 * 60 * 24;
-
   try {
     const tokens = await prisma.token.findMany({
       where: {
@@ -20,7 +19,7 @@ export default async function tokenHistory(
           { tracked: true },
           {
             updatedAt: {
-              lte: new Date(oneDay),
+              lte: new Date(HALF_HOUR),
             },
           },
         ],
