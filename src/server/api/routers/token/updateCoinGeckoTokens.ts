@@ -1,6 +1,7 @@
 // Utils
 import { z } from "zod";
 import { prisma } from "@/server/db";
+import { HALF_HOUR } from "@/utils/number";
 
 // Types
 import { CoinGeckoCoinsMarketSchema } from "@/server/types";
@@ -11,13 +12,7 @@ export const updateCoinGeckoTokens = async ({
 }: {
   coinGeckoTokens: string[];
 }) => {
-  const CoinGeckoUrl = new URL(
-    "https://api.coingecko.com/api/v3/coins/markets",
-  );
-  const now = new Date();
-  const halfHour = now.getTime() - 30 * 60000;
-
-  const updatedTokens = await prisma.token.findMany({
+  const tokensToUpdate = await prisma.token.findMany({
     where: {
       coingecko_id: {
         in: coinGeckoTokens,
@@ -25,19 +20,22 @@ export const updateCoinGeckoTokens = async ({
       AND: [
         {
           updatedAt: {
-            lte: new Date(halfHour),
+            lte: new Date(HALF_HOUR),
           },
         },
       ],
     },
   });
 
-  console.log("-------------------");
-  console.log("updatedTokens:", updatedTokens);
-  console.log("-------------------");
+  const tokensToUpdateIds = tokensToUpdate.map((token) => token.coingecko_id);
 
+  if (tokensToUpdateIds.length === 0) return [];
+
+  const CoinGeckoUrl = new URL(
+    "https://api.coingecko.com/api/v3/coins/markets",
+  );
   CoinGeckoUrl.searchParams.set("vs_currency", "usd");
-  CoinGeckoUrl.searchParams.set("ids", coinGeckoTokens.join(","));
+  CoinGeckoUrl.searchParams.set("ids", tokensToUpdateIds.join(","));
   CoinGeckoUrl.searchParams.set("locale", "en");
   CoinGeckoUrl.searchParams.set("price_change_percentage", "24h");
 

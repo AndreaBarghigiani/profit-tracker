@@ -36,26 +36,28 @@ export const updateMarketData = async ({
     massaged = [...massaged, ...DexTokens];
   }
 
-  const updateToken = async (token: UpdateTokenData) => {
-    return await prisma.token.update({
-      where: {
-        coingecko_id: token.coingecko_id,
-      },
-      data: {
-        latestPrice: token.latestPrice,
-        iconUrl: token.icon_url,
-        change24h: token.change24h,
-        tokenHistory: {
-          create: {
-            price: token.latestPrice,
-          },
-        },
-      },
-    });
-  };
-
   const updateTokens = async () => {
-    return Promise.all(massaged.map((token) => updateToken(token)));
+    const transactions = await prisma.$transaction(
+      massaged.map((token) =>
+        prisma.token.update({
+          where: {
+            coingecko_id: token.coingecko_id,
+          },
+          data: {
+            latestPrice: token.latestPrice,
+            iconUrl: token.icon_url,
+            change24h: token.change24h,
+            tokenHistory: {
+              create: {
+                price: token.latestPrice,
+              },
+            },
+          },
+        }),
+      ),
+    );
+
+    return transactions;
   };
 
   return updateTokens();
