@@ -39,17 +39,18 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?      @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
   project       Project[]
   hodl          Hodl[]
-  role          Role      @default(AUTHOR)
+  role          Role         @default(AUTHOR)
   wallet        Wallet?
+  UserWallet    UserWallet[]
 }
 
 model VerificationToken {
@@ -61,15 +62,27 @@ model VerificationToken {
 }
 
 model Wallet {
-  id          String    @id @default(cuid())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  dailyProfit Float     @default(0)
-  liquidFunds Float     @default(0) // Total funds available for withdrawal or to invest
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String    @unique
+  id          String       @id @default(cuid())
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  dailyProfit Float        @default(0)
+  liquidFunds Float        @default(0) // Total funds available for withdrawal or to invest
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String       @unique
   project     Project[]
   hodl        Hodl[]
+  userWallet  UserWallet[]
+}
+
+model UserWallet {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  wallet        Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  walletId      String
+  walletAddress String   @unique
+  active        Boolean  @default(true)
 }
 
 model Project {
