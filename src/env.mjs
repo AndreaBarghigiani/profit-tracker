@@ -23,8 +23,8 @@ const server = z.object({
   DISCORD_CLIENT_ID: z.string(),
   DISCORD_CLIENT_SECRET: z.string(),
   RESEND_API_KEY: z.string().min(1),
-  // APP_DOMAIN: z.string().min(1),
-  // MORALIS_API_KEY: z.string().min(1),
+  APP_DOMAIN: z.string().min(1),
+  MORALIS_API_KEY: z.string().min(1),
   // REDIS_API_KEY: z.string().min(1),
 });
 
@@ -51,8 +51,8 @@ const processEnv = {
   DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
   DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
   RESEND_API_KEY: process.env.RESEND_API_KEY,
-  // APP_DOMAIN: process.env.APP_DOMAIN,
-  // MORALIS_API_KEY: process.env.MORALIS_API_KEY,
+  APP_DOMAIN: process.env.APP_DOMAIN,
+  MORALIS_API_KEY: process.env.MORALIS_API_KEY,
   // REDIS_API_KEY: process.env.REDIS_API_KEY,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
