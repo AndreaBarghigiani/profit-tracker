@@ -9,6 +9,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Heading from "@/components/ui/heading";
 import ProfileForm from "@/components/profileForm";
+import Web3SignIn from "@/components/custom/Web3SignIn";
 import { Button } from "@/components/ui/button";
 
 const Profile: NextPage = () => {
@@ -44,11 +45,12 @@ const Profile: NextPage = () => {
           update your daily goal.
         </p>
 
+        <Web3SignIn />
+
         <div className="mx-auto max-w-3xl">
           {isWalletSuccess && (
             <ProfileForm profileData={{ dailyProfit: wallet.dailyProfit }} />
           )}
-
           <footer className="flex">
             <Button
               variant="ghost-danger"
