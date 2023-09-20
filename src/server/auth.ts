@@ -5,6 +5,7 @@ import {
   type DefaultSession,
 } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
+// import { MoralisNextAuthProvider } from "@moralisweb3/next";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "@/env.mjs";
 import { prisma } from "@/server/db";
@@ -37,6 +38,12 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
+    // jwt: ({ token, user }) => {
+    //   if (user) {
+    //     token.id = user.id;
+    //   }
+    //   return token;
+    // },
     session: ({ session, user }) => ({
       ...session,
       user: {
@@ -60,6 +67,7 @@ export const authOptions: NextAuthOptions = {
       clientId: env.DISCORD_CLIENT_ID,
       clientSecret: env.DISCORD_CLIENT_SECRET,
     }),
+    // MoralisNextAuthProvider(),
     /**
      * ...add more providers here.
      *
