@@ -16,7 +16,7 @@ const Web3SignIn = ({ paywall }: { paywall: Paywall }) => {
   const utils = api.useContext();
   const { disconnectAsync } = useDisconnect();
   const { isConnected, address } = useAccount();
-  console.log("address:", address);
+
   const { data: userWallets } = api.userWallets.getAll.useQuery();
   const { mutate: createUserWallet } = api.userWallets.create.useMutation({
     onSuccess: async () => {
@@ -47,8 +47,8 @@ const Web3SignIn = ({ paywall }: { paywall: Paywall }) => {
 
     connect();
 
+    // Skip if wallet already exists
     if (
-      // Skip if wallet already exists
       address !== undefined &&
       userWallets?.some((wallet) => wallet.walletAddress !== address)
     ) {
