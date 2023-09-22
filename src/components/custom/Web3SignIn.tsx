@@ -1,21 +1,42 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 // Utils
 import { api } from "@/utils/api";
+import { useMemo } from "react";
 import { useConnect, useAccount, useDisconnect } from "wagmi";
-import { MetaMaskConnector } from "wagmi/connectors/metaMask";
+import { InjectedConnector } from "wagmi/connectors/injected";
+
+// Types
+import type { Paywall } from "@unlock-protocol/paywall";
 
 // Components
 import { Button } from "@/components/ui/button";
 
-const Web3SignIn = () => {
+const Web3SignIn = ({ paywall }: { paywall: Paywall }) => {
   const utils = api.useContext();
-  const { connectAsync } = useConnect();
   const { disconnectAsync } = useDisconnect();
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
+  console.log("address:", address);
   const { data: userWallets } = api.userWallets.getAll.useQuery();
   const { mutate: createUserWallet } = api.userWallets.create.useMutation({
     onSuccess: async () => {
       await utils.userWallets.getAll.invalidate();
     },
+  });
+
+  const provider = useMemo(() => {
+    return paywall.getProvider("https://app.unlock-protocol.com", {
+      clientId: "http://localhost:3000/profile",
+    });
+  }, [paywall]);
+
+  const { connect } = useConnect({
+    connector: new InjectedConnector({
+      options: {
+        name: "Unlock Underdog Tracker",
+        getProvider: () => provider,
+      },
+    }),
   });
 
   const handleAuth = async () => {
@@ -24,18 +45,15 @@ const Web3SignIn = () => {
       return;
     }
 
-    const { account, chain } = await connectAsync({
-      connector: new MetaMaskConnector(),
-    });
-
-    const userData = { address: account, chainId: chain.id };
+    connect();
 
     if (
       // Skip if wallet already exists
-      userWallets?.some((wallet) => wallet.walletAddress === userData.address)
-    )
-      return;
-    createUserWallet({ walletAddress: userData.address });
+      address !== undefined &&
+      userWallets?.some((wallet) => wallet.walletAddress !== address)
+    ) {
+      createUserWallet({ walletAddress: address });
+    }
   };
 
   return (

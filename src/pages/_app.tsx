@@ -1,9 +1,9 @@
 // Utils
 import { api } from "@/utils/api";
 import { SessionProvider } from "next-auth/react";
-import { publicProvider } from "wagmi/providers/public";
-import { createConfig, configureChains, WagmiConfig } from "wagmi";
-import { polygon } from "wagmi/chains";
+import { createConfig, WagmiConfig } from "wagmi";
+import { polygon } from "viem/chains";
+import { createPublicClient, http } from "viem";
 
 // Types
 import type { ReactElement, ReactNode } from "react";
@@ -20,15 +20,12 @@ import { Analytics } from "@vercel/analytics/react";
 
 import "@/styles/globals.css";
 
-const { publicClient, webSocketPublicClient } = configureChains(
-  [polygon],
-  [publicProvider()],
-);
-
 const config = createConfig({
   autoConnect: true,
-  publicClient,
-  webSocketPublicClient,
+  publicClient: createPublicClient({
+    chain: polygon,
+    transport: http(),
+  }),
 });
 
 // eslint-disable-next-line @typescript-eslint/ban-types

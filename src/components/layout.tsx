@@ -89,6 +89,7 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
   const { data: positions } = api.hodl.getByCurrentUser.useQuery(undefined, {
     enabled: !!session?.user?.id,
   });
+
   const { data: userStats } = api.wallet.getUserStats.useQuery(undefined, {
     enabled: !!session?.user?.id,
   });

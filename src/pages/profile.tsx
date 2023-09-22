@@ -9,7 +9,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Heading from "@/components/ui/heading";
 import ProfileForm from "@/components/profileForm";
-import Web3SignIn from "@/components/custom/Web3SignIn";
+import CheckMembership from "@/components/custom/CheckMembership";
 import { Button } from "@/components/ui/button";
 
 const Profile: NextPage = () => {
@@ -17,6 +17,8 @@ const Profile: NextPage = () => {
 
   const { data: wallet, isSuccess: isWalletSuccess } =
     api.wallet.get.useQuery();
+  const { data: userWallets, isSuccess: isUserWalletsSuccess } =
+    api.userWallets.getAll.useQuery();
   const { mutate } = api.user.delete.useMutation({
     onSuccess: async () => {
       await router.push(`/`);
@@ -45,7 +47,20 @@ const Profile: NextPage = () => {
           update your daily goal.
         </p>
 
-        <Web3SignIn />
+        {/* <Web3SignIn /> */}
+
+        <CheckMembership />
+
+        {isUserWalletsSuccess && userWallets.length > 0 && (
+          <>
+            <Heading size="h3">Your DeFi Wallets</Heading>
+            <ul>
+              {userWallets.map((wallet) => (
+                <li key={wallet.id}>{wallet.walletAddress}</li>
+              ))}
+            </ul>
+          </>
+        )}
 
         <div className="mx-auto max-w-3xl">
           {isWalletSuccess && (
