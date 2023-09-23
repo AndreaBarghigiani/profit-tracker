@@ -1,8 +1,9 @@
 // Utils
 import { formatDexPairAsToken } from "@/utils/positions";
 import { prisma } from "@/server/db";
-import { HALF_HOUR } from "@/utils/number";
 import { chunkArray } from "@/utils/array";
+import { log } from "next-axiom";
+
 // Types
 import type { DexScreenerPair } from "@/server/types";
 import { DexSearchSchema } from "@/server/types";
@@ -45,15 +46,9 @@ export const updateDexScreenerTokens = async ({
       coingecko_id: {
         in: dexScreenerTokens,
       },
-      AND: [
-        {
-          updatedAt: {
-            lte: new Date(HALF_HOUR),
-          },
-        },
-      ],
     },
   });
+
   const customAddresses = tokensToUpdate.map((token) =>
     encodeURIComponent(token.coingecko_id.replace("custom-", "")),
   );
@@ -85,6 +80,14 @@ export const updateDexScreenerTokens = async ({
 
   const averaged = Object.keys(grouped).map((group) => {
     return formatDexPairAsToken(grouped[group] as DexScreenerPair[]);
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+  log.debug("updateDexScreenerTokens", {
+    tokensToUpdate,
+    customAddresses,
+    grouped,
+    averaged,
   });
 
   return averaged;
