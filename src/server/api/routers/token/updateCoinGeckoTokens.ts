@@ -1,7 +1,7 @@
 // Utils
 import { z } from "zod";
 import { prisma } from "@/server/db";
-import { HALF_HOUR } from "@/utils/number";
+import { log } from "next-axiom";
 
 // Types
 import { CoinGeckoCoinsMarketSchema } from "@/server/types";
@@ -17,13 +17,6 @@ export const updateCoinGeckoTokens = async ({
       coingecko_id: {
         in: coinGeckoTokens,
       },
-      AND: [
-        {
-          updatedAt: {
-            lte: new Date(HALF_HOUR),
-          },
-        },
-      ],
     },
   });
 
@@ -52,6 +45,9 @@ export const updateCoinGeckoTokens = async ({
     latestPrice: entry.current_price,
     change24h: entry.price_change_24h,
   }));
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+  log.debug("updateCoingeckoTokens", { tokensToUpdate, CoinGeckoMassaged });
 
   return CoinGeckoMassaged;
 };
