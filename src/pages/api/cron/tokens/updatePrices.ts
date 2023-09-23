@@ -4,6 +4,7 @@ import { getHTTPStatusCodeFromError } from "@trpc/server/http";
 import { prisma } from "@/server/db";
 import { updateMarketData } from "@/server/api/routers/token/updateMarketData";
 import { HALF_HOUR } from "@/utils/number";
+import { log } from "next-axiom";
 
 // Types
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -30,6 +31,9 @@ export default async function tokenHistory(
     });
 
     const tokenIds: string[] = tokens.map((token) => token.coingecko_id);
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    log.debug("tokensIds", { tokenIds });
 
     // Send updatePrices request only if there are tokens to update
     if (tokenIds.length > 0) {
