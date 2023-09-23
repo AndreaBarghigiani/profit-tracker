@@ -34,15 +34,24 @@ const CheckMembership = () => {
     },
   });
 
+  const { data: tokenOwner } = useContractRead({
+    address: lockAddress,
+    abi: PublicLockV13.abi,
+    functionName: "tokenOfOwnerByIndex",
+    enabled: !!isConnected,
+    args: address ? [address, 0] : [],
+  });
+
   const { data: expirationTimestamp } = useContractRead({
     address: lockAddress,
     abi: PublicLockV13.abi,
     functionName: "keyExpirationTimestampFor",
     enabled: !!isConnected,
-    args: address ? [address] : [],
+    args: [tokenOwner],
   });
 
   console.log("hasAccess:", hasAccess);
+  console.log("tokenOwner:", tokenOwner);
   console.log("expirationTimestamp:", expirationTimestamp);
 
   const paywallConfig = {
