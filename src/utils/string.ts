@@ -75,7 +75,6 @@ export const formatNumber = (
   removeZeros: boolean = false,
 ) => {
   const numeric = typeof number === "string" ? parseFloat(number) : number;
-
   const numUnits = maxSignificantDigits(numeric);
   const minSignificant = numUnits === 1 ? 3 : 2;
   const maxSignifican = numUnits >= 1 ? numUnits + 2 : 2;
@@ -90,6 +89,12 @@ export const formatNumber = (
   return notation === "standard"
     ? handleDecimals(formatted, removeZeros)
     : formatted;
+};
+
+export const fromTimestampToDate = (timestamp: number | bigint) => {
+  const ts = typeof timestamp === "bigint" ? Number(timestamp) : timestamp;
+
+  return formatDate(ts * 1000, "long", "short");
 };
 
 export const currencyConverter = ({
