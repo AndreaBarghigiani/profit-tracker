@@ -50,7 +50,7 @@ const UserStatsDropdown = ({
     enabled: !!session,
   });
 
-  const wrapperClasses = cn("md:flex border-none rounded-lg hidden", {
+  const wrapperClasses = cn("md:flex border-none rounded-lg hidden px-0", {
     "flex-col h-128 w-56": orientation === "vertical",
   });
 
