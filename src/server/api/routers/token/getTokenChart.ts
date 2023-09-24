@@ -48,21 +48,28 @@ export const getChartData = async ({
     where: {
       coingecko_id: tokenId,
     },
-    select: { id: true },
+    select: {
+      id: true,
+      tokenHistory: {
+        where: {
+          createdAt: { gte: new Date(ONE_DAY_AGO) },
+        },
+        orderBy: {
+          createdAt: "asc",
+        },
+        select: {
+          price: true,
+          createdAt: true,
+        },
+      },
+    },
   });
 
   if (!token) return [];
 
-  const tokenHistory: TokenHistory[] = await prisma.tokenHistory.findMany({
-    where: {
-      AND: [
-        { tokenId: token.id },
-        { createdAt: { gte: new Date(ONE_DAY_AGO) } },
-      ],
-    },
-  });
+  const { tokenHistory } = token;
 
-  if (tokenHistory.length < 48) return [undefined];
+  if (tokenHistory.length < 8) return [undefined];
 
   function reducer(acc: ChartTokenData, cur: TokenHistory) {
     const date = new Date(cur.createdAt);
