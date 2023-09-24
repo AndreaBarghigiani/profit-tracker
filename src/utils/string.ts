@@ -24,6 +24,12 @@ export const formatTime = (
     timeStyle: timeType,
   }).format(date);
 
+export const fromTimestampToDate = (timestamp: number | bigint) => {
+  const ts = typeof timestamp === "bigint" ? Number(timestamp) : timestamp;
+
+  return formatDate(ts * 1000, "long", "short");
+};
+
 const maxSignificantDigits = (num: number, count: number = 0): number => {
   if (num > 0) {
     return maxSignificantDigits(Math.floor(num / 10), ++count);
