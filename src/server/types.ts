@@ -362,10 +362,8 @@ export const TokenSchema = z.object({
 export type TokenZod = z.infer<typeof TokenSchema>;
 
 export const TokenHistorySchema = z.object({
-  id: z.string(),
   createdAt: z.date().or(z.string()),
   price: z.number(),
-  tokenId: z.string(),
 });
 
 export type TokenHistory = z.infer<typeof TokenHistorySchema>;
