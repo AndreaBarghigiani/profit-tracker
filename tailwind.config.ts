@@ -16,7 +16,7 @@ module.exports = {
         input: "#606251", // dog-600
         ring: "hsl(var(--ring))",
         background: "hsl(var(--dog-900))",
-        foreground: "hsl(var(--dog-200))",
+        foreground: "hsl(var(--dog-300))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
