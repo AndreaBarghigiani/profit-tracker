@@ -73,6 +73,7 @@ const CheckMembership = () => {
     },
     pessimistic: true,
     skipRecipient: true,
+    referrer: "0x7b3fc8884f69a30bea47013961e06c54fc003ad3",
     title: "Underdog Tracker Membership",
   };
 
