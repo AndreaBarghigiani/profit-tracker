@@ -17,8 +17,8 @@ import { Button } from "@/components/ui/button";
 import Heading from "@/components/ui/heading";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
-// const lockAddress = "0x4025fb5018062bf3430c01ea1ff5d8b9f7fbf5a9";
-const lockAddress = "0x0633A2cEfDf8EE20D791603e7dC2889Af75f5b6B";
+const lockAddress = "0x4025fb5018062bf3430c01ea1ff5d8b9f7fbf5a9";
+// const lockAddress = "0x0633A2cEfDf8EE20D791603e7dC2889Af75f5b6B";
 
 const CheckMembership = () => {
   const paywall = new Paywall(networks);
