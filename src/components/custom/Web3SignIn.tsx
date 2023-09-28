@@ -3,17 +3,19 @@
 // Utils
 import { api } from "@/utils/api";
 import clsx from "clsx";
+import { useMemo } from "react";
 import { useConnect, useAccount, useDisconnect } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 
 // Types
+import type { Paywall } from "@unlock-protocol/paywall";
 import type { WalletAddress } from "@/server/types";
 
 // Components
 import { Button } from "@/components/ui/button";
 import { RefreshCcw, Plug2, Wallet } from "lucide-react";
 
-const Web3SignIn = () => {
+const Web3SignIn = ({ paywall }: { paywall: Paywall }) => {
   const utils = api.useContext();
   const { disconnectAsync } = useDisconnect();
   const { isConnected, address } = useAccount();
@@ -31,8 +33,19 @@ const Web3SignIn = () => {
       },
     });
 
+  const provider = useMemo(() => {
+    return paywall.getProvider("https://app.unlock-protocol.com", {
+      clientId: "http://localhost:3000/profile",
+    });
+  }, [paywall]);
+
   const { connect, isLoading } = useConnect({
-    connector: new InjectedConnector(),
+    connector: new InjectedConnector({
+      options: {
+        name: "Unlock Underdog Tracker",
+        getProvider: () => provider,
+      },
+    }),
   });
 
   const handleAuth = async () => {
@@ -42,6 +55,8 @@ const Web3SignIn = () => {
     }
 
     connect();
+
+    // Skip if wallet already exists
   };
 
   if (
@@ -50,7 +65,6 @@ const Web3SignIn = () => {
     !walletPresent &&
     !isCreateUserWalletLoading
   ) {
-    console.log("add userWallet to DB");
     createUserWallet({ walletAddress: address });
   }
 
@@ -61,26 +75,19 @@ const Web3SignIn = () => {
       className="mx-auto"
       onClick={handleAuth}
     >
-      {isLoading ? (
-        <>
-          <RefreshCcw
-            className={clsx("mr-2 h-4 w-4", {
-              "animate-spin": isLoading,
-            })}
-          />
-          Connect Wallet
-        </>
-      ) : isConnected ? (
-        <>
-          <Plug2 className="mr-2 h-4 w-4 -rotate-90" />
-          Disconnect Wallet
-        </>
-      ) : (
-        <>
-          <Wallet className="mr-2 h-4 w-4" />
-          Connect Wallet
-        </>
+      {isLoading && (
+        <RefreshCcw
+          className={clsx("mr-2 h-4 w-4", {
+            "animate-spin": isLoading,
+          })}
+        />
       )}
+      {isConnected ? (
+        <Plug2 className="mr-2 h-4 w-4 -rotate-90" />
+      ) : (
+        <Wallet className="mr-2 h-4 w-4" />
+      )}
+      {isConnected ? "Disconnect Wallet" : "Connect Wallet"}
     </Button>
   );
 };

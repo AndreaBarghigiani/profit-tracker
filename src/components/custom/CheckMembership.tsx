@@ -135,13 +135,35 @@ const CheckMembership = () => {
     <>
       <div className="mx-auto max-w-2xl">
         <Card button="side">
-          <CardHeader>
-            <Heading size="h2">{content.title}</Heading>
-            <p className="text-sm">{content.body}</p>
-          </CardHeader>
+          {!isConnected && (
+            <CardHeader>
+              <Heading size="h2">Connect and check your membership</Heading>
+              <p className="text-sm">
+                Looks like your main wallet is not connected. Connect it now to
+                buy or renew your membership.
+              </p>
+            </CardHeader>
+          )}
 
+          {isConnected && !hasAccess && (
+            <CardHeader>
+              <Heading size="h2">😱 Looks like you don&apos;t have one</Heading>
+              <p className="text-sm">
+                Buy it now and start to track your crypto automatically.
+              </p>
+            </CardHeader>
+          )}
+
+          {isConnected && expirationTimestamp && (
+            <CardHeader>
+              <Heading size="h2">Your membership will expire the:</Heading>
+              <p className="text-sm">
+                {fromTimestampToDate(expirationTimestamp)}
+              </p>
+            </CardHeader>
+          )}
           <CardContent className="ml-auto flex flex-shrink-0 flex-col gap-y-2 pb-0">
-            <Web3SignIn />
+            <Web3SignIn paywall={paywall} />
 
             {isConnected && !hasAccess && (
               <Button variant="orange" onClick={onPurchase}>
