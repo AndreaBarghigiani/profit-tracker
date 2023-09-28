@@ -6,6 +6,7 @@ import { userRouter } from "@/server/api/routers/user";
 import { tokenRouter } from "@/server/api/routers/token";
 import { hodlRouter } from "@/server/api/routers/hodl";
 import { dcaRouter } from "@/server/api/routers/dca";
+import { userWalletsRouter } from "@/server/api/routers/userWallets";
 
 /**
  * This is the primary router for your server.
@@ -17,6 +18,7 @@ export const appRouter = createTRPCRouter({
   transaction: transactionRouter,
   wallet: walletRouter,
   user: userRouter,
+  userWallets: userWalletsRouter,
   token: tokenRouter,
   hodl: hodlRouter,
   dca: dcaRouter,

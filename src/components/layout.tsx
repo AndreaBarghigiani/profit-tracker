@@ -89,6 +89,7 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
   const { data: positions } = api.hodl.getByCurrentUser.useQuery(undefined, {
     enabled: !!session?.user?.id,
   });
+
   const { data: userStats } = api.wallet.getUserStats.useQuery(undefined, {
     enabled: !!session?.user?.id,
   });
@@ -146,14 +147,14 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
               </div>
             </Link>
 
-            <nav className="ml-auto flex items-center gap-4">
+            <nav className="ml-auto flex items-center gap-3">
               <ChangesModal session={session} />
+
+              <FeedbackComponent />
 
               {hasSummaryBadge && <UserStatsDropdown userStats={userStats} />}
 
               {!!session && <AvatarDropdown session={session} />}
-
-              <FeedbackComponent />
 
               {!session && <SocialLinks />}
 

@@ -26,6 +26,10 @@ const cardVariants = cva("rounded-lg border shadow-sm", {
       ghost: "hover:bg-accent hover:text-accent-foreground/80",
       link: "underline-offset-4 hover:underline text-primary",
     },
+    button: {
+      center: "flex justify-center items-center flex-col",
+      side: "flex items-center",
+    },
   },
   defaultVariants: {
     variant: "default",
@@ -37,10 +41,10 @@ export interface CardProps
     VariantProps<typeof cardVariants> {}
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, variant, ...props }, ref) => (
+  ({ className, variant, button, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn(cardVariants({ variant, className }))}
+      className={cn(cardVariants({ variant, className, button }))}
       {...props}
     />
   ),

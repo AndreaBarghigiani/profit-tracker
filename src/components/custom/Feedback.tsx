@@ -63,11 +63,13 @@ const FeedbackComponent = ({}) => {
 
   if (!session) return null;
 
-  if (session.user.email) {
+  const [username, email] = form.getValues(["username", "email"]);
+
+  if (session.user.email && username === "") {
     form.setValue("email", session.user.email);
   }
 
-  if (session.user.name) {
+  if (session.user.name && email === "") {
     form.setValue("username", session.user.name);
   }
 
