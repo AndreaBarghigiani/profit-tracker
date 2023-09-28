@@ -460,3 +460,9 @@ export type UserCache = {
     [key: string]: string;
   };
 };
+
+export const WalletAddressSchema = z
+  .string()
+  .refine((address) => address.startsWith("0x"));
+
+export type WalletAddress = z.infer<typeof WalletAddressSchema>;

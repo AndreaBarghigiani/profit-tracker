@@ -2,6 +2,10 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
+// Types
+import { WalletAddressSchema } from "@/server/types";
+// import type { UserWallet } from "@/server/types";
+
 export const userWalletsRouter = createTRPCRouter({
   create: protectedProcedure
     .input(z.object({ walletAddress: z.string() }))
@@ -20,11 +24,31 @@ export const userWalletsRouter = createTRPCRouter({
         },
       });
     }),
+  get: protectedProcedure
+    .input(z.object({ walletAddress: WalletAddressSchema }))
+    .query(async ({ ctx, input }) => {
+      const walletAddress = await ctx.prisma.userWallet.findUnique({
+        where: {
+          walletAddress: input.walletAddress,
+        },
+      });
+
+      return !!walletAddress;
+    }),
   getAll: protectedProcedure.query(async ({ ctx }) => {
-    return ctx.prisma.userWallet.findMany({
+    return await ctx.prisma.userWallet.findMany({
       where: {
         userId: ctx.session.user.id,
       },
     });
   }),
+  delete: protectedProcedure
+    .input(z.object({ walletId: z.string() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.userWallet.delete({
+        where: {
+          id: input.walletId,
+        },
+      });
+    }),
 });

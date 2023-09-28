@@ -83,7 +83,7 @@ model UserWallet {
   wallet        Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
   walletId      String
   walletAddress String   @unique
-  active        Boolean  @default(true)
+  tracking      Boolean  @default(true)
 }
 
 model Project {

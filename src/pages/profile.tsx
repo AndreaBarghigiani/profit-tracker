@@ -10,6 +10,7 @@ import Head from "next/head";
 import Heading from "@/components/ui/heading";
 import ProfileForm from "@/components/profileForm";
 import CheckMembership from "@/components/custom/CheckMembership";
+import WalletAddress from "@/components/custom/Profile/WalletAddress";
 import { Button } from "@/components/ui/button";
 
 const Profile: NextPage = () => {
@@ -19,14 +20,14 @@ const Profile: NextPage = () => {
     api.wallet.get.useQuery();
   const { data: userWallets, isSuccess: isUserWalletsSuccess } =
     api.userWallets.getAll.useQuery();
-  const { mutate } = api.user.delete.useMutation({
+  const { mutate: deleteUser } = api.user.delete.useMutation({
     onSuccess: async () => {
       await router.push(`/`);
     },
   });
 
   const handleDelete = () => {
-    mutate();
+    deleteUser();
   };
 
   if (!wallet) return <div>Something wrong.</div>;
@@ -37,7 +38,7 @@ const Profile: NextPage = () => {
         <title>Profile - Underdog Tracker</title>
       </Head>
 
-      <div className="space-y-4">
+      <div className="mx-auto max-w-2xl space-y-4">
         <Heading size="page" gradient="gold" spacing="massive">
           Profile
         </Heading>
@@ -56,7 +57,7 @@ const Profile: NextPage = () => {
             <Heading size="h3">Your DeFi Wallets</Heading>
             <ul>
               {userWallets.map((wallet) => (
-                <li key={wallet.id}>{wallet.walletAddress}</li>
+                <WalletAddress key={wallet.id} userWallet={wallet} />
               ))}
             </ul>
           </>

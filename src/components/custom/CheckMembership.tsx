@@ -93,8 +93,8 @@ const CheckMembership = () => {
   return (
     <>
       <div className="mx-auto max-w-2xl">
-        {!isConnected && (
-          <Card button="side">
+        <Card button="side">
+          {!isConnected && (
             <CardHeader>
               <Heading size="h2">Connect and check your membership</Heading>
               <p className="text-sm">
@@ -102,38 +102,35 @@ const CheckMembership = () => {
                 buy or renew your membership.
               </p>
             </CardHeader>
-            <CardContent className="ml-auto flex flex-shrink-0 pb-0">
-              <Web3SignIn paywall={paywall} />
-            </CardContent>
-          </Card>
-        )}
+          )}
 
-        {isConnected && !hasAccess && (
-          <Card button="side">
+          {isConnected && !hasAccess && (
             <CardHeader>
               <Heading size="h2">😱 Looks like you don&apos;t have one</Heading>
               <p className="text-sm">
                 Buy it now and start to track your crypto automatically.
               </p>
             </CardHeader>
-            <CardContent className="ml-auto flex flex-shrink-0 pb-0">
-              <Button variant="orange" onClick={onPurchase}>
-                Buy Membership
-              </Button>
-            </CardContent>
-          </Card>
-        )}
+          )}
 
-        {isConnected && expirationTimestamp && (
-          <Card>
+          {isConnected && expirationTimestamp && (
             <CardHeader>
               <Heading size="h2">Your membership will expire the:</Heading>
               <p className="text-sm">
                 {fromTimestampToDate(expirationTimestamp)}
               </p>
             </CardHeader>
-          </Card>
-        )}
+          )}
+          <CardContent className="ml-auto flex flex-shrink-0 flex-col gap-y-2 pb-0">
+            <Web3SignIn paywall={paywall} />
+
+            {isConnected && !hasAccess && (
+              <Button variant="orange" onClick={onPurchase}>
+                Buy Membership
+              </Button>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </>
   );
