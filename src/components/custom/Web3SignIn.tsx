@@ -55,8 +55,6 @@ const Web3SignIn = ({ paywall }: { paywall: Paywall }) => {
     }
 
     connect();
-
-    // Skip if wallet already exists
   };
 
   if (
@@ -75,19 +73,26 @@ const Web3SignIn = ({ paywall }: { paywall: Paywall }) => {
       className="mx-auto"
       onClick={handleAuth}
     >
-      {isLoading && (
-        <RefreshCcw
-          className={clsx("mr-2 h-4 w-4", {
-            "animate-spin": isLoading,
-          })}
-        />
-      )}
-      {isConnected ? (
-        <Plug2 className="mr-2 h-4 w-4 -rotate-90" />
+      {isLoading ? (
+        <>
+          <RefreshCcw
+            className={clsx("mr-2 h-4 w-4", {
+              "animate-spin": isLoading,
+            })}
+          />
+          Connect Wallet
+        </>
+      ) : isConnected ? (
+        <>
+          <Plug2 className="mr-2 h-4 w-4 -rotate-90" />
+          Disconnect Wallet
+        </>
       ) : (
-        <Wallet className="mr-2 h-4 w-4" />
+        <>
+          <Wallet className="mr-2 h-4 w-4" />
+          Connect Wallet
+        </>
       )}
-      {isConnected ? "Disconnect Wallet" : "Connect Wallet"}
     </Button>
   );
 };
