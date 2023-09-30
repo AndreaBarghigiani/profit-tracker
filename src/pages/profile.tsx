@@ -12,7 +12,6 @@ import ProfileForm from "@/components/profileForm";
 import CheckMembership from "@/components/custom/CheckMembership";
 import WalletAddress from "@/components/custom/Profile/WalletAddress";
 import { Button } from "@/components/ui/button";
-import TestButtonUnlock from "@/components/custom/TestButtonUnlock";
 
 const Profile: NextPage = () => {
   const router = useRouter();
@@ -49,10 +48,7 @@ const Profile: NextPage = () => {
           update your daily goal.
         </p>
 
-        {/* <Web3SignIn /> */}
-
         <CheckMembership />
-        {/* <TestButtonUnlock /> */}
 
         {isUserWalletsSuccess && userWallets.length > 0 && (
           <>

@@ -3,19 +3,17 @@
 // Utils
 import { api } from "@/utils/api";
 import clsx from "clsx";
-import { useMemo } from "react";
 import { useConnect, useAccount, useDisconnect } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 
 // Types
-import type { Paywall } from "@unlock-protocol/paywall";
 import type { WalletAddress } from "@/server/types";
 
 // Components
 import { Button } from "@/components/ui/button";
 import { RefreshCcw, Plug2, Wallet } from "lucide-react";
 
-const Web3SignIn = ({ paywall }: { paywall: Paywall }) => {
+const Web3SignIn = () => {
   const utils = api.useContext();
   const { disconnectAsync } = useDisconnect();
   const { isConnected, address } = useAccount();
@@ -33,19 +31,8 @@ const Web3SignIn = ({ paywall }: { paywall: Paywall }) => {
       },
     });
 
-  const provider = useMemo(() => {
-    return paywall.getProvider("https://app.unlock-protocol.com", {
-      clientId: "http://localhost:3000/profile",
-    });
-  }, [paywall]);
-
   const { connect, isLoading } = useConnect({
-    connector: new InjectedConnector({
-      options: {
-        name: "Unlock Underdog Tracker",
-        getProvider: () => provider,
-      },
-    }),
+    connector: new InjectedConnector(),
   });
 
   const handleAuth = async () => {

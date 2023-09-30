@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 
 // Utils
+import { useMemo } from "react";
 import { api } from "@/utils/api";
-import { useAccount, useContractRead } from "wagmi";
+import { useAccount, useContractRead, useConnect, useDisconnect } from "wagmi";
+import { InjectedConnector } from "wagmi/connectors/injected";
 import { PublicLockV13 } from "@unlock-protocol/contracts";
 import networks from "@unlock-protocol/networks";
-console.log("networks:", networks);
 import { Paywall } from "@unlock-protocol/paywall";
 import { fromTimestampToDate } from "@/utils/string";
 import { Role } from "@prisma/client";
@@ -23,7 +25,7 @@ const lockAddress = "0x4025fb5018062bf3430c01ea1ff5d8b9f7fbf5a9";
 // const lockAddress = "0x0633A2cEfDf8EE20D791603e7dC2889Af75f5b6B";
 
 const CheckMembership = () => {
-  console.log("render CheckMembership");
+  console.log("CheckMembership");
   const { data: user } = api.user.getUser.useQuery();
   const { data: hasMembership } = api.user.hasMembership.useQuery();
 
@@ -64,9 +66,13 @@ const CheckMembership = () => {
     args: [tokenOwner],
   }) as unknown as { data: number };
 
-  if (hasAccess && expirationTimestamp && user?.role !== Role.SUBSCRIBER) {
-    if (!hasMembership)
-      updateMembership({ expirationTime: expirationTimestamp });
+  if (
+    hasAccess && // from wallet, holds the NFT
+    expirationTimestamp &&
+    user?.role !== Role.SUBSCRIBER &&
+    !hasMembership // from db, has the membership date stored
+  ) {
+    updateMembership({ expirationTime: expirationTimestamp });
   }
 
   // Calls paywall for checkout
@@ -134,7 +140,7 @@ const CheckMembership = () => {
           </CardHeader>
 
           <CardContent className="ml-auto flex flex-shrink-0 flex-col gap-y-2 pb-0">
-            <Web3SignIn paywall={paywall} />
+            <Web3SignIn />
 
             {isConnected && !hasAccess && (
               <Button variant="orange" onClick={onPurchase}>
