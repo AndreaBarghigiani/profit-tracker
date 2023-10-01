@@ -4,10 +4,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 
 // Utils
-import { useMemo } from "react";
 import { api } from "@/utils/api";
-import { useAccount, useContractRead, useConnect, useDisconnect } from "wagmi";
-import { InjectedConnector } from "wagmi/connectors/injected";
+import { useAccount, useContractRead } from "wagmi";
 import { PublicLockV13 } from "@unlock-protocol/contracts";
 import networks from "@unlock-protocol/networks";
 import { Paywall } from "@unlock-protocol/paywall";
