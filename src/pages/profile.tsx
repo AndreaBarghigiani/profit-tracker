@@ -71,7 +71,7 @@ const Profile: NextPage = () => {
               className="ml-auto mt-4"
               onClick={handleDelete}
             >
-              Delete
+              Delete Profile
             </Button>
           </footer>
         </div>

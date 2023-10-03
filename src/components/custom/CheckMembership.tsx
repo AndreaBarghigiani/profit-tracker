@@ -19,11 +19,14 @@ import Heading from "@/components/ui/heading";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
 const paywall = new Paywall(networks);
+
+// Official Contract
 const lockAddress = "0x4025fb5018062bf3430c01ea1ff5d8b9f7fbf5a9";
+
+// Test Contract
 // const lockAddress = "0x0633A2cEfDf8EE20D791603e7dC2889Af75f5b6B";
 
 const CheckMembership = () => {
-  console.log("CheckMembership");
   const { data: user } = api.user.getUser.useQuery();
   const { data: hasMembership } = api.user.hasMembership.useQuery();
 
@@ -52,7 +55,7 @@ const CheckMembership = () => {
     address: lockAddress,
     abi: PublicLockV13.abi,
     functionName: "tokenOfOwnerByIndex",
-    enabled: !!isConnected,
+    enabled: !!isConnected && !!hasAccess,
     args: address ? [address, 0] : [],
   });
 
@@ -60,7 +63,7 @@ const CheckMembership = () => {
     address: lockAddress,
     abi: PublicLockV13.abi,
     functionName: "keyExpirationTimestampFor",
-    enabled: !!isConnected,
+    enabled: !!isConnected && !!hasAccess,
     args: [tokenOwner],
   }) as unknown as { data: number };
 

@@ -50,6 +50,7 @@ const Web3SignIn = () => {
     !walletPresent &&
     !isCreateUserWalletLoading
   ) {
+    console.log("add userWallet to DB");
     createUserWallet({ walletAddress: address });
   }
 
