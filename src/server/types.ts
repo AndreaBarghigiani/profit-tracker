@@ -24,6 +24,28 @@ export const TransactionValuesSchema = z.object({
   useLiquidFunds: z.boolean().optional(),
 });
 
+export type TransactionValues = z.infer<typeof TransactionValuesSchema>;
+
+export const TransactionRowValuesSchema = z.object({
+  id: z.string(),
+  createdAt: z.object({
+    date: z.string(),
+    time: z.string(),
+  }),
+  eval: z.object({
+    amount: z.number(),
+    evaluation: z.number(),
+  }),
+  token: z.object({
+    name: z.string(),
+    price: z.number(),
+  }),
+  type: z.nativeEnum(TransactionType),
+  useLiquidFunds: z.boolean().optional(),
+});
+
+export type TransactionRowValues = z.infer<typeof TransactionRowValuesSchema>;
+
 export const PrismaTransactionSchema = z.object({
   id: z.string(),
   createdAt: z.date(),
@@ -40,8 +62,6 @@ export const PrismaHodlTransactionSchema = PrismaTransactionSchema.extend({
 });
 
 export type PrismaHodlTransaction = z.infer<typeof PrismaHodlTransactionSchema>;
-
-export type TransactionValues = z.infer<typeof TransactionValuesSchema>;
 
 export type SumTxItem = {
   type: TransactionType;
