@@ -96,6 +96,7 @@ const HodlStats = ({ hodl, token }: HodlStatsCardProps) => {
                   {currencyConverter({
                     amount: avgPrice.diff,
                     showSign: true,
+                    removeZeros: true,
                   })}
                 </p>
                 <p

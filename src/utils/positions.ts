@@ -8,6 +8,8 @@ import type {
   DexScreenerPair,
   UpdateTokenData,
   FullPositionZod,
+  HodlDeleteTransaction,
+  TokenWithoutDatesZod,
 } from "@/server/types";
 
 // Components
@@ -111,4 +113,34 @@ export const hodlSummary = (hodls: FullPositionZod[]) => {
     change: reduced,
     topPerformer,
   };
+};
+
+export const parseTransactionRowData = (
+  transactions: HodlDeleteTransaction[] | undefined,
+  token: TokenWithoutDatesZod,
+) => {
+  if (!transactions) return [];
+
+  const newTx = transactions.map((transaction) => ({
+    id: transaction.id,
+    type: transaction.type,
+    token: {
+      name: token.name,
+      price: token.latestPrice,
+    },
+    eval: {
+      amount: transaction.amount,
+      evaluation: transaction.evaluation,
+    },
+    createdAt: {
+      date: transaction.createdAt.toLocaleString("en-US", {
+        dateStyle: "medium",
+      }),
+      time: transaction.createdAt.toLocaleString("en-US", {
+        timeStyle: "short",
+      }),
+    },
+  }));
+
+  return newTx;
 };
