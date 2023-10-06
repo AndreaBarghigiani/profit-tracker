@@ -24,6 +24,26 @@ export const formatTime = (
     timeStyle: timeType,
   }).format(date);
 
+const handleDecimals = (num: string, removeZeros: boolean = false) => {
+  const hasDecimal = /\./;
+  const hasSingleDecimal = /\.\d$/;
+  const hasTooManyZeros = /\.0{6,}(\d)/;
+
+  if (!hasDecimal.test(num)) {
+    return num + ".00";
+  }
+
+  if (hasSingleDecimal.test(num)) {
+    return num + "0";
+  }
+
+  if (hasTooManyZeros.test(num) && removeZeros) {
+    return num.replace(hasTooManyZeros, ".0...$1");
+  }
+
+  return num;
+};
+
 export const fromTimestampToDate = (timestamp: number | bigint) => {
   const ts = typeof timestamp === "bigint" ? Number(timestamp) : timestamp;
 
@@ -61,29 +81,37 @@ export const currencyConverter = ({
     maximumSignificantDigits: maxSignifican,
   }).format(numeric);
 
-  const hasDecimal = /\./;
-  const hasSingleDecimal = /\.\d$/;
-  const hasTooManyZeros = /\.0{6,}(\d)/;
-
-  if (!hasDecimal.test(formatted)) {
-    return formatted + ".00";
-  }
-
-  if (hasSingleDecimal.test(formatted)) {
-    return formatted + "0";
-  }
-
-  if (hasTooManyZeros.test(formatted) && removeZeros) {
-    return formatted.replace(hasTooManyZeros, ".0...$1");
-  }
-
-  return formatted;
+  return handleDecimals(formatted, removeZeros);
 };
 
-export const formatNumber = (number: number | string) => {
+export const formatNumber = (
+  number: number | string,
+  notation:
+    | "compact"
+    | "standard"
+    | "scientific"
+    | "engineering"
+    | undefined = "compact",
+  removeZeros: boolean = false,
+) => {
   const numeric = typeof number === "string" ? parseFloat(number) : number;
-  return new Intl.NumberFormat("en-EN", {
+
+  const numUnits = maxSignificantDigits(numeric);
+  const minSignificant = numUnits === 1 ? 3 : 2;
+  const maxSignifican = numUnits >= 1 ? numUnits + 2 : 2;
+
+  const formatted = new Intl.NumberFormat("en-EN", {
     style: "decimal",
-    notation: "compact",
+    notation,
+    minimumSignificantDigits: notation === "standard" ? minSignificant : 2,
+    maximumSignificantDigits: notation === "standard" ? maxSignifican : 2,
   }).format(numeric);
+
+  // if (notation === "standard") {
+  //   return handleDecimals(formatted, removeZeros);
+  // }
+
+  return notation === "standard"
+    ? handleDecimals(formatted, removeZeros)
+    : formatted;
 };
