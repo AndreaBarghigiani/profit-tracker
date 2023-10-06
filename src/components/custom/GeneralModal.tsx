@@ -39,7 +39,7 @@ const contentVariants = cva("w-full", {
   },
 });
 
-interface AddTransactionModalProps
+interface GeneralModalProps
   extends DialogProps,
     VariantProps<typeof contentVariants> {
   transactionModal: ReturnType<typeof useTransactionModal>;
@@ -55,7 +55,7 @@ interface AddTransactionModalProps
   };
 }
 
-const AddTransactionModal = ({
+const GeneralModal = ({
   children,
   size,
   transactionModal,
@@ -68,7 +68,7 @@ const AddTransactionModal = ({
     title: "Add a transaction",
     description: "Here you can add your transaction.",
   },
-}: AddTransactionModalProps) => {
+}: GeneralModalProps) => {
   return (
     <Dialog
       open={transactionModal.open}
@@ -111,4 +111,4 @@ const AddTransactionModal = ({
   );
 };
 
-export default AddTransactionModal;
+export default GeneralModal;
