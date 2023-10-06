@@ -22,7 +22,7 @@ export const transactionRouter = createTRPCRouter({
       z.object({
         projectId: z.string(),
         orderBy: z.union([z.literal("asc"), z.literal("desc")]).default("asc"),
-      })
+      }),
     )
     .query(({ ctx, input }) => {
       return ctx.prisma.transaction.findMany({
@@ -66,7 +66,7 @@ export const transactionRouter = createTRPCRouter({
         limit: z.number().min(1).max(100).nullish(),
         cursor: z.string().nullish(),
         type: z.string().nullish(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const limit = input.limit ?? 10;
@@ -149,7 +149,7 @@ export const transactionRouter = createTRPCRouter({
       z.object({
         projectId: z.string(),
         skip: z.boolean().default(false).optional(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const skip = input?.skip ?? false;
@@ -167,7 +167,7 @@ export const transactionRouter = createTRPCRouter({
       return await lastInterestByProjectId(
         input.projectId,
         input.projectAccruing,
-        ctx.prisma
+        ctx.prisma,
       );
     }),
   sumTransactions: protectedProcedure.query(async ({ ctx }) => {
@@ -180,6 +180,21 @@ export const transactionRouter = createTRPCRouter({
     // Leaving here for historical purposes
     // Probably will be deleted in the future
   }),
+  update: protectedProcedure
+    .input(
+      z.object({ id: z.string(), amount: z.number(), evaluation: z.number() }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.transaction.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          amount: input.amount,
+          evaluation: input.evaluation,
+        },
+      });
+    }),
   delete: protectedProcedure
     .input(z.object({ transactionId: z.string() }))
     .mutation(async ({ ctx, input }) => {
