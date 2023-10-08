@@ -23,7 +23,6 @@ import type { TokenWithoutDatesZod } from "@/server/types";
 import Head from "next/head";
 import Link from "next/link";
 import Heading from "@/components/ui/heading";
-import HodlTransactionCard from "@/components/custom/HodlTransactionCard";
 import { Button } from "@/components/ui/button";
 import AddTransactionModal from "@/components/custom/GeneralModal";
 import AddHodlPositionForm from "@/components/custom/AddHodlPositionForm";
@@ -303,22 +302,6 @@ const Hodl: NextPage<
               transactions={transactions}
               token={token as TokenWithoutDatesZod}
             />
-
-            <div className="space-y-3">
-              <div className="grid grid-cols-3 gap-4 rounded-md bg-foreground/30">
-                <p className="p-3">Amount</p>
-                <p className="p-3">Type</p>
-                <p className="p-3">Date</p>
-              </div>
-              {transactions.map((transaction) => (
-                <HodlTransactionCard
-                  transaction={transaction}
-                  token={token}
-                  key={transaction.id}
-                  refresher={refreshPage}
-                />
-              ))}
-            </div>
           </section>
         ) : null}
       </div>
