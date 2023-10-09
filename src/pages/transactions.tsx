@@ -10,24 +10,8 @@ import {
 import { TRANSACTION_TYPE_ICONS } from "@/utils/positions";
 
 // Types
+import type { NextPage } from "next";
 import { TransactionType } from "@prisma/client";
-
-// Components
-import Head from "next/head";
-import Heading from "@/components/ui/heading";
-import Link from "next/link";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { ChevronRight, ChevronLeft, ArrowBigRightDash } from "lucide-react";
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-  TableCell,
-} from "@/components/ui/table";
-import { Skeleton } from "@/components/ui/skeleton";
-
 const TransactionSchema = z.object({
   id: z.string(),
   amount: z.number().positive(),
@@ -50,12 +34,26 @@ const TransactionSchema = z.object({
     })
     .nullable(),
 });
-
 type TransactionSchemaType = z.infer<typeof TransactionSchema>;
 
 const TransactionTableSchema = z.array(TransactionSchema).optional();
 type TransactionTableSchemaType = z.infer<typeof TransactionTableSchema>;
-import type { NextPage } from "next";
+
+// Components
+import Head from "next/head";
+import Heading from "@/components/ui/heading";
+import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { ChevronRight, ChevronLeft, ArrowBigRightDash } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TableCell,
+} from "@/components/ui/table";
 
 const Transaction: NextPage = () => {
   const [currentPage, setCurrentPage] = useState<number>(0);
@@ -193,6 +191,14 @@ const TransactionTableRow = ({
 }) => {
   const Icon = TRANSACTION_TYPE_ICONS[rowData.type];
 
+  let transactionLink = "#";
+
+  if (rowData.project) {
+    transactionLink = `/project/${rowData.project.id}`;
+  } else if (rowData.hodl) {
+    transactionLink = `/hodl/${rowData.hodl.id}`;
+  }
+
   return (
     <TableRow key={rowData.id} className="items-center">
       <TableCell>
@@ -249,25 +255,13 @@ const TransactionTableRow = ({
       </TableCell>
 
       <TableCell>
-        {!!rowData.project && (
-          <Link
-            href={`/project/${rowData.project.id}`}
-            className={buttonVariants({ variant: "link", size: "xs" })}
-          >
-            Check out investment
-            <ArrowBigRightDash className="ml-2 h-4 w-4" />
-          </Link>
-        )}
-
-        {!!rowData.hodl && (
-          <Link
-            href={`/hodl/${rowData.hodl.id}`}
-            className={buttonVariants({ variant: "link", size: "xs" })}
-          >
-            Check out investment
-            <ArrowBigRightDash className="ml-2 h-4 w-4" />
-          </Link>
-        )}
+        <Link
+          href={transactionLink}
+          className={buttonVariants({ variant: "link", size: "xs" })}
+        >
+          Check out investment
+          <ArrowBigRightDash className="ml-2 h-4 w-4" />
+        </Link>
       </TableCell>
     </TableRow>
   );
