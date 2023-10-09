@@ -25,7 +25,15 @@ import AddProjectTransactionForm from "@/components/custom/AddProjectTransaction
 import ProjectStats from "@/components/custom/ProjectStats";
 import LastProjectTransaction from "@/components/custom/LastProjectTransaction";
 import ProjectTransactionCard from "@/components/custom/Projects/ProjectTransactionCard";
+import TransactionRow from "@/components/custom/Projects/TransactionRow";
 import { Trash, Plus } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const ProjectPage: NextPage = () => {
   const router = useRouter();
@@ -113,21 +121,25 @@ const ProjectPage: NextPage = () => {
           </div>
         </div>
 
-        <div className="space-y-4">
-          <div className="grid grid-cols-3 gap-4 rounded-md bg-foreground/30">
-            <p className="p-3">Amount</p>
-            <p className="p-3">Type</p>
-            <p className="p-3">Date</p>
-          </div>
-          {isLoadingTransactions
-            ? "Loading..."
-            : transactions?.map((transaction) => (
-                <ProjectTransactionCard
-                  transaction={transaction}
-                  key={transaction.id}
-                />
-              ))}
-        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[240px]">Amount</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Date</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isLoadingTransactions
+              ? "Loading..."
+              : transactions?.map((transaction) => (
+                  <TransactionRow
+                    transaction={transaction}
+                    key={transaction.id}
+                  />
+                ))}
+          </TableBody>
+        </Table>
       </article>
     </div>
   );
