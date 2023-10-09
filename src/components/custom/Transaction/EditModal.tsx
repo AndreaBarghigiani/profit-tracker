@@ -9,6 +9,7 @@ import { currencyConverter, formatNumber } from "@/utils/string";
 import type { TransactionRowValues } from "@/server/types";
 
 // Components
+import { HelpCircle } from "lucide-react";
 import Heading from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,8 +21,13 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipProvider,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 const EditTransactionFormSchema = z.object({
   id: z.string(),
@@ -85,13 +91,25 @@ const EditModal = ({
             render={({ field }) => {
               return (
                 <FormItem>
-                  <FormLabel htmlFor="amount">Amount</FormLabel>
+                  <div className="flex items-center justify-start">
+                    <FormLabel htmlFor="amount">Amount</FormLabel>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <HelpCircle className="ml-2 h-4 w-4 text-dog-400" />
+                        </TooltipTrigger>
+                        <TooltipContent
+                          side="right"
+                          className="border-dog-800 text-dog-500"
+                        >
+                          Change amount of the token
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
                   <FormControl>
                     <Input type="number" step="any" min={0} {...field} />
                   </FormControl>
-                  <FormDescription>
-                    Did you had a different token amount?
-                  </FormDescription>
                 </FormItem>
               );
             }}
@@ -102,14 +120,26 @@ const EditModal = ({
             name="price"
             render={({ field }) => (
               <FormItem>
-                <FormLabel htmlFor="price">Price</FormLabel>
+                <div className="flex items-center justify-start">
+                  <FormLabel htmlFor="price">Price</FormLabel>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="ml-2 h-4 w-4 text-dog-400" />
+                      </TooltipTrigger>
+                      <TooltipContent
+                        side="right"
+                        className="border-dog-800 text-dog-500"
+                      >
+                        Change price of the token
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
                 <FormControl>
                   <Input type="text" {...field} />
                   {/* <DollarInput value={field.value} setValue={field.onChange} /> */}
                 </FormControl>
-                <FormDescription>
-                  Do you need to change it&apos;s price?
-                </FormDescription>
               </FormItem>
             )}
           />
