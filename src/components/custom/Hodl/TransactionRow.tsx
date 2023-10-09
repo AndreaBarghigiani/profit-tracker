@@ -29,7 +29,6 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 
 const TransactionRow = ({ rowData }: { rowData: TransactionRowValues }) => {
@@ -115,7 +114,7 @@ const TransactionRow = ({ rowData }: { rowData: TransactionRowValues }) => {
 
           <DropdownMenuContent
             align="end"
-            className="w-fit space-y-2 border-dog-750 px-4 py-2 text-sm text-dog-300"
+            className="w-fit space-y-2 border-dog-750 bg-dog-850 px-4 py-2 text-sm text-dog-300 text-dog-400"
             sideOffset={0}
           >
             <AddTransactionModal
