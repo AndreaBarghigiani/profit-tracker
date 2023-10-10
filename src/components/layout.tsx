@@ -83,7 +83,7 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
   const { data: session, status } = useSession();
   const [sheetOpen, setSheetOpen] = useState(false);
   const mainClass = clsx("px-7 py-5", {
-    "xl:ml-72": status === "authenticated",
+    "xl:ml-56": status === "authenticated",
   });
 
   const { data: positions } = api.hodl.getByCurrentUser.useQuery(undefined, {
@@ -104,7 +104,7 @@ const LayoutDashboard = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen">
       {status === "authenticated" ? (
-        <aside className="top-50 fixed left-0 hidden h-full flex-col border-r border-foreground/50 bg-background md:w-72 xl:flex">
+        <aside className="top-50 fixed left-0 hidden h-full flex-col border-r border-foreground/50 bg-background md:w-56 xl:flex">
           <Sidebar />
         </aside>
       ) : null}
