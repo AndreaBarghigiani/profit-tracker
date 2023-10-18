@@ -27,6 +27,7 @@ interface DataTableFacetedFilterProps<TData, TValue> {
 import { Plus, Check } from "lucide-react";
 import Heading from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import AddProjectTransactionForm from "@/components/custom/AddProjectTransactionForm";
 import OnlyAdmin from "@/components/custom/OnlyAdmin";
 import {
@@ -42,6 +43,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
 
 // const DataTable = <TData, TValue>({
 //   columns,
@@ -108,15 +110,29 @@ export function DataTableFacetedFilter<TData, TValue>({
   title,
   options,
 }: DataTableFacetedFilterProps<TData, TValue>) {
-  const facets = column?.getFacetedUniqueValues();
-  console.log("facets:", facets);
   const selectedValues = new Set(column?.getFilterValue() as string[]);
-  console.log("selectedValues:", selectedValues);
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline">{title}</Button>
+        <Button variant="outline">
+          {title}
+          {selectedValues.size > 0 && (
+            <>
+              <Separator orientation="vertical" className="mx-2" />
+
+              <div className="hidden space-x-1 lg:flex">
+                {options
+                  .filter((option) => selectedValues.has(option.value))
+                  .map((option) => (
+                    <Badge variant="outline" key={option.value}>
+                      {option.label}
+                    </Badge>
+                  ))}
+              </div>
+            </>
+          )}
+        </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[160px] border-dog-600 p-0" align="end">
         {options.map((option) => {
