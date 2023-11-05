@@ -37,7 +37,7 @@ const TokenSearchInput = ({
   // const [token, setToken] = useState<Token | null>(null);
 
   const [query, setQuery] = useState("");
-  const debouncedQuery = useDebounce(query, 500);
+  const debouncedQuery = useDebounce(query, 500).toString();
 
   const {
     data: tokens,
