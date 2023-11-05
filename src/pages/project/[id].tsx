@@ -8,12 +8,12 @@ import { columns } from "@/components/custom/Projects/Table/columns";
 import type { NextPage } from "next";
 
 // Components
+import { Trash } from "lucide-react";
 import Heading from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
+import DataTable from "@/components/custom/Projects/Table/data-table";
 import ProjectStats from "@/components/custom/ProjectStats";
 import LastProjectTransaction from "@/components/custom/LastProjectTransaction";
-import { Trash } from "lucide-react";
-import DataTable from "@/components/custom/Projects/Table/data-table";
 
 const ProjectPage: NextPage = () => {
   const router = useRouter();
