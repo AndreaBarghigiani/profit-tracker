@@ -6,7 +6,8 @@ import clsx from "clsx";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { prisma } from "@/server/db";
-import { currencyConverter, formatDate } from "@/utils/string";
+import { formatDate } from "@/utils/string";
+import { parseTransactionRowData } from "@/utils/positions";
 import { getHodl } from "@/server/api/routers/hodl";
 import { useTransactionModal } from "@/hooks/useTransactionModal";
 import { buttonVariants } from "@/components/ui/button";
@@ -45,7 +46,8 @@ import {
   DropdownMenuItem,
   DropdownMenuContent,
 } from "@/components/ui/dropdown-menu";
-import HodlTransactionsTable from "@/components/custom/Hodl/TransactionsTable";
+import { columns } from "@/components/custom/Hodl/Table/columns";
+import HodlDataTable from "@/components/custom/Hodl/Table/data-table";
 
 const Hodl: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -66,10 +68,10 @@ const Hodl: NextPage<
   };
 
   const { data: transactions, isSuccess } = api.hodl.getTransactions.useQuery({
-    hodlId: hodl.id,
+    hodlId,
   });
 
-  const { data: dcaStrategy } = api.dca.get.useQuery({ hodlId: hodl.id });
+  const { data: dcaStrategy } = api.dca.get.useQuery({ hodlId });
 
   const { mutateAsync: updatePrice, isLoading: isPriceLoading } =
     api.token.updatePrice.useMutation({
@@ -90,6 +92,11 @@ const Hodl: NextPage<
     },
   });
 
+  const tableData = parseTransactionRowData(
+    transactions,
+    token as TokenWithoutDatesZod,
+  );
+
   const { mutate: deletePosition } = api.hodl.delete.useMutation({
     onSuccess: async () => {
       await utils.wallet.get.invalidate().then(async () => {
@@ -103,6 +110,7 @@ const Hodl: NextPage<
       <Head>
         <title>{pageTitle}</title>
       </Head>
+
       <div className="mx-auto space-y-4">
         <header>
           <Heading
@@ -298,10 +306,7 @@ const Hodl: NextPage<
 
         {isSuccess && transactions ? (
           <section>
-            <HodlTransactionsTable
-              transactions={transactions}
-              token={token as TokenWithoutDatesZod}
-            />
+            <HodlDataTable data={tableData} columns={columns} />
           </section>
         ) : null}
       </div>
