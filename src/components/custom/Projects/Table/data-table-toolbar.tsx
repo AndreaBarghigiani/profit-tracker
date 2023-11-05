@@ -45,16 +45,6 @@ import {
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 
-// const DataTable = <TData, TValue>({
-//   columns,
-//   data,
-// }: DataTableProps<TData, TValue>) => {
-// const DataTableToolbar = <TData>({
-// 	table,
-// }: DataTableToolbarProps<TData>) {
-
-// }
-
 const DataTableToolbar = <TData,>({
   table,
   project,

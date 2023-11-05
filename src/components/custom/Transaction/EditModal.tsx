@@ -13,11 +13,9 @@ import { HelpCircle } from "lucide-react";
 import Heading from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import DollarInput from "../DollarInput";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -54,19 +52,13 @@ const EditModal = ({
     },
   });
 
-  const { mutate: editTransaction, isLoading } =
-    api.transaction.update.useMutation({
-      onSuccess: async () => {
-        await utils.hodl.getTransactions.invalidate();
+  const { mutate: editTransaction } = api.transaction.update.useMutation({
+    onSuccess: async () => {
+      await utils.hodl.getTransactions.invalidate();
 
-        setOpen(false);
-      },
-      // onMutate: async (values) => {
-      //   console.log("mutated values", values);
-      //   transaction.eval.amount = values.amount;
-      //   transaction.eval.evaluation = values.evaluation;
-      // },
-    });
+      setOpen(false);
+    },
+  });
 
   const onSubmit = (values: z.infer<typeof EditTransactionFormSchema>) => {
     const massaged = {
