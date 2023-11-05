@@ -23,17 +23,14 @@ const ProjectPage: NextPage = () => {
     { enabled: !!router.query.id },
   );
 
-  const {
-    data: transactions,
-    isLoading: isLoadingTransactions,
-    isSuccess: isTransactionsSuccess,
-  } = api.transaction.list.useQuery(
-    {
-      projectId: router.query.id as string,
-      orderBy: "desc",
-    },
-    { enabled: !!router.query.id },
-  );
+  const { data: transactions, isSuccess: isTransactionsSuccess } =
+    api.transaction.list.useQuery(
+      {
+        projectId: router.query.id as string,
+        orderBy: "desc",
+      },
+      { enabled: !!router.query.id },
+    );
 
   const { mutate: deleteProject } = api.project.delete.useMutation({
     onSuccess: async () => {
