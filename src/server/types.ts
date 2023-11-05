@@ -4,7 +4,7 @@ import { Frequency, TransactionType } from "@prisma/client";
 
 // Types
 import type { Token, Hodl } from "@prisma/client";
-
+import type { Column } from "@tanstack/react-table";
 // Wallet types
 
 export const WalletSchema = z.object({
@@ -480,3 +480,24 @@ export type UserCache = {
     [key: string]: string;
   };
 };
+
+// Data Tables
+export interface DataTableTxFilterProps<TData, TValue> {
+  column?: Column<TData, TValue>;
+  title?: string;
+  options: {
+    label: string;
+    value: string;
+    icon?: React.ComponentType<{ className?: string }>;
+  }[];
+}
+
+export interface DataTableRangeFilterProps<TData, TValue> {
+  column?: Column<TData, TValue>;
+  title?: string;
+  options: {
+    amount: [number, number];
+    evaluation: [number, number];
+    price: [number, number];
+  };
+}
