@@ -162,7 +162,7 @@ const TableActionsCol = ({ row }: { row: TransactionRowValues }) => {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button size="xs" variant="ghost">
+              <Button size="xs" variant="ghost" asChild>
                 <MoreHorizontal className="h-5 w-5" />
               </Button>
             </TooltipTrigger>
