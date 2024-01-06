@@ -11,6 +11,7 @@ const getRedisUser = async (userId: string) => {
     ? (JSON.parse(redisUser) as UserCache)
     : null;
 };
+
 export const userRouter = createTRPCRouter({
   getRole: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.user.findUniqueOrThrow({

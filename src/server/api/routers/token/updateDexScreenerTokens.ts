@@ -66,7 +66,7 @@ export const updateDexScreenerTokens = async ({
       baseToken: { address },
     } = pair;
 
-    if (!customAddresses.includes(address)) return acc;
+    if (!customAddresses.includes(encodeURIComponent(address))) return acc;
 
     if (!acc[address]) {
       acc[address] = [];

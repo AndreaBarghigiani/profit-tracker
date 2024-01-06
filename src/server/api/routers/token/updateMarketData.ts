@@ -57,6 +57,8 @@ export const updateMarketData = async ({
       ),
     );
 
+    // console.log("transactions", transactions);
+
     return transactions;
   };
 
