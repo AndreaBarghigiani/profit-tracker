@@ -91,12 +91,6 @@ export const formatNumber = (
     : formatted;
 };
 
-export const fromTimestampToDate = (timestamp: number | bigint) => {
-  const ts = typeof timestamp === "bigint" ? Number(timestamp) : timestamp;
-
-  return formatDate(ts * 1000, "long", "short");
-};
-
 export const currencyConverter = ({
   amount,
   showSign = false,

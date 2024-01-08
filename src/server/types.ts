@@ -481,12 +481,6 @@ export type UserCache = {
   };
 };
 
-export const WalletAddressSchema = z
-  .string()
-  .refine((address) => address.startsWith("0x"));
-
-export type WalletAddress = z.infer<typeof WalletAddressSchema>;
-
 // Data Tables
 export interface DataTableTxFilterProps<TData, TValue> {
   column?: Column<TData, TValue>;
